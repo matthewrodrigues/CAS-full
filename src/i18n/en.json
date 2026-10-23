@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "NightLife Trivia",
+    "placeholder": "Placeholder screen until the design is ready."
+  },
+  "landing": {
+    "body": "Scan the QR code on the big screen to join tonight's game.",
+    "tryDemo": "Try the demo game"
+  },
+  "play": {
+    "title": "Joining game {{joinCode}}",
+    "body": "Pick a nickname and a team here. Coming in Milestone 3."
+  },
+  "host": {
+    "title": "Host controls",
+    "body": "Run the night for event {{eventId}}. Coming in Milestone 4."
+  },
+  "display": {
+    "title": "Big screen",
+    "body": "The projector view for event {{eventId}}. Coming in Milestone 4."
+  },
+  "staff": {
+    "title": "Staff",
+    "body": "Prize redemption and night planning. Coming in Milestone 6."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "That link doesn't go anywhere.",
+    "home": "Go to the start page"
+  }
+}

@@ -16,3 +16,13 @@ playwright-report/
 test-results/
 
 *.log
+
+# build output and local overrides
+dist-ssr/
+*.local
+
+# editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store

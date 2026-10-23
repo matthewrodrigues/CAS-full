@@ -30,7 +30,7 @@ Use these defaults. Items marked *(configurable)* must be a setting, not hard-co
 | Client state | TanStack Query for fetched data; a small Zustand store for live game state |
 | Backend | One Node.js (current LTS) process running Hono (`@hono/node-server`). It serves the JSON API, the WebSocket, media files and the built SPA from one origin |
 | Database | SQLite (one file) via `better-sqlite3`; Drizzle ORM for schema and queries, `drizzle-kit` for migrations |
-| Real-time | WebSocket on the same server (`@hono/node-ws`) |
+| Real-time | WebSocket on the same server (`upgradeWebSocket` built into `@hono/node-server`, with `ws`) |
 | Game logic | TypeScript modules in `server/game/`; route handlers only authenticate, validate input and call into them |
 | Validation | `zod` schemas in `shared/`, used by client and server (`@hono/zod-validator` on routes) |
 | Auth | Guests get a random session token in an httpOnly cookie; no sign-up. Host and staff unlock their role with a shared passcode per role, set in server env. No email login |
@@ -255,7 +255,7 @@ Components must never use a raw color value. Use Tailwind v4 and define these to
 | `--color-win` | `#F6C945` | Winners, streaks (dark text only) |
 | `--color-urgent` | `#F28C38` | Timer, urgent actions (dark text only) |
 | `--color-ink` | `#1D1B26` | Body text |
-| `--color-muted` | `#5E5A6B` | Secondary text |
+| `--color-ink-muted` | `#5E5A6B` | Secondary text |
 | `--color-border` | `#8C8698` | Input borders, dividers |
 | `--color-focus` | `#2F6FE4` | Focus ring, drawn with a 2px offset so it shows on dark surfaces |
 
