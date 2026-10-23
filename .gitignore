@@ -1,0 +1,18 @@
+# dependencies and builds
+node_modules/
+dist/
+coverage/
+
+# local data: SQLite database and media (DATA_DIR)
+data/
+
+# secrets (commit .env.example only)
+.env
+.env.*
+!.env.example
+
+# test output
+playwright-report/
+test-results/
+
+*.log
