@@ -1,0 +1,38 @@
+import { createHash, timingSafeEqual } from 'node:crypto'
+import type { AppConfig } from '../context'
+
+const digest = (value: string) => createHash('sha256').update(value).digest()
+
+/** Constant-time comparison; hashing first makes both sides the same length. */
+function same(input: string, secret: string | undefined): boolean {
+  return secret !== undefined && secret !== '' && timingSafeEqual(digest(input), digest(secret))
+}
+
+/** The role a passcode unlocks. Staff is checked first because staff can do everything host can. */
+export function matchPasscode(input: string, config: AppConfig): 'staff' | 'host' | null {
+  if (same(input, config.staffPasscode)) return 'staff'
+  if (same(input, config.hostPasscode)) return 'host'
+  return null
+}
+
+/**
+ * At most `max` login attempts per key in any `windowMs` (docs/SPEC.md section 5: 5 per minute
+ * per IP). Every attempt counts, right or wrong. In memory, which is fine with one server instance.
+ */
+export function createLoginLimiter({ max = 5, windowMs = 60_000 } = {}) {
+  const attempts = new Map<string, number[]>()
+
+  return {
+    attempt(key: string): { ok: true } | { ok: false; retryAfterS: number } {
+      const now = Date.now()
+      const recent = (attempts.get(key) ?? []).filter((at) => now - at < windowMs)
+      if (recent.length >= max) {
+        attempts.set(key, recent)
+        return { ok: false, retryAfterS: Math.max(1, Math.ceil((recent[0] + windowMs - now) / 1000)) }
+      }
+      recent.push(now)
+      attempts.set(key, recent)
+      return { ok: true }
+    },
+  }
+}

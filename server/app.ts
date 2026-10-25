@@ -1,17 +1,20 @@
 import { upgradeWebSocket } from '@hono/node-server'
 import { sql } from 'drizzle-orm'
 import { Hono } from 'hono'
+import { createAuthRoutes } from './api/auth-routes'
 import { publicRoute, sameOrigin } from './auth/guards'
 import { loadSession } from './auth/sessions'
 import type { AppDeps, AppEnv } from './context'
 
-export function createApp({ db }: AppDeps) {
+export function createApp(deps: AppDeps) {
+  const { db } = deps
   return new Hono<AppEnv>()
     .use('/api/*', loadSession(db))
     .get('/api/health', publicRoute(), (c) => {
       db.get(sql`select 1`)
       return c.json({ ok: true })
     })
+    .route('/', createAuthRoutes(deps))
     .get(
       '/ws',
       sameOrigin(),
