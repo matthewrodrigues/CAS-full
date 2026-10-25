@@ -133,6 +133,16 @@ describe('GET /media', () => {
     expect((await call(app, 'GET', '/media/00000000-0000-0000-0000-000000000000.svg')).status).toBe(404)
   })
 
+  it('serves seeded audio as audio/wav so phone browsers will play it', async () => {
+    const { app, db: appDb } = makeTestApp({ mediaDir })
+    seedDemo(appDb, { mediaDir })
+    const audio = appDb.select().from(t.questions).where(eq(t.questions.mediaKind, 'audio')).get()!
+
+    const res = await call(app, 'GET', audio.mediaUrl!)
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toBe('audio/wav')
+  })
+
   it('never serves files outside mediaDir', async () => {
     const { app } = makeTestApp({ mediaDir })
     const secret = join(dirname(mediaDir), `${basename(mediaDir)}-secret.txt`)

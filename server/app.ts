@@ -19,6 +19,11 @@ export function createApp(deps: AppDeps) {
     .route('/', createAuthRoutes(deps))
     .route('/', createGameRoutes(deps))
     // Question images and audio. File names are random, so they can't be guessed or give answers away.
+    .use('/media/*', async (c, next) => {
+      await next()
+      // Hono's MIME table has no .wav, and iOS Safari won't play audio sent as octet-stream.
+      if (c.res.ok && c.req.path.endsWith('.wav')) c.res.headers.set('Content-Type', 'audio/wav')
+    })
     .get(
       '/media/*',
       serveStatic({ root: deps.config.mediaDir, rewriteRequestPath: (path) => path.replace(/^\/media/, '') }),
