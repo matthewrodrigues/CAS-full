@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs'
+import { existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
@@ -18,6 +18,7 @@ for (const key of ['HOST_PASSCODE', 'STAFF_PASSCODE'] as const) {
   if (!env[key]) console.warn(`${key} is not set, so that role's login is disabled. Set it in .env.`)
 }
 
+mkdirSync(config.mediaDir, { recursive: true })
 const db = openDb(DB_FILE)
 const app = createApp({ db, config })
 

@@ -9,8 +9,9 @@ Requires Node 22.22 or newer.
 ```sh
 npm install
 npx playwright install chromium   # once, for end-to-end tests
-cp .env.example .env              # optional in Milestone 0; defaults work
+cp .env.example .env              # then set HOST_PASSCODE and STAFF_PASSCODE to log in as host/staff
 npm run db:migrate                # creates data/app.db
+npm run db:seed                   # demo event DEMO1 ("Deep Sea Night"); safe to run again
 npm run dev                       # web on http://localhost:5173, API on :3000
 ```
 

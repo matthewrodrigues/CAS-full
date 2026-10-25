@@ -1,4 +1,5 @@
 import { upgradeWebSocket } from '@hono/node-server'
+import { serveStatic } from '@hono/node-server/serve-static'
 import { sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { createAuthRoutes } from './api/auth-routes'
@@ -17,6 +18,11 @@ export function createApp(deps: AppDeps) {
     })
     .route('/', createAuthRoutes(deps))
     .route('/', createGameRoutes(deps))
+    // Question images and audio. File names are random, so they can't be guessed or give answers away.
+    .get(
+      '/media/*',
+      serveStatic({ root: deps.config.mediaDir, rewriteRequestPath: (path) => path.replace(/^\/media/, '') }),
+    )
     .get(
       '/ws',
       sameOrigin(),
