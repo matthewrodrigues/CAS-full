@@ -33,6 +33,7 @@ import {
   ROUND_FORMATS,
   SCORE_REASONS,
 } from '../../shared/enums'
+import type { Answer } from '../../shared/api'
 import type { EventSettings } from '../../shared/settings'
 
 const id = () =>
@@ -255,7 +256,7 @@ export const submissions = sqliteTable(
       .notNull()
       .references(() => teams.id, { onDelete: 'cascade' }),
     // Null until the team answers (a wager can arrive first in final_wager).
-    answer: text('answer', { mode: 'json' }).$type<unknown>(),
+    answer: text('answer', { mode: 'json' }).$type<Answer>(),
     updatedBy: text('updated_by').references(() => players.id, { onDelete: 'set null' }),
     receivedAt: integer('received_at').notNull(),
     isDraft: integer('is_draft', { mode: 'boolean' }).notNull().default(false),

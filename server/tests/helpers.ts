@@ -50,6 +50,10 @@ export function call(
   )
 }
 
+/** A response body for assertions. Tests read bodies loosely; tsc checks the routes themselves. */
+// oxlint-disable-next-line typescript/no-explicit-any
+export const bodyOf = (res: Response): Promise<any> => res.json()
+
 /** The value of one cookie from a response's Set-Cookie header. */
 export function cookieFrom(res: Response, name = SESSION_COOKIE): string | undefined {
   const match = res.headers.getSetCookie().find((c) => c.startsWith(`${name}=`))

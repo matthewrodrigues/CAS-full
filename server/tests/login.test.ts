@@ -99,8 +99,6 @@ describe('login rate limit', () => {
     vi.setSystemTime(Date.now() + 60_001)
     expect((await login(app, 'wrong', { ip: '203.0.113.9' })).status).toBe(401)
   })
-
-  it.todo("doesn't throttle players on the same IP after failed logins (needs server_time, Task 4)")
 })
 
 describe('GET /api/me', () => {

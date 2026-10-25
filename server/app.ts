@@ -2,6 +2,7 @@ import { upgradeWebSocket } from '@hono/node-server'
 import { sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { createAuthRoutes } from './api/auth-routes'
+import { createGameRoutes } from './api/game-routes'
 import { publicRoute, sameOrigin } from './auth/guards'
 import { loadSession } from './auth/sessions'
 import type { AppDeps, AppEnv } from './context'
@@ -15,6 +16,7 @@ export function createApp(deps: AppDeps) {
       return c.json({ ok: true })
     })
     .route('/', createAuthRoutes(deps))
+    .route('/', createGameRoutes(deps))
     .get(
       '/ws',
       sameOrigin(),
