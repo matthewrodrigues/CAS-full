@@ -1,17 +1,21 @@
 import { upgradeWebSocket } from '@hono/node-server'
 import { sql } from 'drizzle-orm'
 import { Hono } from 'hono'
-import type { Db } from './db/client'
+import { publicRoute, sameOrigin } from './auth/guards'
+import { loadSession } from './auth/sessions'
+import type { AppDeps, AppEnv } from './context'
 
-export function createApp(db: Db) {
-  return new Hono()
-    .get('/api/health', (c) => {
+export function createApp({ db }: AppDeps) {
+  return new Hono<AppEnv>()
+    .use('/api/*', loadSession(db))
+    .get('/api/health', publicRoute(), (c) => {
       db.get(sql`select 1`)
       return c.json({ ok: true })
     })
     .get(
       '/ws',
-      // Echo only for Milestone 0; rooms and game messages arrive in Milestone 2.
+      sameOrigin(),
+      // Echo until Milestone 2 replaces it with event and team rooms (and session auth on the socket).
       upgradeWebSocket(() => ({
         onMessage(event, ws) {
           if (typeof event.data === 'string') ws.send(event.data)
@@ -20,5 +24,5 @@ export function createApp(db: Db) {
     )
 }
 
-/** Route types for the typed client in src/lib/api.ts (Milestone 1). */
+/** Route types for the typed client in src/lib/api.ts (Milestone 3). */
 export type AppType = ReturnType<typeof createApp>

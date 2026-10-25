@@ -2,13 +2,13 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { createApp } from '../app'
 import { openDb } from '../db/client'
+import { call, makeTestApp } from './helpers'
 
 describe('server foundation', () => {
   it('GET /api/health returns ok', async () => {
-    const app = createApp(openDb(':memory:'))
-    const res = await app.request('/api/health')
+    const { app } = makeTestApp()
+    const res = await call(app, 'GET', '/api/health')
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
   })

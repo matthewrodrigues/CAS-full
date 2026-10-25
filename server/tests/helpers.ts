@@ -1,8 +1,57 @@
+import { tmpdir } from 'node:os'
+import { createApp } from '../app'
+import { createSession, SESSION_COOKIE } from '../auth/sessions'
+import type { AppConfig } from '../context'
 import { applyMigrations, openDb, type Db } from '../db/client'
+import type { Role } from '../../shared/enums'
+
+export const TEST_HOST_PASSCODE = 'host-passcode-for-tests'
+export const TEST_STAFF_PASSCODE = 'staff-passcode-for-tests'
 
 /** In-memory SQLite with the real generated migrations applied. */
 export function makeTestDb(): Db {
   const db = openDb(':memory:')
   applyMigrations(db)
   return db
+}
+
+export function testConfig(overrides: Partial<AppConfig> = {}): AppConfig {
+  return {
+    hostPasscode: TEST_HOST_PASSCODE,
+    staffPasscode: TEST_STAFF_PASSCODE,
+    secureCookies: false,
+    mediaDir: tmpdir(),
+    ...overrides,
+  }
+}
+
+export function makeTestApp(config: Partial<AppConfig> = {}, db: Db = makeTestDb()) {
+  return { app: createApp({ db, config: testConfig(config) }), db }
+}
+
+/** A session row plus the raw cookie token a browser would hold. */
+export function sessionFor(db: Db, role: Role, playerId: string | null = null): string {
+  return createSession(db, { role, playerId }).token
+}
+
+type Requestable = { request: (path: string, init?: RequestInit) => Response | Promise<Response> }
+
+export function call(
+  app: Requestable,
+  method: string,
+  path: string,
+  { token, body, headers }: { token?: string; body?: unknown; headers?: Record<string, string> } = {},
+): Promise<Response> {
+  const h = new Headers(headers)
+  if (token) h.set('cookie', `${SESSION_COOKIE}=${token}`)
+  if (body !== undefined) h.set('content-type', 'application/json')
+  return Promise.resolve(
+    app.request(path, { method, headers: h, body: body === undefined ? undefined : JSON.stringify(body) }),
+  )
+}
+
+/** The value of one cookie from a response's Set-Cookie header. */
+export function cookieFrom(res: Response, name = SESSION_COOKIE): string | undefined {
+  const match = res.headers.getSetCookie().find((c) => c.startsWith(`${name}=`))
+  return match?.slice(name.length + 1).split(';')[0]
 }

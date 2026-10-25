@@ -1,13 +1,25 @@
 import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { WebSocketServer } from 'ws'
 import { createApp } from './app'
+import type { AppConfig } from './context'
 import { DB_FILE, openDb } from './db/client'
 import { env } from './env'
 
+const config: AppConfig = {
+  hostPasscode: env.HOST_PASSCODE,
+  staffPasscode: env.STAFF_PASSCODE,
+  secureCookies: env.NODE_ENV === 'production',
+  mediaDir: join(env.DATA_DIR, 'media'),
+}
+for (const key of ['HOST_PASSCODE', 'STAFF_PASSCODE'] as const) {
+  if (!env[key]) console.warn(`${key} is not set, so that role's login is disabled. Set it in .env.`)
+}
+
 const db = openDb(DB_FILE)
-const app = createApp(db)
+const app = createApp({ db, config })
 
 // After `npm run build`, this one process also serves the SPA (docs/SPEC.md section 10).
 if (existsSync('dist/index.html')) {
