@@ -11,7 +11,9 @@ import {
   SubmitAnswerInput,
   SubmitWagerInput,
 } from '../../shared/api'
+import { clientIp } from '../auth/client-ip'
 import { publicRoute, requireRole } from '../auth/guards'
+import { createRateLimiter } from '../auth/rate-limit'
 import { ensureGuestSession, linkSessionPlayer } from '../auth/sessions'
 import type { AppDeps, AppEnv } from '../context'
 import { joinEvent } from '../game/join'
@@ -29,14 +31,21 @@ export function createGameRoutes(deps: AppDeps) {
   const { db } = deps
   const host = requireRole('host')
   const player = requireRole('player')
+  // Stops a script creating endless players; a whole crowd behind the venue's NAT stays under it.
+  const newPlayers = createRateLimiter({ max: 200, windowMs: 60_000 })
 
   return (
     new Hono<AppEnv>()
       .get('/api/server_time', publicRoute(), (c) => c.json({ now: Date.now() }))
       .post('/api/join_event', publicRoute(), validate('json', JoinEventInput), (c) => {
         const { join_code, nickname } = c.req.valid('json')
-        const result = joinEvent(db, { joinCode: join_code, nickname, playerId: c.get('session')?.playerId ?? null })
-        if (!result.ok) return c.json({ error: result.error }, result.error === 'not_found' ? 404 : 409)
+        const playerId = c.get('session')?.playerId ?? null
+        if (!playerId && !newPlayers.attempt(clientIp(c)).ok) return c.json({ error: 'rate_limited' }, 429)
+        const result = joinEvent(db, { joinCode: join_code, nickname, playerId })
+        if (!result.ok) {
+          const status = result.error === 'not_found' ? 404 : result.error === 'nickname_not_allowed' ? 400 : 409
+          return c.json({ error: result.error }, status)
+        }
         // Only a successful join creates the guest session cookie.
         const session = ensureGuestSession(c, deps)
         if (session.playerId !== result.value.player.id) linkSessionPlayer(db, session.id, result.value.player.id)

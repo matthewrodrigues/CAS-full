@@ -30,6 +30,11 @@ export function eventLeaderboard(db: Db, eventId: string) {
   return ranked(rows)
 }
 
+/** One team's running total. */
+export function teamScore(db: Db, teamId: string): number {
+  return db.select({ points: totalPoints() }).from(scoreEvents).where(eq(scoreEvents.teamId, teamId)).get()?.points ?? 0
+}
+
 /** Points per player across a season: each team member receives the team's full points. */
 export function seasonLeaderboard(db: Db, seasonId: string) {
   const points = totalPoints()
