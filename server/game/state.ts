@@ -1,9 +1,10 @@
 import { and, eq, ne } from 'drizzle-orm'
+import type { PublicGameState, PublicSubmission } from '../../shared/game'
 import type { Db } from '../db/client'
 import { events, gameState, submissions, teamMembers } from '../db/schema'
 
 /** game_state as everyone in the event may see it. live_payload never carries answers. */
-export function publicGameState(db: Db, eventId: string) {
+export function publicGameState(db: Db, eventId: string): PublicGameState | null {
   const row = db.select().from(gameState).where(eq(gameState.eventId, eventId)).get()
   if (!row) return null
   return {
@@ -18,13 +19,8 @@ export function publicGameState(db: Db, eventId: string) {
   }
 }
 
-export type PublicGameState = NonNullable<ReturnType<typeof publicGameState>>
-
-/**
- * The caller's own team's submission for the current question. Results stay out until
- * Milestone 2 decides when they become visible, so nothing leaks before the reveal.
- */
-function teamSubmission(db: Db, eventId: string, playerId: string, eventQuestionId: string) {
+/** The caller's own team's submission for the current question. */
+function teamSubmission(db: Db, eventId: string, playerId: string, eventQuestionId: string): PublicSubmission | null {
   const row = db
     .select({
       id: submissions.id,
@@ -44,10 +40,9 @@ function teamSubmission(db: Db, eventId: string, playerId: string, eventQuestion
       ),
     )
     .get()
-  return row ?? null
+  // Results are filled in once scoring exists (Milestone 2, Task 8).
+  return row ? { ...row, result: null, points: null } : null
 }
-
-export type PublicSubmission = NonNullable<ReturnType<typeof teamSubmission>>
 
 /** get_state(event_id): what a reconnecting client renders from. Null when there is no such event. */
 export function getState(
