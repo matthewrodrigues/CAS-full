@@ -10,6 +10,7 @@ import { broadcastState, fail, ok, type GameContext, type GameResult } from './c
 import { buildLivePayload, buildWagerPayload } from './live-payload'
 import { loadEventPlan, nextStep } from './plan'
 import { buildRevealPayload, skippedRevealPayload } from './reveal'
+import { gradeQuestion, pushReviewQueue, scoreQuestion } from './scoring'
 import { publicGameState } from './state'
 
 type StatePatch = Partial<typeof gameState.$inferInsert>
@@ -105,25 +106,35 @@ export function next(ctx: GameContext, eventId: string): GameResult<PublicGameSt
   }
 }
 
-/** host_lock, and the auto-lock timer: live → locked, final_live → final_locked. */
+/**
+ * host_lock, and the auto-lock timer: live → locked, final_live → final_locked. Grading happens
+ * here so hosts can work the review queue before the reveal.
+ */
 export function lock(ctx: GameContext, eventId: string): GameResult<PublicGameState> {
   const row = load(ctx, eventId)
   if (!row) return fail('not_found')
   const to = row.state.phase === 'live' ? 'locked' : row.state.phase === 'final_live' ? 'final_locked' : null
-  if (!to) return fail('wrong_phase')
+  const questionId = row.state.currentEventQuestionId
+  if (!to || !questionId) return fail('wrong_phase')
   ctx.timers.disarm(eventId)
-  return write(ctx, eventId, { phase: to })
+  gradeQuestion(ctx, questionId)
+  const result = write(ctx, eventId, { phase: to })
+  pushReviewQueue(ctx, eventId)
+  return result
 }
 
-/** host_reveal: locked → revealed, final_locked → final_revealed, with the answer and fun fact. */
+/** host_reveal: locked → revealed, final_locked → final_revealed. Scores, then shows the answer and fun fact. */
 export function reveal(ctx: GameContext, eventId: string): GameResult<PublicGameState> {
   const row = load(ctx, eventId)
   if (!row) return fail('not_found')
   const to = row.state.phase === 'locked' ? 'revealed' : row.state.phase === 'final_locked' ? 'final_revealed' : null
   const questionId = row.state.currentEventQuestionId
   if (!to || !questionId) return fail('wrong_phase')
+  scoreQuestion(ctx, questionId)
   ctx.db.update(eventQuestions).set({ revealedAt: Date.now() }).where(eq(eventQuestions.id, questionId)).run()
-  return write(ctx, eventId, { phase: to, revealPayload: buildRevealPayload(ctx.db, questionId) })
+  const result = write(ctx, eventId, { phase: to, revealPayload: buildRevealPayload(ctx.db, questionId) })
+  ctx.realtime.toEvent(eventId, { type: 'scores' })
+  return result
 }
 
 /** host_skip: abandon the open question without grading or scoring it. */

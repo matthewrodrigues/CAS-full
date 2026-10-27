@@ -5,6 +5,7 @@ import type { Db } from '../db/client'
 import type { Realtime } from '../realtime/rooms'
 import type { GameContext } from './context'
 import * as flow from './flow'
+import * as scoring from './scoring'
 import * as submissions from './submissions'
 import * as teams from './teams'
 import { createTimers } from './timers'
@@ -25,6 +26,9 @@ export function createGame({ db, realtime }: { db: Db; realtime: Realtime }) {
     reviewTeamName: (input: Parameters<typeof teams.reviewTeamName>[1]) => teams.reviewTeamName(ctx, input),
     submitAnswer: (input: Parameters<typeof submissions.submitAnswer>[1]) => submissions.submitAnswer(ctx, input),
     submitWager: (input: Parameters<typeof submissions.submitWager>[1]) => submissions.submitWager(ctx, input),
+    override: (input: Parameters<typeof scoring.override>[1]) => scoring.override(ctx, input),
+    adjustScore: (input: Parameters<typeof scoring.adjustScore>[1]) => scoring.adjustScore(ctx, input),
+    reviewQueue: (eventId: string) => scoring.reviewQueue(ctx, eventId),
     /** On startup: re-arm open questions' auto-lock, or lock those whose deadline passed. */
     resumeTimers: () => flow.resumeTimers(ctx),
     /** On shutdown (and after each test): cancel every pending auto-lock. */
