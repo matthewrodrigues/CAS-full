@@ -9,17 +9,21 @@ import type { Db } from '../db/client'
 import * as t from '../db/schema'
 import { seedDemo } from '../db/seed-demo'
 import type { GameContext } from '../game/context'
+import { createGame } from '../game/engine'
 import { lock, next, reveal } from '../game/flow'
 import { createTeam } from '../game/teams'
-import { createTimers } from '../game/timers'
 import { createRealtime } from '../realtime/rooms'
 import { makeTestDb } from './helpers'
 
 export function makeGame(db: Db = makeTestDb()) {
   const mediaDir = mkdtempSync(join(tmpdir(), 'nightlife-game-'))
   const { eventId } = seedDemo(db, { mediaDir })
-  const ctx: GameContext = { db, realtime: createRealtime(), timers: createTimers() }
-  return { db, ctx, eventId, cleanup: () => (ctx.timers.disarmAll(), rmSync(mediaDir, { recursive: true, force: true })) }
+  const game = createGame({ db, realtime: createRealtime() })
+  const cleanup = () => {
+    game.stop()
+    rmSync(mediaDir, { recursive: true, force: true })
+  }
+  return { db, game, ctx: game.ctx, eventId, cleanup }
 }
 
 /** A socket that records what the server sends it. */

@@ -11,8 +11,8 @@ import type { Db } from '../db/client'
 import * as t from '../db/schema'
 import { seedDemo } from '../db/seed-demo'
 import type { GameContext } from '../game/context'
+import { createGame } from '../game/engine'
 import { createTeam, joinTeam, reviewTeamName } from '../game/teams'
-import { createTimers } from '../game/timers'
 import { createRealtime } from '../realtime/rooms'
 import { buildFixture } from './fixtures'
 import { bodyOf, call, cookieFrom, makeTestApp, makeTestDb } from './helpers'
@@ -39,7 +39,7 @@ beforeEach(() => {
   db = makeTestDb()
   mediaDir = mkdtempSync(join(tmpdir(), 'nightlife-teams-'))
   eventId = seedDemo(db, { mediaDir }).eventId
-  ctx = { db, realtime: createRealtime(), timers: createTimers() }
+  ctx = createGame({ db, realtime: createRealtime() }).ctx
   eventMessages = []
   ctx.realtime.add({ send: (d) => void eventMessages.push(JSON.parse(d)) }, { eventId, playerId: null, teamId: null, isHost: true })
 })

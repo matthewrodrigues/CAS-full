@@ -1,13 +1,17 @@
 import { and, count, eq, isNotNull } from 'drizzle-orm'
 import type { GameErrorCode } from '../../shared/game'
+import type { createRateLimiter } from '../auth/rate-limit'
 import type { Db } from '../db/client'
 import { gameState, submissions } from '../db/schema'
 import type { Realtime } from '../realtime/rooms'
 import { publicGameState } from './state'
 import type { Timers } from './timers'
 
-/** What every game operation works with. */
-export type GameContext = { db: Db; realtime: Realtime; timers: Timers }
+/**
+ * What every game operation works with. `writes` limits each player to 5 answer or wager
+ * writes per second (docs/SPEC.md section 5, submit_answer).
+ */
+export type GameContext = { db: Db; realtime: Realtime; timers: Timers; writes: ReturnType<typeof createRateLimiter> }
 
 export type GameResult<T> = { ok: true; value: T } | { ok: false; error: GameErrorCode }
 
