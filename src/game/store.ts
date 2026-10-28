@@ -28,6 +28,8 @@ type GameStore = {
   /** Server clock minus this phone's clock, in ms. */
   offset: number
   connected: boolean
+  /** Whether the socket has ever opened, so "Reconnecting…" isn't shown while the first one opens. */
+  everConnected: boolean
   setView(view: GameView | null): void
   setOffset(offset: number): void
   setConnected(connected: boolean): void
@@ -37,7 +39,8 @@ export const useGameStore = create<GameStore>((set) => ({
   view: null,
   offset: 0,
   connected: false,
+  everConnected: false,
   setView: (view) => set({ view }),
   setOffset: (offset) => set({ offset }),
-  setConnected: (connected) => set({ connected }),
+  setConnected: (connected) => set((s) => ({ connected, everConnected: s.everConnected || connected })),
 }))

@@ -8,8 +8,55 @@
     "tryDemo": "Try the demo game"
   },
   "play": {
-    "title": "Joining game {{joinCode}}",
-    "body": "Pick a nickname and a team here. Coming in Milestone 3."
+    "header": "Game {{joinCode}}",
+    "loading": "Loading the game…",
+    "reconnecting": "Reconnecting…",
+    "tabs": {
+      "label": "Game sections",
+      "play": "Play",
+      "leaderboard": "Leaderboard",
+      "rewards": "Rewards"
+    },
+    "join": {
+      "title": "Join the game",
+      "intro": "Pick a nickname. Other players see it on the leaderboard.",
+      "nickname": "Your nickname",
+      "submit": "Join the game",
+      "joining": "Joining…"
+    },
+    "team": {
+      "title": "Pick your team",
+      "started": "The game has started. You can still join a team.",
+      "createTitle": "Start a team",
+      "name": "Team name",
+      "create": "Create team",
+      "joinTitle": "Or join a team",
+      "join": "Join {{name}}",
+      "unnamed": "Unnamed team",
+      "full": "Full",
+      "none": "No teams yet. Start the first one!",
+      "back": "Back to my team",
+      "joinShort": "Join"
+    },
+    "members_one": "{{count}} player",
+    "members_other": "{{count}} players",
+    "lobby": {
+      "waiting": "Waiting for the host to start",
+      "pending": "The host will approve your team name soon.",
+      "approved": "Team name approved",
+      "rejected": "The host didn't approve this name, so other teams won't see it. You can still play.",
+      "members": "Your team",
+      "captain": "Captain",
+      "switch": "Switch team",
+      "switchHint": "You can switch teams until the first question."
+    },
+    "status": {
+      "waiting": "Waiting for the host",
+      "live": "Question live",
+      "locked": "Answers locked",
+      "results": "Results in",
+      "paused": "Paused"
+    }
   },
   "host": {
     "title": "Host controls",
@@ -36,5 +83,37 @@
     "finalWager": "Final wager: choose your bet",
     "paused": "The game is paused",
     "ended": "The game is over"
+  },
+  "errors": {
+    "not_found": "We can't find that game. Check the code on the big screen.",
+    "event_ended": "This game has ended. Thanks for playing!",
+    "wrong_phase": "That can't be done right now.",
+    "not_live": "This question isn't open for answers.",
+    "too_late": "Too late: answers are locked.",
+    "not_on_team": "Join a team first.",
+    "captain_only": "Only your captain can answer for the team.",
+    "join_first": "Join the game first.",
+    "already_started": "The game has started, so you can't switch teams now.",
+    "team_full": "That team is full.",
+    "name_taken": "Another team already has that name.",
+    "name_not_allowed": "Please pick a different team name.",
+    "nickname_not_allowed": "Please pick a different nickname.",
+    "wrong_answer_type": "That answer doesn't fit this question.",
+    "wager_too_high": "You can't bet more points than your team has.",
+    "rate_limited": "Slow down a little and try again.",
+    "network": "Can't reach the game. Check your connection and try again.",
+    "unknown": "Something went wrong. Please try again."
+  },
+  "leaderboard": {
+    "title": "Tonight's leaderboard",
+    "rank": "Rank",
+    "yours": "(your team)",
+    "points_one": "{{count}} pt",
+    "points_other": "{{count}} pts",
+    "empty": "Scores appear once the round starts."
+  },
+  "rewards": {
+    "title": "Rewards",
+    "empty": "Prizes show up here after the game. Good luck tonight!"
   }
 }
