@@ -2,11 +2,11 @@
 // Team names (SPEC §4: "Everyone in the event (approved names only on display)"): players see
 // every name but rejected ones, host sessions (which run the big screen) see approved names
 // only, and a team always sees its own. Results and points appear only after the reveal.
-import { and, count, eq, ne, sql } from 'drizzle-orm'
-import type { GameView, HostView, Leaderboard, PublicGameState, PublicSettings, PublicSubmission } from '../../shared/game'
+import { and, count, desc, eq, ne, sql } from 'drizzle-orm'
+import type { GameView, HostEvent, HostView, Leaderboard, PublicGameState, PublicSettings, PublicSubmission } from '../../shared/game'
 import type { Db } from '../db/client'
 import { eventLeaderboard, teamScore } from '../db/queries'
-import { eventQuestions, events, gameState, scoreEvents, submissions, teamMembers, teams } from '../db/schema'
+import { eventQuestions, events, gameState, scoreEvents, submissions, teamMembers, teams, themes } from '../db/schema'
 import { hostCounts, type GameContext } from './context'
 import { reviewQueue } from './scoring'
 import { toPublicSubmission } from './submissions'
@@ -102,7 +102,9 @@ export function getState(
   if (!state) return null
   const teamId = playerId ? teamOf(db, eventId, playerId) : null
   const questionId = state.current_event_question_id
+  const event = db.select({ id: events.id, join_code: events.joinCode, status: events.status }).from(events).where(eq(events.id, eventId)).get()!
   const view: GameView = {
+    event,
     state,
     submission: teamId && questionId ? teamSubmission(db, teamId, questionId) : null,
     my_team: teamId ? myTeam(db, teamId) : null,
@@ -127,4 +129,15 @@ export function leaderboard(
       rank: row.rank,
     })),
   }
+}
+
+/** host_events: every event a host could run, newest first (drafts included: a host may preview them). */
+export function hostEvents(db: Db): HostEvent[] {
+  return db
+    .select({ id: events.id, join_code: events.joinCode, status: events.status, starts_at: events.startsAt, theme: themes.name, phase: gameState.phase })
+    .from(events)
+    .innerJoin(themes, eq(themes.id, events.themeId))
+    .innerJoin(gameState, eq(gameState.eventId, events.id))
+    .orderBy(desc(events.startsAt))
+    .all()
 }

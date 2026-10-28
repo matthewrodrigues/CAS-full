@@ -98,6 +98,7 @@ export type PublicSettings = {
 
 /** get_state(event_id): everything a (re)connecting client renders from. */
 export type GameView = {
+  event: { id: string; join_code: string; status: EventStatus }
   state: PublicGameState
   submission: PublicSubmission | null
   my_team: MyTeam | null
@@ -106,6 +107,9 @@ export type GameView = {
   settings: PublicSettings
   host?: HostView
 }
+
+/** host_events: what a host picks from to run a night. */
+export type HostEvent = { id: string; join_code: string; status: EventStatus; starts_at: number; theme: string; phase: Phase }
 
 export type LeaderboardRow = { team_id: string; name: string | null; points: number; rank: number }
 export type Leaderboard = { teams: LeaderboardRow[] }

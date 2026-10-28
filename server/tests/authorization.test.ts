@@ -28,6 +28,7 @@ function apiRoutes(app: App): ApiRoute[] {
 
 const PRIVILEGED_ROUTES = [
   '/api/host_adjust_score',
+  '/api/host_events',
   '/api/host_lock',
   '/api/host_next',
   '/api/host_open_question',

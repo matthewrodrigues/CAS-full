@@ -96,6 +96,7 @@ export function createGameRoutes(deps: AppDeps) {
       })
       .post('/api/delete_my_account', player, validate('json', EmptyInput), notImplemented('delete_my_account'))
 
+      .get('/api/host_events', host, (c) => c.json({ events: game.hostEvents() }))
       .post('/api/host_open_question', host, validate('json', EventIdInput), (c) => respond(c, game.openQuestion(c.req.valid('json').event_id)))
       .post('/api/host_lock', host, validate('json', EventIdInput), (c) => respond(c, game.lock(c.req.valid('json').event_id)))
       .post('/api/host_reveal', host, validate('json', EventIdInput), (c) => respond(c, game.reveal(c.req.valid('json').event_id)))

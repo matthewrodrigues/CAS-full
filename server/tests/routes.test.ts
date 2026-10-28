@@ -97,7 +97,23 @@ describe('team names and the leaderboard', () => {
   })
 })
 
+describe('host_events', () => {
+  it('lists events for hosts, newest first, and refuses players', async () => {
+    const res = await get('/api/host_events', host)
+    expect(res.status).toBe(200)
+    expect((await bodyOf(res)).events).toEqual([
+      { id: eventId, join_code: 'DEMO1', status: 'ready', starts_at: expect.any(Number), theme: 'Deep Sea Night', phase: 'lobby' },
+    ])
+    expect((await get('/api/host_events', await joinAs('Nosy'))).status).toBe(403)
+  })
+})
+
 describe('get_state', () => {
+  it('names the event, so the big screen can show its join code', async () => {
+    const view = await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))
+    expect(view.event).toEqual({ id: eventId, join_code: 'DEMO1', status: 'ready' })
+  })
+
   it("gives a player their team and the public team list, and a host the host view", async () => {
     const a = await teamFor('Ana', 'Anglers')
     await teamFor('Ben', 'Barreleyes')

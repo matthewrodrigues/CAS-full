@@ -15,6 +15,7 @@ const submission = (patch: Partial<PublicSubmission> = {}): PublicSubmission => 
 })
 
 const view: GameView = {
+  event: { id: 'e1', join_code: 'DEMO1', status: 'live' },
   state: {
     phase: 'live',
     current_event_question_id: 'q1',
