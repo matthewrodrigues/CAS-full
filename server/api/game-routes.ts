@@ -1,4 +1,5 @@
 import { Hono, type Context } from 'hono'
+import { deleteCookie } from 'hono/cookie'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import {
   CreateTeamInput,
@@ -10,21 +11,23 @@ import {
   JoinEventInput,
   JoinTeamInput,
   RedeemCodeInput,
+  NewsletterOptinInput,
+  StaffUpdateSettingsInput,
   SubmitAnswerInput,
+  SubmitFeedbackInput,
   SubmitWagerInput,
 } from '../../shared/api'
 import type { GameErrorCode } from '../../shared/game'
 import { clientIp } from '../auth/client-ip'
 import { publicRoute, requireRole } from '../auth/guards'
 import { createRateLimiter } from '../auth/rate-limit'
-import { ensureGuestSession, linkSessionPlayer } from '../auth/sessions'
+import { ensureGuestSession, linkSessionPlayer, SESSION_COOKIE } from '../auth/sessions'
 import type { AppDeps, AppEnv } from '../context'
 import type { GameResult } from '../game/context'
+import { deleteAccount, eventSettings, newsletterCsv, optInToNewsletter, submitFeedback, updateSettings } from '../game/account'
 import { joinEvent } from '../game/join'
+import { myRewards, redeemCode, staffAwards } from '../game/rewards'
 import { validate } from './validate'
-
-/** Operations that arrive with Milestone 6 (rewards and account deletion). */
-const notImplemented = (operation: string) => (c: Context) => c.json({ error: 'not_implemented', operation }, 501)
 
 /** Everything not listed is a conflict with the game's current state: 409. */
 const STATUS: Partial<Record<GameErrorCode, ContentfulStatusCode>> = {
@@ -50,6 +53,7 @@ export function createGameRoutes(deps: AppDeps) {
   const { db, game } = deps
   const host = requireRole('host')
   const player = requireRole('player')
+  const staff = requireRole('staff')
   // Stops a script creating endless players; a whole crowd behind the venue's NAT stays under it.
   const newPlayers = createRateLimiter({ max: 200, windowMs: 60_000 })
   const playerId = (c: Context<AppEnv>) => c.get('session')?.playerId ?? null
@@ -94,7 +98,25 @@ export function createGameRoutes(deps: AppDeps) {
         const { event_question_id, amount } = c.req.valid('json')
         return respond(c, game.submitWager({ eventQuestionId: event_question_id, playerId: playerId(c), amount }))
       })
-      .post('/api/delete_my_account', player, validate('json', EmptyInput), notImplemented('delete_my_account'))
+      .get('/api/my_rewards', player, (c) => c.json({ rewards: playerId(c) ? myRewards(db, playerId(c)!) : [] }))
+      .post('/api/submit_feedback', player, validate('json', SubmitFeedbackInput), (c) => {
+        const id = playerId(c)
+        if (!id) return c.json({ error: 'join_first' }, 409)
+        const { event_id, rating, comment } = c.req.valid('json')
+        return respond(c, submitFeedback(db, { eventId: event_id, playerId: id, rating, comment }))
+      })
+      .post('/api/newsletter_optin', player, validate('json', NewsletterOptinInput), (c) => {
+        const id = playerId(c)
+        if (!id) return c.json({ error: 'join_first' }, 409)
+        const { email, topics } = c.req.valid('json')
+        return respond(c, optInToNewsletter(db, { playerId: id, email, topics }))
+      })
+      .post('/api/delete_my_account', player, validate('json', EmptyInput), (c) => {
+        const id = playerId(c)
+        if (id) deleteAccount(db, id)
+        deleteCookie(c, SESSION_COOKIE, { path: '/' })
+        return c.json({ ok: true })
+      })
 
       .get('/api/host_events', host, (c) => c.json({ events: game.hostEvents() }))
       .post('/api/host_open_question', host, validate('json', EventIdInput), (c) => respond(c, game.openQuestion(c.req.valid('json').event_id)))
@@ -117,6 +139,18 @@ export function createGameRoutes(deps: AppDeps) {
         return respond(c, game.reviewTeamName({ teamId: team_id, nameStatus: name_status }))
       })
 
-      .post('/api/redeem_code', requireRole('staff'), validate('json', RedeemCodeInput), notImplemented('redeem_code'))
+      .post('/api/redeem_code', staff, validate('json', RedeemCodeInput), (c) => respond(c, redeemCode(db, c.req.valid('json').code)))
+      .get('/api/staff_awards', staff, (c) => c.json({ awards: staffAwards(db) }))
+      .get('/api/staff_newsletter_csv', staff, (c) => {
+        c.header('content-disposition', 'attachment; filename="newsletter-optins.csv"')
+        return c.body(newsletterCsv(db), 200, { 'content-type': 'text/csv; charset=utf-8' })
+      })
+      .get('/api/staff_event_settings', staff, validate('query', EventIdInput), (c) => respond(c, eventSettings(db, c.req.valid('query').event_id)))
+      .post('/api/staff_update_settings', staff, validate('json', StaffUpdateSettingsInput), (c) => {
+        const { event_id, settings } = c.req.valid('json')
+        const result = updateSettings(db, event_id, settings)
+        if (!result.ok && result.error === 'invalid_settings') return c.json({ error: 'invalid_settings', issues: result.issues }, 400)
+        return respond(c, result as Exclude<typeof result, { error: 'invalid_settings' }>)
+      })
   )
 }

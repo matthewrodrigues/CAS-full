@@ -111,6 +111,12 @@ export type GameView = {
 /** host_events: what a host picks from to run a night. */
 export type HostEvent = { id: string; join_code: string; status: EventStatus; starts_at: number; theme: string; phase: Phase }
 
+/** A prize a player won, with the code staff scan to redeem it. */
+export type MyReward = { id: string; name: string; description: string | null; tier: number; code: string; status: 'issued' | 'redeemed' | 'expired'; issued_at: number; expires_at: number }
+
+/** One row of the staff redemption list. */
+export type StaffAward = { id: string; reward: string; code: string; status: 'issued' | 'redeemed' | 'expired'; nickname: string | null; issued_at: number; redeemed_at: number | null }
+
 export type LeaderboardRow = { team_id: string; name: string | null; points: number; rank: number }
 export type Leaderboard = { teams: LeaderboardRow[] }
 
@@ -143,5 +149,7 @@ export const GAME_ERROR_CODES = [
   'wrong_answer_type',
   'wager_too_high',
   'rate_limited',
+  'already_redeemed',
+  'code_expired',
 ] as const
 export type GameErrorCode = (typeof GAME_ERROR_CODES)[number]
