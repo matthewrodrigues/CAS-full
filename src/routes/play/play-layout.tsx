@@ -53,7 +53,7 @@ function JoinedLayout({ result, joinCode }: { result: JoinResult; joinCode: stri
       ) : null}
       <LiveRegion state={live.view?.state} />
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-6">{live.view ? <Outlet context={context} /> : <Loading />}</main>
-      <nav aria-label={t('play.tabs.label')} className="sticky bottom-0 border-t border-border bg-surface">
+      <nav aria-label={t('play.tabs.label')} className="border-t border-border bg-surface">
         <ul className="mx-auto grid max-w-md grid-cols-3">
           {tabs.map((tab) => (
             <li key={tab.to}>

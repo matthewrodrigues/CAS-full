@@ -18,8 +18,11 @@ export class ApiError extends Error {
   }
 }
 
+/** A request on venue Wi-Fi that hasn't answered by now isn't going to; say so instead of spinning. */
+const TIMEOUT_MS = 8000
+
 async function request<T>(path: string, body?: unknown): Promise<T> {
-  const init: RequestInit = { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin' }
+  const init: RequestInit = { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', signal: AbortSignal.timeout(TIMEOUT_MS) }
   if (body !== undefined) {
     init.headers = { 'content-type': 'application/json' }
     init.body = JSON.stringify(body)

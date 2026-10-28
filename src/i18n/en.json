@@ -115,5 +115,35 @@
   "rewards": {
     "title": "Rewards",
     "empty": "Prizes show up here after the game. Good luck tonight!"
+  },
+  "question": {
+    "meta": "{{round}} · Question {{number}} of {{of}}",
+    "of": "Question {{number}} of {{of}}",
+    "points_one": "{{count}} point",
+    "points_other": "{{count}} points",
+    "timer": "Time left",
+    "seconds_one": "{{count}} s",
+    "seconds_other": "{{count}} s",
+    "true": "True",
+    "false": "False",
+    "yourAnswer": "Your answer: {{answer}}",
+    "teamAnswer": "Your team's answer: {{answer}}",
+    "answerLabel": "Your answer",
+    "numberLabel": "Your guess",
+    "submit": "Submit answer",
+    "submitted": "Submitted",
+    "draftSaved": "Draft saved",
+    "notNumber": "Enter a number, like 1955.",
+    "captainOnly": "Your captain answers for the team.",
+    "image": "Picture for this question",
+    "audio": "Sound clip for this question",
+    "caption": "Caption:",
+    "noAnswer": "No answer from your team",
+    "pausedTitle": "Paused by the host",
+    "pausedBody": "Answers wait until the host resumes the game."
+  },
+  "locked": {
+    "title": "Answers are locked",
+    "waiting": "The host will reveal the answer in a moment."
   }
 }

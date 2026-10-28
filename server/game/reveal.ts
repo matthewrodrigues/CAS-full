@@ -1,10 +1,11 @@
 // The reveal payload builder: one of the two places allowed to read question_answers
 // (docs/SPEC.md section 6, rule 2). It runs only when the host reveals a question.
 import { eq } from 'drizzle-orm'
+import type { RevealPayload } from '../../shared/game'
 import type { Db } from '../db/client'
 import { eventQuestions, questionAnswers, questions } from '../db/schema'
 
-export function buildRevealPayload(db: Db, eventQuestionId: string) {
+export function buildRevealPayload(db: Db, eventQuestionId: string): RevealPayload {
   const row = db
     .select({
       type: questions.type,
@@ -38,6 +39,6 @@ export function buildRevealPayload(db: Db, eventQuestionId: string) {
   }
 }
 
-export function skippedRevealPayload(eventQuestionId: string) {
+export function skippedRevealPayload(eventQuestionId: string): RevealPayload {
   return { event_question_id: eventQuestionId, skipped: true }
 }
