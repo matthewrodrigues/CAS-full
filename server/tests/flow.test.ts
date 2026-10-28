@@ -126,6 +126,18 @@ describe('auto-lock', () => {
   })
 })
 
+describe('a host lock racing the auto-lock', () => {
+  it('is quietly accepted when the timer locked first: no error, no second grading pass, no broadcast', () => {
+    next(ctx, eventId)
+    vi.advanceTimersByTime(20_000 + 1200)
+    expect(state(db, eventId).phase).toBe('locked')
+    const messages = listen(ctx, { eventId })
+
+    expect(lock(ctx, eventId)).toMatchObject({ ok: true, value: { phase: 'locked' } })
+    expect(messages).toEqual([])
+  })
+})
+
 describe('pause and resume', () => {
   it('never auto-locks while paused', () => {
     next(ctx, eventId)

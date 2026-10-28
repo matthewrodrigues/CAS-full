@@ -5,7 +5,7 @@ import type { Db } from '../db/client'
 import { eventLeaderboard, teamScore } from '../db/queries'
 import * as t from '../db/schema'
 import type { GameContext } from '../game/context'
-import { lock, next, reveal } from '../game/flow'
+import { lock, next, reveal, skip } from '../game/flow'
 import { adjustScore, override, reviewQueue } from '../game/scoring'
 import { submitAnswer, submitWager } from '../game/submissions'
 import { advanceUntil, listen, makeGame, state, teamWithPlayer } from './game-setup'
@@ -235,6 +235,31 @@ describe('host corrections', () => {
       },
     ])
     expect(hosts).toContainEqual({ type: 'review_queue', items: queue })
+  })
+
+  it('keeps unresolved review answers from earlier questions until a host decides', () => {
+    const b = teamWithPlayer(ctx, eventId, 'Bravo')
+    openQuestion(1)
+    submit(b.playerId, { text: 'octopuss' })
+    const reviewed = current()
+    lockAndReveal()
+    openQuestion(2)
+    expect(reviewQueue(ctx, eventId).map((item) => item.event_question_id)).toEqual([reviewed])
+
+    expect(override(ctx, { submissionId: row(b.teamId, reviewed).id, result: 'correct', note: 'Typo' })).toMatchObject({ ok: true, value: { adjustment: 10 } })
+    expect(reviewQueue(ctx, eventId)).toEqual([])
+  })
+
+  it('leaves review answers on a skipped question out of the queue', () => {
+    const b = teamWithPlayer(ctx, eventId, 'Bravo')
+    openQuestion(1)
+    submit(b.playerId, { text: 'octopuss' })
+    lock(ctx, eventId)
+    expect(reviewQueue(ctx, eventId)).toHaveLength(1)
+    const hosts = listen(ctx, { eventId, isHost: true })
+    expect(skip(ctx, eventId).ok).toBe(true)
+    expect(reviewQueue(ctx, eventId)).toEqual([])
+    expect(hosts).toContainEqual({ type: 'review_queue', items: [] })
   })
 
   it('applies an override made before the reveal when the reveal scores', () => {

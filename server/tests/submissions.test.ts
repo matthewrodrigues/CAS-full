@@ -209,6 +209,14 @@ describe('wagers', () => {
     lock(ctx, eventId)
   })
 
+  it('let a team with a negative score wager 0, and nothing more', () => {
+    const a = teamWithPlayer(ctx, eventId, 'In The Red')
+    giveScore(a.teamId, -5)
+    advanceUntil(ctx, eventId, 'final_wager')
+    expect(submitWager(ctx, { eventQuestionId: current(), playerId: a.playerId, amount: 0 }).ok).toBe(true)
+    expect(submitWager(ctx, { eventQuestionId: current(), playerId: a.playerId, amount: 1 })).toEqual({ ok: false, error: 'wager_too_high' })
+  })
+
   it('are refused for a question that is not the wager question', () => {
     const a = teamWithPlayer(ctx, eventId, 'Wrong Question')
     advanceUntil(ctx, eventId, 'final_wager')

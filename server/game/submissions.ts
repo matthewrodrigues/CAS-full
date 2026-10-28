@@ -123,7 +123,8 @@ export function submitWager(
   const q = load(ctx, eventQuestionId, playerId)
   if (!q.ok) return q
   if (q.state.phase !== 'final_wager' || q.state.currentEventQuestionId !== eventQuestionId) return fail('wrong_phase')
-  if (amount > teamScore(ctx.db, q.teamId)) return fail('wager_too_high')
+  // A team below zero (after a host adjustment) can still wager 0.
+  if (amount > Math.max(0, teamScore(ctx.db, q.teamId))) return fail('wager_too_high')
   return save(ctx, q.eventId, eventQuestionId, q.teamId, {
     wager: amount,
     isDraft: true,

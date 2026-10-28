@@ -1,7 +1,7 @@
 // Grading at lock, scoring at reveal, and the host's corrections (docs/SPEC.md section 5,
 // Answer checking). One of the two places allowed to read question_answers (section 6, rule 2):
 // it grades against them and computes similarity for the review queue, and sends neither out.
-import { and, asc, eq, sql } from 'drizzle-orm'
+import { and, asc, eq, isNull, sql } from 'drizzle-orm'
 import type { Answer } from '../../shared/api'
 import type { AutoResult, OverrideResult } from '../../shared/enums'
 import type { ReviewItem } from '../../shared/game'
@@ -104,28 +104,48 @@ export function scoreQuestion(ctx: GameContext, eventQuestionId: string) {
   })
 }
 
-/** The current question's review answers that no host has decided yet. */
+/**
+ * Every review answer in the event that no host has decided yet, in play order. Earlier
+ * questions stay in the queue after the host moves on, since an override still counts after
+ * the reveal. Skipped questions are left out: nothing about them is scored.
+ */
 export function reviewQueue(ctx: GameContext, eventId: string): ReviewItem[] {
-  const current = ctx.db.select({ id: gameState.currentEventQuestionId }).from(gameState).where(eq(gameState.eventId, eventId)).get()?.id
-  if (!current) return []
-  const q = questionFor(ctx, current)
-  if (!q || q.type !== 'typed') return []
   const rows = ctx.db
-    .select({ id: submissions.id, teamId: submissions.teamId, teamName: teams.name, answer: submissions.answer })
+    .select({
+      id: submissions.id,
+      teamId: submissions.teamId,
+      teamName: teams.name,
+      answer: submissions.answer,
+      eventQuestionId: submissions.eventQuestionId,
+      acceptedAnswers: questionAnswers.acceptedAnswers,
+      settings: events.settings,
+    })
     .from(submissions)
     .innerJoin(teams, eq(teams.id, submissions.teamId))
-    .where(and(eq(submissions.eventQuestionId, current), eq(submissions.autoResult, 'review'), sql`${submissions.overrideResult} is null`))
-    .orderBy(asc(submissions.receivedAt))
+    .innerJoin(eventQuestions, eq(eventQuestions.id, submissions.eventQuestionId))
+    .innerJoin(rounds, eq(rounds.id, eventQuestions.roundId))
+    .innerJoin(questionAnswers, eq(questionAnswers.questionId, eventQuestions.questionId))
+    .innerJoin(events, eq(events.id, eventQuestions.eventId))
+    .where(
+      and(
+        eq(eventQuestions.eventId, eventId),
+        isNull(eventQuestions.skippedAt),
+        eq(submissions.autoResult, 'review'),
+        isNull(submissions.overrideResult),
+      ),
+    )
+    .orderBy(asc(rounds.position), asc(eventQuestions.position), asc(submissions.receivedAt))
     .all()
   return rows.map((row) => {
     const text = row.answer && 'text' in row.answer ? row.answer.text : ''
+    const { auto_accept_threshold: autoAccept, review_threshold: review } = row.settings
     return {
       submission_id: row.id,
       team_id: row.teamId,
       team_name: row.teamName,
-      event_question_id: current,
+      event_question_id: row.eventQuestionId,
       answer: text,
-      similarity: matchAnswer(text, q.acceptedAnswers, thresholds(q)).similarity,
+      similarity: matchAnswer(text, row.acceptedAnswers, { autoAccept, review }).similarity,
     }
   })
 }
