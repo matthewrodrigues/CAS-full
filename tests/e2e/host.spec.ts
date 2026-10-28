@@ -1,14 +1,8 @@
 // Milestone 4 done-when (docs/SPEC.md section 8): a full night hosted from a tablet while the
 // display runs in another browser, with a player on a phone.
-import { expect, test, type Browser, type Page } from '@playwright/test'
+import { expect, test, type Browser } from '@playwright/test'
 import { E2E_HOST_PASSCODE, JOIN_CODES } from './constants'
 import { createTeam, expectNoAxeViolations, joinAsPlayer, signInViaApi } from './support'
-
-async function signInAsHost(page: Page, path: string) {
-  await page.goto(path)
-  await page.getByLabel('Passcode').fill(E2E_HOST_PASSCODE)
-  await page.getByRole('button', { name: 'Sign in' }).click()
-}
 
 const tablet = (browser: Browser) => browser.newContext({ viewport: { width: 1024, height: 768 } }).then((c) => c.newPage())
 
