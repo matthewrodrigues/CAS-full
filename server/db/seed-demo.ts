@@ -340,7 +340,9 @@ export function seedDemo(db: Db, { mediaDir }: { mediaDir: string }): { eventId:
   const themeId = randomUUID()
   const eventId = randomUUID()
 
-  // Build every row first, so a content mistake fails before anything is written.
+  // Build every row first, so a content mistake fails before any row is written. Placeholder
+  // media files are written while planning, though, so a failed seed can leave a few unused
+  // files in the media folder (harmless: nothing points at them).
   let mediaIndex = 0
   const planned = ROUNDS.map((round, r) => ({
     round: { id: randomUUID(), eventId, position: r + 1, title: round.title, format: round.format },

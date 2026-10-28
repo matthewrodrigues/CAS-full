@@ -26,3 +26,19 @@ npm run dev                       # web on http://localhost:5173, API on :3000
 | `npm run build` then `npm start` | Production build; one Node process serves the API and the built app |
 | `npm run db:generate` | Create a migration after changing `server/db/schema.ts` |
 | `npm run db:migrate` / `db:seed` / `db:backup` | Apply migrations, load seed data, copy the database to `data/backups/` |
+
+## The game engine
+
+Everything the game decides happens on the server, in `server/game/`; the browser only draws what it is told. Route handlers check the session, validate input with zod and call `createGame()`'s operations (`server/game/engine.ts`).
+
+- **Flow** (`flow.ts`): `host_next` is the one "advance" action through the phases in docs/SPEC.md section 5 (lobby → live → locked → revealed → … → round_break → final_wager → final_live → … → ended). `host_lock`, `host_reveal`, `host_skip`, `host_pause` and `host_resume` do what they say. A pause stops the clock and shifts `closes_at` on resume.
+- **Auto-lock** (`timers.ts`): when a question opens, a timer locks it at `closes_at` + the grace window (`grace_ms`, 1.2 s) + the largest `extra_time_s` among the night's players. On startup the server re-arms the timer for an open question, or locks it at once if its deadline has passed.
+- **Submissions** (`submissions.ts`): one row per team per question. A submit always replaces it; a draft only replaces a draft. Answers are accepted only while live and before the player's deadline, at most 5 writes per player per second.
+- **Scoring** (`scoring.ts`): answers are graded at lock (typed answers by trigram similarity, `matching.ts`) and scored at reveal. Borderline typed answers wait in the host's review queue; an override after the reveal writes an `adjust` score event for the difference. The final wager adds or subtracts the wager, capped at the team's score.
+- **Real-time** (`server/realtime/rooms.ts`, `server/api/ws-route.ts`): `/ws?event_id=…` needs a session and the same Origin. It sends `state` on every phase change, `team_submission` to a team's own room, and counts and the review queue to hosts. Clients should still call `get_state` on every reconnect.
+
+`server/tests/full-game.test.ts` plays DEMO1 from lobby to ended over HTTP and checks the final leaderboard.
+
+## Test databases
+
+Unit tests use in-memory SQLite. `npm run e2e` runs the dev server with `DATA_DIR=data/e2e`, migrating and seeding that database first, so end-to-end runs never touch `data/app.db`.
