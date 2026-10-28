@@ -18,7 +18,9 @@
     "db:migrate": "tsx server/db/migrate.ts",
     "db:seed": "tsx server/db/seed.ts",
     "db:backup": "tsx server/db/backup.ts",
-    "e2e:server": "tsx scripts/e2e-prepare.ts && concurrently -k -n web,api \"vite --port 5174 --strictPort\" \"tsx server/index.ts\""
+    "e2e:server": "tsx scripts/e2e-prepare.ts && concurrently -k -n web,api \"vite --port 5174 --strictPort\" \"tsx server/index.ts\"",
+    "simulate": "tsx scripts/simulate-players.ts",
+    "import-questions": "tsx scripts/import-questions.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.5",
