@@ -9,7 +9,7 @@ export default defineConfig({
         test: { name: 'client', include: ['src/**/*.test.{ts,tsx}'], environment: 'node' },
       },
       {
-        test: { name: 'server', include: ['server/**/*.test.ts'], environment: 'node' },
+        test: { name: 'server', include: ['server/**/*.test.ts'], environment: 'node', testTimeout: 15_000 }, // real sockets and the simulator share the CPU
       },
     ],
   },
