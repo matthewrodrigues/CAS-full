@@ -1,9 +1,20 @@
 // The game API (docs/SPEC.md section 5): one typed function per route, same origin, JSON in
 // and out. Types come from shared/, which is what the server itself builds its responses from.
 import type { z } from 'zod'
-import type { CreateTeamInput, JoinEventInput, JoinTeamInput, SubmitAnswerInput, SubmitWagerInput } from '../../shared/api'
+import type {
+  CreateTeamInput,
+  HostAdjustScoreInput,
+  HostOverrideInput,
+  HostReviewTeamNameInput,
+  JoinEventInput,
+  JoinTeamInput,
+  SubmitAnswerInput,
+  SubmitWagerInput,
+} from '../../shared/api'
 import type { Role } from '../../shared/enums'
-import type { GameView, JoinResult, Leaderboard, MyTeam, PublicSubmission } from '../../shared/game'
+import type { GameView, HostEvent, JoinResult, Leaderboard, MyTeam, PublicGameState, PublicSubmission, TeamSummary } from '../../shared/game'
+
+export type HostOperation = 'host_next' | 'host_lock' | 'host_reveal' | 'host_open_question' | 'host_pause' | 'host_resume' | 'host_skip'
 
 /** A failed call. `code` is the server's error code, `network` when the request never got there. */
 export class ApiError extends Error {
@@ -44,6 +55,13 @@ async function request<T>(path: string, body?: unknown): Promise<T> {
 const query = (path: string, eventId: string) => `${path}?event_id=${encodeURIComponent(eventId)}`
 
 export const api = {
+  login: (passcode: string) => request<{ role: Role }>('/api/login', { passcode }),
+  hostEvents: () => request<{ events: HostEvent[] }>('/api/host_events'),
+  /** host_next, host_lock, host_reveal, host_open_question, host_pause, host_resume, host_skip. */
+  hostAction: (operation: HostOperation, eventId: string) => request<PublicGameState>(`/api/${operation}`, { event_id: eventId }),
+  override: (input: z.input<typeof HostOverrideInput>) => request<{ submission_id: string; adjustment: number }>('/api/host_override', input),
+  adjustScore: (input: z.input<typeof HostAdjustScoreInput>) => request<{ team_id: string; score: number }>('/api/host_adjust_score', input),
+  reviewTeamName: (input: z.input<typeof HostReviewTeamNameInput>) => request<TeamSummary>('/api/host_review_team_name', input),
   me: () => request<{ role: Role | null; player: { id: string; nickname: string } | null }>('/api/me'),
   serverTime: () => request<{ now: number }>('/api/server_time'),
   joinEvent: (input: z.input<typeof JoinEventInput>) => request<JoinResult>('/api/join_event', input),

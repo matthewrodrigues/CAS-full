@@ -59,16 +59,79 @@
     }
   },
   "host": {
-    "title": "Host controls",
-    "body": "Run the night for event {{eventId}}. Coming in Milestone 4."
+    "title": "Host console",
+    "eventsTitle": "Pick a night to host",
+    "events": "Events",
+    "eventRow": "{{code}} · {{theme}} · {{phase}}",
+    "open": "Run {{code}}",
+    "noEvents": "No events yet. Run the seed script to create the demo night.",
+    "header": "Host console · {{code}}",
+    "display": "Open the big screen",
+    "phase": "Phase: {{phase}}",
+    "lobby": "{{count}} teams have joined.",
+    "answered": "{{answered}} of {{teams}} teams answered · {{connected}} connected",
+    "primary": {
+      "lobby": "Start the game",
+      "live": "Lock answers",
+      "final_live": "Lock answers",
+      "locked": "Reveal the answer",
+      "final_locked": "Reveal the answer",
+      "revealed": "Next",
+      "round_break": "Start the next round",
+      "final_wager": "Open the final question",
+      "final_revealed": "End the game",
+      "paused": "Resume"
+    },
+    "pause": "Pause",
+    "skip": "Skip question",
+    "ended": "The game is over.",
+    "reviewTitle": "Answers to check",
+    "reviewEmpty": "Nothing to check.",
+    "reviewItem": "{{team}}: “{{answer}}” ({{percent}}% match)",
+    "accept": "Accept",
+    "reject": "Reject",
+    "acceptLabel": "Accept {{team}}’s answer",
+    "rejectLabel": "Reject {{team}}’s answer",
+    "reviewNote": "Host review",
+    "teamsTitle": "Teams",
+    "teamsEmpty": "No teams yet.",
+    "teamRow": "{{members}} · {{score}} pts",
+    "status": {
+      "pending": "Name pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "approve": "Approve",
+    "approveLabel": "Approve {{team}}",
+    "rejectName": "Reject name",
+    "rejectNameLabel": "Reject name for {{team}}",
+    "adjust": "Adjust score",
+    "adjustPoints": "Points (+ or −)",
+    "adjustNote": "Reason",
+    "adjustApply": "Apply",
+    "adjustLabel": "Adjust {{team}}’s score"
   },
   "display": {
-    "title": "Big screen",
-    "body": "The projector view for event {{eventId}}. Coming in Milestone 4."
+    "join": "Join on your phone",
+    "scan": "Scan the code or go to",
+    "code": "Code: {{code}}",
+    "qr": "QR code to join the game",
+    "teams_one": "{{count}} team joined",
+    "teams_other": "{{count}} teams joined",
+    "locked": "Answers are locked",
+    "answer": "Answer: {{answer}}",
+    "funFact": "Fun fact",
+    "skipped": "Question skipped",
+    "top": "Top teams",
+    "roundBreak": "Round complete",
+    "ended": "Final scores",
+    "wager": "Final wager",
+    "wagerBody": "Place your bets on your phone.",
+    "paused": "Paused"
   },
   "staff": {
     "title": "Staff",
-    "body": "Prize redemption and night planning. Coming in Milestone 6."
+    "body": "Prize redemption arrives with Milestone 6."
   },
   "notFound": {
     "title": "Page not found",
@@ -180,5 +243,15 @@
     "title": "Thanks for playing!",
     "rank": "Your team finished #{{rank}} with {{points}} points.",
     "board": "See the leaderboard"
+  },
+  "gate": {
+    "hostTitle": "Host sign-in",
+    "staffTitle": "Staff sign-in",
+    "hostIntro": "Enter the host passcode to run tonight’s game.",
+    "staffIntro": "Enter the staff passcode.",
+    "passcode": "Passcode",
+    "submit": "Sign in",
+    "wrong": "That passcode didn't work.",
+    "tooMany": "Too many tries. Wait a minute and try again."
   }
 }

@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router'
 import { Landing } from './routes/landing'
 import { NotFound } from './routes/not-found'
 import { DisplayPage } from './routes/host/display-page'
+import { HostHome } from './routes/host/host-home'
 import { HostPage } from './routes/host/host-page'
 import { LeaderboardPage } from './routes/play/leaderboard-page'
 import { PlayLayout } from './routes/play/play-layout'
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
       { path: 'rewards', element: <RewardsPage /> },
     ],
   },
+  { path: '/host', element: <HostHome /> },
   { path: '/host/:eventId', element: <HostPage /> },
   { path: '/host/:eventId/display', element: <DisplayPage /> },
   { path: '/staff/*', element: <StaffPage /> },
