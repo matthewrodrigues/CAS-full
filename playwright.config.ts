@@ -15,7 +15,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
+    // Its own database, migrated and seeded first, so end-to-end runs never touch data/app.db.
+    command: 'npm run db:migrate && npm run db:seed && npm run dev',
+    env: { DATA_DIR: 'data/e2e' },
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

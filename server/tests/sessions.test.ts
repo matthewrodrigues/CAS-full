@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { requireRole } from '../auth/guards'
-import { createSession, ensureGuestSession, GUEST_SESSION_MS, loadSession, ROLE_SESSION_MS } from '../auth/sessions'
+import { createSession, deleteExpiredSessions, ensureGuestSession, GUEST_SESSION_MS, loadSession, ROLE_SESSION_MS } from '../auth/sessions'
 import type { AppEnv } from '../context'
 import type { Db } from '../db/client'
 import * as t from '../db/schema'
@@ -173,5 +173,19 @@ describe('environment', () => {
         false,
       )
     }
+  })
+})
+
+describe('expired session cleanup', () => {
+  it('deletes only expired sessions and says how many', () => {
+    vi.useFakeTimers({ toFake: ['Date'], now: Date.UTC(2026, 9, 29) })
+    const live = createSession(db, { role: 'player', playerId: null }).session
+    const host = createSession(db, { role: 'host', playerId: null }).session
+    vi.setSystemTime(Date.now() + 13 * 60 * 60 * 1000) // the host session's 12 hours are up
+
+    expect(deleteExpiredSessions(db)).toBe(1)
+    expect(db.select({ id: t.sessions.id }).from(t.sessions).all()).toEqual([{ id: live.id }])
+    expect(host.id).not.toBe(live.id)
+    expect(deleteExpiredSessions(db)).toBe(0)
   })
 })

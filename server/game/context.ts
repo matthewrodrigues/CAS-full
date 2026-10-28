@@ -18,8 +18,8 @@ export type GameResult<T> = { ok: true; value: T } | { ok: false; error: GameErr
 export const ok = <T>(value: T): GameResult<T> => ({ ok: true, value })
 export const fail = (error: GameErrorCode): { ok: false; error: GameErrorCode } => ({ ok: false, error })
 
-/** Connected and answered team counts for the current question, to the host room. */
-export function pushHostStats(ctx: GameContext, eventId: string) {
+/** Teams with a socket open, and teams with an answer (draft or submitted) to the current question. */
+export function hostCounts(ctx: GameContext, eventId: string) {
   const current = ctx.db.select({ id: gameState.currentEventQuestionId }).from(gameState).where(eq(gameState.eventId, eventId)).get()
   const answered = current?.id
     ? (ctx.db
@@ -28,7 +28,12 @@ export function pushHostStats(ctx: GameContext, eventId: string) {
         .where(and(eq(submissions.eventQuestionId, current.id), isNotNull(submissions.answer)))
         .get()?.n ?? 0)
     : 0
-  ctx.realtime.toHosts(eventId, { type: 'host_stats', connected_teams: ctx.realtime.connectedTeams(eventId), answered_teams: answered })
+  return { connected_teams: ctx.realtime.connectedTeams(eventId), answered_teams: answered }
+}
+
+/** The host counts, to the host room. */
+export function pushHostStats(ctx: GameContext, eventId: string) {
+  ctx.realtime.toHosts(eventId, { type: 'host_stats', ...hostCounts(ctx, eventId) })
 }
 
 /** The new game_state to everyone in the event, after every phase change. */

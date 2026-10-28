@@ -3,15 +3,18 @@
 import { createRateLimiter } from '../auth/rate-limit'
 import type { Db } from '../db/client'
 import type { Realtime } from '../realtime/rooms'
-import type { GameContext } from './context'
+import { pushHostStats, type GameContext } from './context'
 import * as flow from './flow'
 import * as scoring from './scoring'
+import * as state from './state'
 import * as submissions from './submissions'
 import * as teams from './teams'
 import { createTimers } from './timers'
 
 export function createGame({ db, realtime }: { db: Db; realtime: Realtime }) {
   const ctx: GameContext = { db, realtime, timers: createTimers(), writes: createRateLimiter({ max: 5, windowMs: 1000 }) }
+  // Hosts see connected-team counts change as sockets come and go.
+  realtime.onPresence((eventId) => pushHostStats(ctx, eventId))
   return {
     ctx,
     openQuestion: (eventId: string) => flow.openQuestion(ctx, eventId),
@@ -29,6 +32,8 @@ export function createGame({ db, realtime }: { db: Db; realtime: Realtime }) {
     override: (input: Parameters<typeof scoring.override>[1]) => scoring.override(ctx, input),
     adjustScore: (input: Parameters<typeof scoring.adjustScore>[1]) => scoring.adjustScore(ctx, input),
     reviewQueue: (eventId: string) => scoring.reviewQueue(ctx, eventId),
+    getState: (input: Parameters<typeof state.getState>[1]) => state.getState(ctx, input),
+    leaderboard: (input: Parameters<typeof state.leaderboard>[1]) => state.leaderboard(db, input),
     /** On startup: re-arm open questions' auto-lock, or lock those whose deadline passed. */
     resumeTimers: () => flow.resumeTimers(ctx),
     /** On shutdown (and after each test): cancel every pending auto-lock. */

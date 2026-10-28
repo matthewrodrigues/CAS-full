@@ -163,3 +163,33 @@ describe('parameterized SQL (rule 10)', () => {
     },
   )
 })
+
+// Schema migrations --------------------------------------------------------------------------
+
+/**
+ * A drizzle-kit table rebuild: it emits PRAGMA foreign_keys=OFF inside the migration's
+ * transaction, where SQLite ignores it, so the DROP TABLE would cascade-delete child rows.
+ */
+const findTableRebuild = (text: string) => matchLines(text, /PRAGMA\s+foreign_keys\s*=\s*OFF|`?__new_\w+/i)
+
+describe('migrations', () => {
+  it('never rebuild a table', () => {
+    const dir = join(ROOT, 'server', 'db', 'migrations')
+    const files = readdirSync(dir)
+      .filter((name) => name.endsWith('.sql'))
+      .map((name) => join(dir, name))
+    expect(files.length).toBeGreaterThan(0)
+    expect(scan(files, findTableRebuild)).toEqual([])
+  })
+
+  it.each(['PRAGMA foreign_keys=OFF;--> statement-breakpoint', 'CREATE TABLE `__new_submissions` (', 'pragma foreign_keys = off'])(
+    'catches %s',
+    (sample) => {
+      expect(findTableRebuild(sample)).not.toEqual([])
+    },
+  )
+
+  it.each(['ALTER TABLE `event_questions` ADD `revealed_at` integer;', 'PRAGMA foreign_keys=ON;'])('allows %s', (sample) => {
+    expect(findTableRebuild(sample)).toEqual([])
+  })
+})

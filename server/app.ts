@@ -1,10 +1,10 @@
-import { upgradeWebSocket } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { createAuthRoutes } from './api/auth-routes'
 import { createGameRoutes } from './api/game-routes'
-import { publicRoute, sameOrigin } from './auth/guards'
+import { createWsRoute } from './api/ws-route'
+import { publicRoute } from './auth/guards'
 import { loadSession } from './auth/sessions'
 import type { AppDeps, AppEnv } from './context'
 
@@ -28,16 +28,7 @@ export function createApp(deps: AppDeps) {
       '/media/*',
       serveStatic({ root: deps.config.mediaDir, rewriteRequestPath: (path) => path.replace(/^\/media/, '') }),
     )
-    .get(
-      '/ws',
-      sameOrigin(),
-      // Echo until Milestone 2 replaces it with event and team rooms (and session auth on the socket).
-      upgradeWebSocket(() => ({
-        onMessage(event, ws) {
-          if (typeof event.data === 'string') ws.send(event.data)
-        },
-      })),
-    )
+    .route('/', createWsRoute(deps))
 }
 
 /** Route types for the typed client in src/lib/api.ts (Milestone 3). */
