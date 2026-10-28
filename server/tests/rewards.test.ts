@@ -79,6 +79,17 @@ describe('prizes at the end of the night', () => {
   })
 })
 
+describe('after the night', () => {
+  it('lets a player who played rejoin the ended event to see their prizes, but no one new', async () => {
+    const a = await player('Back Again', 'Returners')
+    await endTheNight({ [a.teamId]: 10 })
+    const again = await call(test.app, 'POST', '/api/join_event', { token: a.token, body: { join_code: 'DEMO1', nickname: 'Back Again' } })
+    expect(again.status).toBe(200)
+    const stranger = await call(test.app, 'POST', '/api/join_event', { body: { join_code: 'DEMO1', nickname: 'Too Late' } })
+    expect(await bodyOf(stranger)).toEqual({ error: 'event_ended' })
+  })
+})
+
 describe('redeem_code (staff)', () => {
   it('redeems an issued code once, and refuses expired and unknown codes', async () => {
     const a = await player('A', 'Alpha')

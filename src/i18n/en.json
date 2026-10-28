@@ -5,7 +5,10 @@
   },
   "landing": {
     "body": "Scan the QR code on the big screen to join tonight's game.",
-    "tryDemo": "Try the demo game"
+    "tryDemo": "Try the demo game",
+    "host": "Host a game",
+    "staff": "Staff",
+    "privacy": "Privacy"
   },
   "play": {
     "header": "Game {{joinCode}}",
@@ -131,7 +134,50 @@
   },
   "staff": {
     "title": "Staff",
-    "body": "Prize redemption arrives with Milestone 6."
+    "nav": "Staff sections",
+    "redeemTab": "Redeem",
+    "awardsTab": "Codes",
+    "settingsTab": "Settings",
+    "newsletterTab": "Newsletter",
+    "redeemTitle": "Redeem a prize code",
+    "code": "Prize code",
+    "redeem": "Redeem",
+    "scan": "Scan with the camera",
+    "stopScan": "Stop scanning",
+    "noCamera": "This browser can't scan codes. Type the code instead.",
+    "redeemed": "Redeemed: {{reward}} for {{nickname}}",
+    "awardsTitle": "Issued and redeemed codes",
+    "awardsEmpty": "No codes yet.",
+    "awardRow": "{{code}} · {{reward}} · {{nickname}}",
+    "status": {
+      "issued": "Issued",
+      "redeemed": "Redeemed",
+      "expired": "Expired"
+    },
+    "settingsTitle": "Event settings",
+    "event": "Event",
+    "save": "Save settings",
+    "saved": "Saved.",
+    "fields": {
+      "max_team_size": "Largest team",
+      "team_submissions": "Who can answer",
+      "speed_bonus": "Speed bonus",
+      "grace_ms": "Grace after the timer (ms)",
+      "auto_accept_threshold": "Auto-accept typed answers at (0–1)",
+      "review_threshold": "Send typed answers to review at (0–1)",
+      "live_background": "Live-question background"
+    },
+    "options": {
+      "any_member": "Any member",
+      "captain_only": "Captain only",
+      "off": "Off",
+      "tiered": "Tiered",
+      "cream": "Cream",
+      "violet": "Violet"
+    },
+    "invalid": "Those settings are not valid: {{issues}}",
+    "newsletterTitle": "Newsletter sign-ups",
+    "download": "Download CSV"
   },
   "notFound": {
     "title": "Page not found",
@@ -165,7 +211,9 @@
     "wager_too_high": "You can't bet more points than your team has.",
     "rate_limited": "Slow down a little and try again.",
     "network": "Can't reach the game. Check your connection and try again.",
-    "unknown": "Something went wrong. Please try again."
+    "unknown": "Something went wrong. Please try again.",
+    "already_redeemed": "That code has already been redeemed.",
+    "code_expired": "That code has expired."
   },
   "leaderboard": {
     "title": "Tonight's leaderboard",
@@ -177,7 +225,16 @@
   },
   "rewards": {
     "title": "Rewards",
-    "empty": "Prizes show up here after the game. Good luck tonight!"
+    "empty": "Prizes show up here after the game. Good luck tonight!",
+    "show": "Show this code to staff to collect your prize.",
+    "code": "Code: {{code}}",
+    "qr": "QR code for {{name}}",
+    "expires": "Expires {{date}}",
+    "status": {
+      "issued": "Ready to collect",
+      "redeemed": "Collected",
+      "expired": "Expired"
+    }
   },
   "question": {
     "meta": "{{round}} · Question {{number}} of {{of}}",
@@ -253,5 +310,39 @@
     "submit": "Sign in",
     "wrong": "That passcode didn't work.",
     "tooMany": "Too many tries. Wait a minute and try again."
+  },
+  "feedback": {
+    "title": "How was tonight?",
+    "legend": "Rate the game from 1 to 5",
+    "star_one": "{{count}} star",
+    "star_other": "{{count}} stars",
+    "comment": "Anything to tell us? (optional)",
+    "submit": "Send feedback",
+    "thanks": "Thanks for the feedback!"
+  },
+  "newsletter": {
+    "title": "Hear about the next NightLife",
+    "email": "Email",
+    "consent": "Yes, email me about NightLife events. I can unsubscribe any time.",
+    "submit": "Sign me up",
+    "thanks": "You're signed up.",
+    "needConsent": "Tick the box to agree first.",
+    "privacy": "How we use your data"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "body": [
+      "NightLife Trivia keeps only what the game needs: your nickname, your team and its answers, and a random session cookie so this phone stays signed in. There are no accounts or passwords.",
+      "If you sign up for the newsletter, we keep your email address and when you agreed. Staff can export the list to send NightLife news, and nothing else.",
+      "Prize codes are linked to your nickname so staff can hand them over. Feedback ratings are kept to improve the game."
+    ],
+    "deleteTitle": "Delete my data",
+    "deleteBody": "This removes your nickname, team memberships, prize codes and newsletter sign-up from this game. Team scores stay, without your name.",
+    "delete": "Delete my data",
+    "confirm": "Yes, delete it",
+    "cancel": "Keep my data",
+    "done": "Your data has been deleted.",
+    "notJoined": "This phone has no data to delete.",
+    "back": "Back to the start"
   }
 }

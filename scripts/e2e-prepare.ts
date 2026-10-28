@@ -24,6 +24,7 @@ const EVENTS = [
   { joinCode: 'E2ED1' },
   { joinCode: 'E2EF1', settings: { team_submissions: 'captain_only' as const } },
   { joinCode: 'E2EG1' },
+  { joinCode: 'E2EH1' },
 ]
 
 const db = openDb(DB_FILE)

@@ -6,6 +6,7 @@ import { StatusBanner } from '@/components/status-banner'
 import { Button } from '@/components/ui/button'
 import { leaderboardKey } from '@/game/use-live-game'
 import { api } from '@/lib/api'
+import { FeedbackForm, NewsletterForm } from './after-game-forms'
 import { usePlay } from './context'
 
 /** The end of the night: the team's final rank. */
@@ -26,6 +27,8 @@ export function EndedScreen() {
       <Button asChild size="lg">
         <Link to="leaderboard">{t('ended.board')}</Link>
       </Button>
+      <FeedbackForm eventId={eventId} />
+      <NewsletterForm />
     </section>
   )
 }
