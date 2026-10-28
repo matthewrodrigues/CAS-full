@@ -27,5 +27,14 @@
     "title": "Page not found",
     "body": "That link doesn't go anywhere.",
     "home": "Go to the start page"
+  },
+  "announce": {
+    "live": "Question {{number}} is live, {{seconds}} seconds",
+    "locked": "Answers are locked",
+    "revealed": "Results are in",
+    "roundBreak": "Round {{round}} complete",
+    "finalWager": "Final wager: choose your bet",
+    "paused": "The game is paused",
+    "ended": "The game is over"
   }
 }
