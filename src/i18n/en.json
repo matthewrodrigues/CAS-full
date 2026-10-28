@@ -145,5 +145,40 @@
   "locked": {
     "title": "Answers are locked",
     "waiting": "The host will reveal the answer in a moment."
+  },
+  "result": {
+    "correct": "Correct",
+    "incorrect": "Not this time",
+    "review": "Being checked by the host",
+    "none": "No answer from your team",
+    "reviewBody": "Your answer was close. The host will decide, and points appear if it counts.",
+    "points_one": "{{sign}}{{count}} point",
+    "points_other": "{{sign}}{{count}} points",
+    "answer": "Answer: {{answer}}",
+    "funFact": "Fun fact",
+    "skipped": "Question skipped",
+    "skippedBody": "The host skipped this one. It doesn't count for anyone.",
+    "next": "The next question is coming up."
+  },
+  "roundBreak": {
+    "title": "Round complete",
+    "rank": "Your team is #{{rank}} with {{points}} points",
+    "top": "Top teams",
+    "next": "The next round starts soon."
+  },
+  "wager": {
+    "title": "Final wager",
+    "intro": "Bet some or all of your points on the last question. Get it right to win them, wrong to lose them.",
+    "score": "Your team has {{count}} points.",
+    "none": "Your team has no points to bet, so your wager is 0.",
+    "label": "Your wager",
+    "submit": "Lock in wager",
+    "current": "Your wager: {{amount}}",
+    "captainOnly": "Your captain places the wager."
+  },
+  "ended": {
+    "title": "Thanks for playing!",
+    "rank": "Your team finished #{{rank}} with {{points}} points.",
+    "board": "See the leaderboard"
   }
 }

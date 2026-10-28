@@ -41,6 +41,8 @@ export function AnswerText({
   useEffect(() => {
     draft.current = onDraft
   }, [onDraft])
+  // The ref is read when the timer fires, not during render; the rule can't tell.
+  // oxlint-disable-next-line react/refs
   const [saveDraft] = useState(() => debounce((value: string | number) => draft.current(value), DRAFT_MS))
   // A draft still pending when the question closes would only be refused.
   useEffect(() => () => saveDraft.cancel(), [saveDraft])

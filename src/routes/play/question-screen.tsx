@@ -86,6 +86,7 @@ export function QuestionScreen({ paused }: { paused: boolean }) {
       )}
 
       <div role="status" className="flex flex-col gap-1 text-lg">
+        {submission?.wager != null ? <p className="font-semibold">{t('wager.current', { amount: submission.wager })}</p> : null}
         {shown && (choice && !readOnly) ? <p className="font-medium">{t('question.yourAnswer', { answer: shown })}</p> : null}
         {shown && !choice && !readOnly ? <p className="font-medium">{submission?.is_draft ? t('question.draftSaved') : t('question.submitted')}</p> : null}
         {shown && (readOnly || (!choice && !submission?.is_draft)) ? <p>{t('question.teamAnswer', { answer: shown })}</p> : null}

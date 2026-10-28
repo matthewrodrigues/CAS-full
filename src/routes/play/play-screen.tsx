@@ -4,7 +4,11 @@ import { usePlay } from './context'
 import { LobbyScreen } from './lobby-screen'
 import { LockedScreen } from './locked-screen'
 import { PausedBanner } from './paused-banner'
+import { EndedScreen } from './ended-screen'
 import { QuestionScreen } from './question-screen'
+import { RevealScreen } from './reveal-screen'
+import { RoundBreakScreen } from './round-break-screen'
+import { WagerScreen } from './wager-screen'
 import { liveQuestion } from './question'
 import { TeamScreen } from './team-screen'
 
@@ -37,6 +41,15 @@ function PhaseScreen({ phase, paused, hasQuestion }: { phase: string | null; pau
     case 'locked':
     case 'final_locked':
       return <LockedScreen />
+    case 'revealed':
+    case 'final_revealed':
+      return <RevealScreen />
+    case 'round_break':
+      return <RoundBreakScreen />
+    case 'final_wager':
+      return <WagerScreen />
+    case 'ended':
+      return <EndedScreen />
     default:
       return <StatusBanner status="waiting">{t('play.status.waiting')}</StatusBanner>
   }
