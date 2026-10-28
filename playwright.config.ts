@@ -9,6 +9,8 @@ export default defineConfig({
   testDir: './tests/e2e',
   globalSetup: './tests/e2e/global-setup.ts',
   fullyParallel: true,
+  workers: 2, // more starve the dev server on a laptop at startup
+
   forbidOnly: !!process.env.CI,
   // One retry absorbs Vite's first-run compile on a cold cache (known flake, see the M3 ledger).
   retries: process.env.CI ? 2 : 1,

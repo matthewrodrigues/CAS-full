@@ -39,6 +39,10 @@ Everything the game decides happens on the server, in `server/game/`; the browse
 
 `server/tests/full-game.test.ts` plays DEMO1 from lobby to ended over HTTP and checks the final leaderboard.
 
+## The player app
+
+`/play/:joinCode` (try `/play/DEMO1`): pick a nickname, start or join a team, and play from your phone. The Play tab follows the game phase by phase (lobby, live question, locked, reveal, round break, final wager, end); Leaderboard shows tonight's teams; Rewards is an empty state until Milestone 6. `src/game/` holds the client's logic (clock sync, the message reducer, the phase announcer) and `src/routes/play/` its screens. Screens are token-only placeholders until designs land in `design/screens/`.
+
 ## Test databases
 
-Unit tests use in-memory SQLite. `npm run e2e` runs the dev server with `DATA_DIR=data/e2e`, migrating and seeding that database first, so end-to-end runs never touch `data/app.db`.
+Unit tests use in-memory SQLite. `npm run e2e` starts its own servers on ports 5174 (web) and 3101 (API) with `DATA_DIR=data/e2e`. `scripts/e2e-prepare.ts` deletes that folder, migrates and seeds DEMO1 plus one event per spec file, so every run starts fresh and `data/app.db` is never touched.
