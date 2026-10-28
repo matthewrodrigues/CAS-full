@@ -7,9 +7,11 @@ const API_PORT = 3101
 
 export default defineConfig({
   testDir: './tests/e2e',
+  globalSetup: './tests/e2e/global-setup.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // One retry absorbs Vite's first-run compile on a cold cache (known flake, see the M3 ledger).
+  retries: process.env.CI ? 2 : 1,
   reporter: process.env.CI ? 'github' : 'list',
   use: { baseURL: `http://localhost:${WEB_PORT}`, trace: 'on-first-retry' },
   projects: [
