@@ -1,8 +1,9 @@
 // What clients read: game_state, get_state and tonight's leaderboard (docs/SPEC.md section 5).
-// A team name is shown to other players only once a host approves it; the team itself always
-// sees its own name. Results and points appear only after the reveal.
+// Team names (SPEC §4: "Everyone in the event (approved names only on display)"): players see
+// every name but rejected ones, host sessions (which run the big screen) see approved names
+// only, and a team always sees its own. Results and points appear only after the reveal.
 import { and, count, eq, ne, sql } from 'drizzle-orm'
-import type { HostView, MyTeam, PublicGameState, PublicSubmission, TeamSummary } from '../../shared/game'
+import type { GameView, HostView, Leaderboard, PublicGameState, PublicSettings, PublicSubmission } from '../../shared/game'
 import type { Db } from '../db/client'
 import { eventLeaderboard, teamScore } from '../db/queries'
 import { eventQuestions, events, gameState, scoreEvents, submissions, teamMembers, teams } from '../db/schema'
@@ -64,8 +65,18 @@ function teamRows(db: Db, eventId: string) {
     .all()
 }
 
-const shownName = (team: { id: string; name: string; nameStatus: string }, ownTeamId: string | null) =>
-  team.nameStatus === 'approved' || team.id === ownTeamId ? team.name : null
+type Viewer = { ownTeamId: string | null; isHost: boolean }
+
+function shownName(team: { id: string; name: string; nameStatus: string }, { ownTeamId, isHost }: Viewer): string | null {
+  if (team.id === ownTeamId) return team.name
+  if (team.nameStatus === 'rejected') return null
+  return isHost && team.nameStatus !== 'approved' ? null : team.name
+}
+
+function publicSettings(db: Db, eventId: string): PublicSettings {
+  const { settings } = db.select({ settings: events.settings }).from(events).where(eq(events.id, eventId)).get()!
+  return { max_team_size: settings.max_team_size, team_submissions: settings.team_submissions, live_background: settings.live_background }
+}
 
 function hostView(ctx: GameContext, eventId: string): HostView {
   return {
@@ -79,14 +90,6 @@ function hostView(ctx: GameContext, eventId: string): HostView {
       score: teamScore(ctx.db, team.id),
     })),
   }
-}
-
-export type GameView = {
-  state: PublicGameState
-  submission: PublicSubmission | null
-  my_team: MyTeam | null
-  teams: TeamSummary[]
-  host?: HostView
 }
 
 /** get_state(event_id): what a reconnecting client renders from. Null when there is no such event. */
@@ -103,19 +106,23 @@ export function getState(
     state,
     submission: teamId && questionId ? teamSubmission(db, teamId, questionId) : null,
     my_team: teamId ? myTeam(db, teamId) : null,
-    teams: teamRows(db, eventId).map((team) => ({ id: team.id, name: shownName(team, teamId), member_count: team.members })),
+    teams: teamRows(db, eventId).map((team) => ({ id: team.id, name: shownName(team, { ownTeamId: teamId, isHost }), member_count: team.members })),
+    settings: publicSettings(db, eventId),
   }
   return isHost ? { ...view, host: hostView(ctx, eventId) } : view
 }
 
-/** get_leaderboard(event_id): tonight's board, with names hidden until approved (except your own). */
-export function leaderboard(db: Db, { eventId, playerId }: { eventId: string; playerId: string | null }) {
+/** get_leaderboard(event_id): tonight's board, with names shown per the rule at the top of this file. */
+export function leaderboard(
+  db: Db,
+  { eventId, playerId, isHost }: { eventId: string; playerId: string | null; isHost: boolean },
+): Leaderboard | null {
   if (!visibleEvent(db, eventId)) return null
   const ownTeamId = playerId ? teamOf(db, eventId, playerId) : null
   return {
     teams: eventLeaderboard(db, eventId).map((row) => ({
       team_id: row.teamId,
-      name: shownName({ id: row.teamId, name: row.name, nameStatus: row.nameStatus }, ownTeamId),
+      name: shownName({ id: row.teamId, name: row.name, nameStatus: row.nameStatus }, { ownTeamId, isHost }),
       points: row.points,
       rank: row.rank,
     })),

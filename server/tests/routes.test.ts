@@ -64,19 +64,36 @@ describe('error statuses', () => {
 })
 
 describe('team names and the leaderboard', () => {
-  it('shows a team name to others only once a host approves it', async () => {
+  const board = async (token: string) => (await bodyOf(await get(`/api/get_leaderboard?event_id=${eventId}`, token))).teams
+  const nameOf = (rows: { team_id: string; name: string | null }[], teamId: string) => rows.find((r) => r.team_id === teamId)?.name
+
+  it('shows pending names to other players, and hides rejected ones from everyone but the team', async () => {
     const a = await teamFor('Ana', 'Anglers')
     const b = await teamFor('Ben', 'Barreleyes')
-    expect((await post('/api/host_review_team_name', host, { team_id: a.teamId, name_status: 'approved' })).status).toBe(200)
-    expect((await post('/api/host_review_team_name', a.token, { team_id: a.teamId, name_status: 'approved' })).status).toBe(403)
-
-    const board = async (token: string) => (await bodyOf(await get(`/api/get_leaderboard?event_id=${eventId}`, token))).teams
     expect(await board(b.token)).toEqual([
       { team_id: a.teamId, name: 'Anglers', points: 0, rank: 1 },
       { team_id: b.teamId, name: 'Barreleyes', points: 0, rank: 1 },
     ])
-    expect((await board(a.token)).find((t: { team_id: string }) => t.team_id === b.teamId).name).toBeNull()
+
+    expect((await post('/api/host_review_team_name', host, { team_id: a.teamId, name_status: 'rejected' })).status).toBe(200)
+    expect((await post('/api/host_review_team_name', a.token, { team_id: a.teamId, name_status: 'approved' })).status).toBe(403)
+    expect(nameOf(await board(b.token), a.teamId)).toBeNull()
+    expect(nameOf(await board(a.token), a.teamId)).toBe('Anglers')
+    const teams = (await bodyOf(await get(`/api/get_state?event_id=${eventId}`, b.token))).teams
+    expect(nameOf(teams.map((t: { id: string; name: string | null }) => ({ team_id: t.id, name: t.name })), a.teamId)).toBeNull()
     expect((await get(`/api/get_leaderboard?event_id=${crypto.randomUUID()}`, a.token)).status).toBe(404)
+  })
+
+  it('shows a host session (the big screen) approved names only', async () => {
+    const a = await teamFor('Ana', 'Anglers')
+    const b = await teamFor('Ben', 'Barreleyes')
+    await post('/api/host_review_team_name', host, { team_id: a.teamId, name_status: 'approved' })
+
+    const rows = await board(host)
+    expect([nameOf(rows, a.teamId), nameOf(rows, b.teamId)]).toEqual(['Anglers', null])
+    const view = await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))
+    expect(view.teams.find((t: { id: string }) => t.id === b.teamId).name).toBeNull()
+    expect(view.host.teams.find((t: { id: string }) => t.id === b.teamId)).toMatchObject({ name: 'Barreleyes', name_status: 'pending' })
   })
 })
 
@@ -90,10 +107,11 @@ describe('get_state', () => {
     expect(player.teams).toEqual(
       expect.arrayContaining([
         { id: a.teamId, name: 'Anglers', member_count: 1 },
-        { id: expect.any(String), name: null, member_count: 1 },
+        { id: expect.any(String), name: 'Barreleyes', member_count: 1 },
       ]),
     )
     expect(player).not.toHaveProperty('host')
+    expect(player.settings).toEqual({ max_team_size: 6, team_submissions: 'any_member', live_background: 'cream' })
 
     const hostView = await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))
     expect(hostView.host).toMatchObject({ connected_teams: 0, answered_teams: 0, review_queue: [] })

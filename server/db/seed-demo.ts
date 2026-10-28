@@ -6,12 +6,14 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { eq } from 'drizzle-orm'
 import type { MediaKind, QuestionType, RoundFormat } from '../../shared/enums'
-import { parseSettings } from '../../shared/settings'
+import { parseSettings, type EventSettings } from '../../shared/settings'
 import { validateQuestion, validateRounds } from '../game/content-rules'
 import type { Db } from './client'
 import { eventQuestions, events, gameState, questionAnswers, questions, rewards, rounds, seasons, themes } from './schema'
 
 export const DEMO_JOIN_CODE = 'DEMO1'
+const THEME_SLUG = 'deep-sea-night'
+const SEASON_NAME = 'Fall 2026'
 
 type SeedQuestion = {
   type: QuestionType
@@ -327,17 +329,26 @@ function toneWav(frequency: number): Buffer {
   return wav
 }
 
-/** Seeds the demo event once. Running it again leaves an existing DEMO1 untouched. */
-export function seedDemo(db: Db, { mediaDir }: { mediaDir: string }): { eventId: string; created: boolean } {
-  const existing = db.select({ id: events.id }).from(events).where(eq(events.joinCode, DEMO_JOIN_CODE)).get()
+/**
+ * Seeds the demo event once under `joinCode` (DEMO1 by default); running it again leaves that
+ * event untouched. Other codes (the e2e events) get their own copy of the questions and share
+ * the season and theme. `settings` overrides the section 2 defaults.
+ */
+export function seedDemo(
+  db: Db,
+  { mediaDir, joinCode = DEMO_JOIN_CODE, settings = {} }: { mediaDir: string; joinCode?: string; settings?: Partial<EventSettings> },
+): { eventId: string; created: boolean } {
+  const existing = db.select({ id: events.id }).from(events).where(eq(events.joinCode, joinCode)).get()
   if (existing) return { eventId: existing.id, created: false }
 
   const roundProblems = validateRounds(ROUNDS.map((r, i) => ({ position: i + 1, format: r.format })))
   if (roundProblems.length) throw new Error(`Seed rounds are invalid: ${roundProblems.join('; ')}`)
 
   mkdirSync(mediaDir, { recursive: true })
-  const seasonId = randomUUID()
-  const themeId = randomUUID()
+  const theme = db.select({ id: themes.id }).from(themes).where(eq(themes.slug, THEME_SLUG)).get()
+  const season = theme && db.select({ id: seasons.id }).from(seasons).where(eq(seasons.name, SEASON_NAME)).get()
+  const seasonId = season?.id ?? randomUUID()
+  const themeId = theme?.id ?? randomUUID()
   const eventId = randomUUID()
 
   // Build every row first, so a content mistake fails before any row is written. Placeholder
@@ -385,8 +396,8 @@ export function seedDemo(db: Db, { mediaDir }: { mediaDir: string }): { eventId:
   }))
 
   db.transaction((tx) => {
-    tx.insert(seasons).values({ id: seasonId, name: 'Fall 2026', startsOn: '2026-10-01', endsOn: '2026-12-31' }).run()
-    tx.insert(themes).values({ id: themeId, name: 'Deep Sea Night', slug: 'deep-sea-night', accentToken: 'depth' }).run()
+    if (!season) tx.insert(seasons).values({ id: seasonId, name: SEASON_NAME, startsOn: '2026-10-01', endsOn: '2026-12-31' }).run()
+    if (!theme) tx.insert(themes).values({ id: themeId, name: 'Deep Sea Night', slug: THEME_SLUG, accentToken: 'depth' }).run()
     tx.insert(events)
       .values({
         id: eventId,
@@ -394,9 +405,9 @@ export function seedDemo(db: Db, { mediaDir }: { mediaDir: string }): { eventId:
         themeId,
         // Thursday 29 October 2026, 6 pm in San Francisco (PDT, UTC-7).
         startsAt: Date.UTC(2026, 9, 30, 1, 0),
-        joinCode: DEMO_JOIN_CODE,
+        joinCode,
         status: 'ready',
-        settings: parseSettings({}),
+        settings: parseSettings(settings),
       })
       .run()
     tx.insert(gameState).values({ eventId, phase: 'lobby' }).run()
@@ -408,14 +419,17 @@ export function seedDemo(db: Db, { mediaDir }: { mediaDir: string }): { eventId:
         tx.insert(eventQuestions).values({ ...row.eventQuestion, roundId: round.id }).run()
       }
     }
+    // Rewards are shared by every seeded event, so only the first seed adds them.
     // Placeholders until the Academy sets the prize list (section 12). No reward involves drinks.
-    tx.insert(rewards)
-      .values([
-        { name: 'Top team prize', tier: 1, description: 'Placeholder for the first-place prize.', expiresAfterDays: 30 },
-        { name: 'Runner-up prize', tier: 2, description: 'Placeholder for the second-place prize.', expiresAfterDays: 60 },
-        { name: 'Thanks for playing', tier: 3, description: 'Placeholder for a small prize for every team.', expiresAfterDays: 90 },
-      ])
-      .run()
+    if (!theme) {
+      tx.insert(rewards)
+        .values([
+          { name: 'Top team prize', tier: 1, description: 'Placeholder for the first-place prize.', expiresAfterDays: 30 },
+          { name: 'Runner-up prize', tier: 2, description: 'Placeholder for the second-place prize.', expiresAfterDays: 60 },
+          { name: 'Thanks for playing', tier: 3, description: 'Placeholder for a small prize for every team.', expiresAfterDays: 90 },
+        ])
+        .run()
+    }
   })
 
   return { eventId, created: true }

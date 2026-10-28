@@ -74,7 +74,8 @@ export function createGameRoutes(deps: AppDeps) {
         return view ? c.json(view) : c.json({ error: 'not_found' }, 404)
       })
       .get('/api/get_leaderboard', player, validate('query', EventIdInput), (c) => {
-        const board = game.leaderboard({ eventId: c.req.valid('query').event_id, playerId: playerId(c) })
+        const session = c.get('session')!
+        const board = game.leaderboard({ eventId: c.req.valid('query').event_id, playerId: session.playerId, isHost: session.role !== 'player' })
         return board ? c.json(board) : c.json({ error: 'not_found' }, 404)
       })
 
