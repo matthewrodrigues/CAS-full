@@ -17,11 +17,11 @@ export function ResultBadge({ result, points }: { result: AutoResult | null; poi
   const { icon: Icon, className } = STYLE[key]
   const word = { correct: t('result.correct'), incorrect: t('result.incorrect'), review: t('result.review'), none: t('result.none') }[key]
   return (
-    <div className={cn('flex items-center gap-3 rounded-xl p-4', className)}>
+    <div className={cn('flex items-center gap-3 rounded-xl border-2 border-brand-deep p-4 shadow-pop', className)}>
       {Icon ? <Icon aria-hidden className="size-8 shrink-0" /> : null}
       <div className="flex flex-col">
         <h1 className="font-heading text-2xl font-semibold">{word}</h1>
-        {points ? <p className="text-lg font-medium">{t('result.points', { count: Math.abs(points), sign: points > 0 ? '+' : '−' })}</p> : null}
+        {points ? <p className="text-lg font-medium tabular-nums">{t('result.points', { count: Math.abs(points), sign: points > 0 ? '+' : '−' })}</p> : null}
       </div>
     </div>
   )
