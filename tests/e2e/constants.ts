@@ -10,4 +10,5 @@ export const JOIN_CODES = {
   results: 'E2EC1',
   playThree: 'E2ED1',
   captainOnly: 'E2EF1',
+  host: 'E2EG1',
 } as const

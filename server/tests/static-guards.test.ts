@@ -45,7 +45,7 @@ function stripComments(text: string): string {
 const findAnswerTableRefs = (text: string) => matchLines(stripComments(text), /\bquestionAnswers\b|\bquestion_answers\b/)
 
 // The reveal-payload builder reads answers; Milestone 2 adds scoring, Milestone 5 scripts/import-questions.ts.
-const ANSWER_TABLE_ALLOWED = new Set(['server/db/schema.ts', 'server/db/seed-demo.ts', 'server/game/reveal.ts', 'server/game/scoring.ts'])
+const ANSWER_TABLE_ALLOWED = new Set(['server/db/schema.ts', 'server/db/seed-demo.ts', 'server/game/reveal.ts', 'server/game/scoring.ts', 'server/db/import-questions.ts'])
 
 // Rule 6 ---------------------------------------------------------------------------------------
 

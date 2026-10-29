@@ -33,6 +33,7 @@ export function createGame({ db, realtime }: { db: Db; realtime: Realtime }) {
     adjustScore: (input: Parameters<typeof scoring.adjustScore>[1]) => scoring.adjustScore(ctx, input),
     reviewQueue: (eventId: string) => scoring.reviewQueue(ctx, eventId),
     getState: (input: Parameters<typeof state.getState>[1]) => state.getState(ctx, input),
+    hostEvents: () => state.hostEvents(db),
     leaderboard: (input: Parameters<typeof state.leaderboard>[1]) => state.leaderboard(db, input),
     /** On startup: re-arm open questions' auto-lock, or lock those whose deadline passed. */
     resumeTimers: () => flow.resumeTimers(ctx),

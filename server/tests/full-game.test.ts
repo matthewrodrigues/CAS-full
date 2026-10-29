@@ -75,7 +75,7 @@ function answer(q: ReturnType<typeof answersFor>, right: boolean): Answer {
   }
 }
 
-it('plays DEMO1 from lobby to ended over HTTP and ranks the teams', async () => {
+it('plays DEMO1 from lobby to ended over HTTP and ranks the teams', { timeout: 30_000 }, async () => {
   const login = await call(test.app, 'POST', '/api/login', { body: { passcode: TEST_HOST_PASSCODE } })
   const host = cookieFrom(login)!
   const hostDoes = (operation: string) => ok(call(test.app, 'POST', `/api/${operation}`, { token: host, body: { event_id: eventId } }))

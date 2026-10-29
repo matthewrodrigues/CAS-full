@@ -15,6 +15,7 @@ const submission = (patch: Partial<PublicSubmission> = {}): PublicSubmission => 
 })
 
 const view: GameView = {
+  event: { id: 'e1', join_code: 'DEMO1', status: 'live' },
   state: {
     phase: 'live',
     current_event_question_id: 'q1',
@@ -59,8 +60,16 @@ describe('applyMessage', () => {
     expect(applyMessage(view, { type: 'scores' })).toEqual({ view, refetch: true })
   })
 
-  it('leaves the view alone for host-only and pong messages', () => {
+  it('leaves a player view alone for host-only and pong messages', () => {
     expect(applyMessage(view, { type: 'pong' })).toEqual({ view, refetch: false })
     expect(applyMessage(view, { type: 'host_stats', connected_teams: 1, answered_teams: 0 })).toEqual({ view, refetch: false })
+  })
+
+  it('patches the host view with counts and the review queue', () => {
+    const hostView = { ...view, host: { connected_teams: 0, answered_teams: 0, review_queue: [], teams: [] } }
+    const counted = applyMessage(hostView, { type: 'host_stats', connected_teams: 4, answered_teams: 2 })
+    expect(counted).toEqual({ view: { ...hostView, host: { ...hostView.host, connected_teams: 4, answered_teams: 2 } }, refetch: false })
+    const item = { submission_id: 's', team_id: 't', team_name: 'T', event_question_id: 'q1', answer: 'octopuss', similarity: 0.7 }
+    expect(applyMessage(hostView, { type: 'review_queue', items: [item] }).view.host?.review_queue).toEqual([item])
   })
 })

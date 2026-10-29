@@ -18,6 +18,12 @@ export function applyMessage(view: GameView, message: ServerMessage): { view: Ga
     case 'teams':
     case 'scores':
       return { view, refetch: true }
+    case 'host_stats':
+      return view.host
+        ? { view: { ...view, host: { ...view.host, connected_teams: message.connected_teams, answered_teams: message.answered_teams } }, refetch: false }
+        : { view, refetch: false }
+    case 'review_queue':
+      return view.host ? { view: { ...view, host: { ...view.host, review_queue: message.items } }, refetch: false } : { view, refetch: false }
     default:
       return { view, refetch: false }
   }
