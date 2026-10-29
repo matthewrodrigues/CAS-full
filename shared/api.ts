@@ -47,5 +47,16 @@ export const HostAdjustScoreInput = z.object({
 /** A host approves or rejects a team name (section 3); rejected teams keep playing, unnamed. */
 export const HostReviewTeamNameInput = z.object({ team_id: id, name_status: z.enum(['approved', 'rejected']) })
 
-export const RedeemCodeInput = z.object({ code: z.string().trim().min(10).max(32) })
+export const RedeemCodeInput = z.object({ code: z.string().trim().toUpperCase().min(10).max(32) })
+
+export const SubmitFeedbackInput = z.object({ event_id: id, rating: z.int().min(1).max(5), comment: z.string().trim().max(1000).optional() })
+
+/** Consent is an explicit, unticked-by-default checkbox (SPEC section 8, Milestone 6). */
+export const NewsletterOptinInput = z.object({
+  email: z.email().max(200),
+  topics: z.array(z.string().trim().min(1).max(40)).max(10).optional(),
+  consent: z.literal(true),
+})
+
+export const StaffUpdateSettingsInput = z.object({ event_id: id, settings: z.record(z.string(), z.unknown()) })
 export const EmptyInput = z.strictObject({})

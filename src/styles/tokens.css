@@ -1,31 +1,36 @@
 /*
  * Design tokens: the ONLY place colors, fonts and radii are defined (docs/SPEC.md section 7).
- * These are starting values until the Claude Design system lands in design/screens/.
+ * Values come from the NightLife Trivia design system, "nature after dark":
+ * https://claude.ai/artifact/LVyE3gKBWYPB7F7hPtwCc8
  */
 
 @theme {
   /* Drop Tailwind's built-in palette so only these tokens exist as utilities (no bg-green-500). */
   --color-*: initial;
 
-  --color-bg: #fbf6ea; /* app background (cream) */
+  --color-bg: #f6f2e6; /* Sand: app background */
   --color-surface: #ffffff; /* cards */
-  --color-brand: #7c4dff; /* primary buttons, brand accent */
-  --color-brand-deep: #35236b; /* headers, nav, optional violet live-question background */
-  --color-correct: #1fa58a; /* correct answers, success */
-  --color-incorrect: #c62d3a; /* incorrect answers, errors, destructive actions */
-  --color-depth: #1f5c4d; /* depth, secondary surfaces */
-  --color-info: #2f6fe4; /* info, links */
-  --color-info-soft: #a9d8f5; /* soft backgrounds */
-  --color-win: #f6c945; /* winners, streaks (dark text only) */
-  --color-urgent: #f28c38; /* timer, urgent actions (dark text only) */
-  --color-ink: #1d1b26; /* body text */
-  --color-ink-muted: #5e5a6b; /* secondary text */
-  --color-border: #8c8698; /* input borders, dividers */
-  --color-focus: #2f6fe4; /* focus ring, drawn with an offset */
+  --color-brand: #2456d6; /* Morpho: primary buttons, selection (never green: green means correct) */
+  --color-brand-deep: #0f3b2c; /* Canopy: headers, nav, big screen, dark live-question background, pop edges */
+  --color-correct: #4fcf7f; /* Fern: correct answers, success (dark text only) */
+  --color-incorrect: #b5153a; /* Hibiscus: incorrect answers, errors, destructive actions */
+  --color-depth: #12324f; /* Abyss: depth, secondary dark surfaces */
+  --color-info: #0b6c80; /* Lagoon: info, links */
+  --color-info-soft: #b4e6dc; /* Lagoon mist: soft backgrounds, secondary text on Canopy */
+  --color-win: #ffc53d; /* Sunflower: winners, streaks (dark text only) */
+  --color-urgent: #ff8a3c; /* California poppy: timer, urgent actions (dark text only) */
+  --color-ink: #13221b; /* body text */
+  --color-ink-muted: #4d5a53; /* Moss: secondary text */
+  --color-border: #7e8a83; /* Stone: input borders, dividers */
+  --color-focus: #ea4c9c; /* Orchid: focus ring only, drawn with an offset; 3:1 on Sand, white and Canopy */
 
-  /* System fonts until the design picks typefaces. */
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-heading: var(--font-sans);
+  /* The pop: solid Canopy drop edges, never blur (shadow-pop, shadow-pop-sm). */
+  --shadow-pop: 0 4px 0 var(--color-brand-deep);
+  --shadow-pop-sm: 0 2px 0 var(--color-brand-deep);
+
+  /* Self-hosted variable fonts from @fontsource-variable, imported in src/main.tsx. */
+  --font-sans: 'Figtree Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
 }
 
 /*

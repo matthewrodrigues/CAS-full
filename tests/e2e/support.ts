@@ -4,10 +4,23 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, request, type Page } from '@playwright/test'
 import { E2E_HOST_PASSCODE } from './constants'
 
+/**
+ * Logins are limited to 5 a minute per IP (SPEC section 5), and every e2e login comes from this
+ * machine. The server reads the client IP from the proxy's X-Forwarded-For, so each API login
+ * here uses its own made-up address and its own bucket.
+ */
+const loginBucket = () => ({ 'x-forwarded-for': `10.0.${Math.floor(Math.random() * 250)}.${Math.floor(Math.random() * 250)}` })
+
+/** Signs a browser page in as host or staff without the passcode screen. */
+export async function signInViaApi(page: Page, passcode: string) {
+  const res = await page.context().request.post('/api/login', { data: { passcode }, headers: loginBucket() })
+  expect(res.status()).toBe(200)
+}
+
 /** A host session over HTTP, as the Milestone 4 console will drive the game. */
 export async function hostApi(baseURL: string) {
   const context = await request.newContext({ baseURL })
-  const login = await context.post('/api/login', { data: { passcode: E2E_HOST_PASSCODE } })
+  const login = await context.post('/api/login', { data: { passcode: E2E_HOST_PASSCODE }, headers: loginBucket() })
   expect(login.status()).toBe(200)
   const post = async (path: string, data: unknown) => {
     const res = await context.post(path, { data })

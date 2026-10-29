@@ -8,11 +8,14 @@ import type {
   HostReviewTeamNameInput,
   JoinEventInput,
   JoinTeamInput,
+  NewsletterOptinInput,
   SubmitAnswerInput,
+  SubmitFeedbackInput,
   SubmitWagerInput,
 } from '../../shared/api'
 import type { Role } from '../../shared/enums'
-import type { GameView, HostEvent, JoinResult, Leaderboard, MyTeam, PublicGameState, PublicSubmission, TeamSummary } from '../../shared/game'
+import type { GameView, HostEvent, JoinResult, Leaderboard, MyReward, MyTeam, PublicGameState, PublicSubmission, StaffAward, TeamSummary } from '../../shared/game'
+import type { EventSettings } from '../../shared/settings'
 
 export type HostOperation = 'host_next' | 'host_lock' | 'host_reveal' | 'host_open_question' | 'host_pause' | 'host_resume' | 'host_skip'
 
@@ -62,6 +65,14 @@ export const api = {
   override: (input: z.input<typeof HostOverrideInput>) => request<{ submission_id: string; adjustment: number }>('/api/host_override', input),
   adjustScore: (input: z.input<typeof HostAdjustScoreInput>) => request<{ team_id: string; score: number }>('/api/host_adjust_score', input),
   reviewTeamName: (input: z.input<typeof HostReviewTeamNameInput>) => request<TeamSummary>('/api/host_review_team_name', input),
+  myRewards: () => request<{ rewards: MyReward[] }>('/api/my_rewards'),
+  submitFeedback: (input: z.input<typeof SubmitFeedbackInput>) => request<{ ok: true }>('/api/submit_feedback', input),
+  newsletterOptin: (input: z.input<typeof NewsletterOptinInput>) => request<{ ok: true }>('/api/newsletter_optin', input),
+  deleteMyAccount: () => request<{ ok: true }>('/api/delete_my_account', {}),
+  redeemCode: (code: string) => request<{ code: string; reward: string; status: 'redeemed'; nickname: string | null }>('/api/redeem_code', { code }),
+  staffAwards: () => request<{ awards: StaffAward[] }>('/api/staff_awards'),
+  staffEventSettings: (eventId: string) => request<{ settings: EventSettings }>(query('/api/staff_event_settings', eventId)),
+  staffUpdateSettings: (eventId: string, settings: Partial<EventSettings>) => request<{ settings: EventSettings }>('/api/staff_update_settings', { event_id: eventId, settings }),
   me: () => request<{ role: Role | null; player: { id: string; nickname: string } | null }>('/api/me'),
   serverTime: () => request<{ now: number }>('/api/server_time'),
   joinEvent: (input: z.input<typeof JoinEventInput>) => request<JoinResult>('/api/join_event', input),

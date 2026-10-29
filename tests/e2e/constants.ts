@@ -11,4 +11,5 @@ export const JOIN_CODES = {
   playThree: 'E2ED1',
   captainOnly: 'E2EF1',
   host: 'E2EG1',
+  rewards: 'E2EH1',
 } as const

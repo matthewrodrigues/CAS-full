@@ -26,6 +26,14 @@ npm run dev                       # web on http://localhost:5173, API on :3000
 | `npm run build` then `npm start` | Production build; one Node process serves the API and the built app |
 | `npm run db:generate` | Create a migration after changing `server/db/schema.ts` |
 | `npm run db:migrate` / `db:seed` / `db:backup` | Apply migrations, load seed data, copy the database to `data/backups/` |
+| `npm run simulate -- --teams 40` | Load test against a running server (`--url`, `--code`, `--questions`, `--max-delay`); drives the game as host (`HOST_PASSCODE`) and reports lost or rejected answers and latency |
+| `npm run import-questions -- file.csv [--check]` | Load questions from a CSV export; reports problems by line and imports nothing unless every row is valid |
+
+### Question CSV
+
+One header row with these columns: `theme` (slug; created if new), `type` (`mc`, `typed`, `true_false`, `closest_number`), `prompt`, `options` (mc, separated by `|`), `correct` (mc: a letter A–F or the option's text; true_false: `true`/`false`), `accepted` (typed, separated by `|`), `number` (closest_number), `media` (`none`, `image`, `audio`), `media_url` (downloaded under a random name), `caption` (required for audio), `fun_fact`, `difficulty` (1–3), `author`.
+
+A 40-team run of the whole demo night: 1,160 answers, 0 lost or rejected, submit p95 42 ms, host `get_state` p95 40 ms (laptop, local network).
 
 ## The game engine
 

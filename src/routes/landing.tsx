@@ -12,6 +12,17 @@ export function Landing() {
       <Button asChild size="lg">
         <Link to="/play/DEMO1">{t('landing.tryDemo')}</Link>
       </Button>
+      <nav className="flex gap-4 text-base">
+        <Link to="/host" className="text-ink underline underline-offset-4">
+          {t('landing.host')}
+        </Link>
+        <Link to="/staff" className="text-ink underline underline-offset-4">
+          {t('landing.staff')}
+        </Link>
+        <Link to="/privacy" className="text-ink underline underline-offset-4">
+          {t('landing.privacy')}
+        </Link>
+      </nav>
     </PlaceholderScreen>
   )
 }

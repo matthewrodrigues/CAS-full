@@ -1,14 +1,8 @@
 // Milestone 4 done-when (docs/SPEC.md section 8): a full night hosted from a tablet while the
 // display runs in another browser, with a player on a phone.
-import { expect, test, type Browser, type Page } from '@playwright/test'
+import { expect, test, type Browser } from '@playwright/test'
 import { E2E_HOST_PASSCODE, JOIN_CODES } from './constants'
-import { createTeam, expectNoAxeViolations, joinAsPlayer } from './support'
-
-async function signInAsHost(page: Page, path: string) {
-  await page.goto(path)
-  await page.getByLabel('Passcode').fill(E2E_HOST_PASSCODE)
-  await page.getByRole('button', { name: 'Sign in' }).click()
-}
+import { createTeam, expectNoAxeViolations, joinAsPlayer, signInViaApi } from './support'
 
 const tablet = (browser: Browser) => browser.newContext({ viewport: { width: 1024, height: 768 } }).then((c) => c.newPage())
 
@@ -37,15 +31,17 @@ test('a full night hosted from the console while the big screen follows', async 
   await createTeam(phone, 'Console Crew')
 
   const console_ = await tablet(browser)
-  await signInAsHost(console_, '/host')
+  await signInViaApi(console_, E2E_HOST_PASSCODE)
+  await console_.goto('/host')
   await console_.getByRole('link', { name: `Run ${JOIN_CODES.host}` }).click()
   await expect(console_.getByRole('heading', { name: `Host console · ${JOIN_CODES.host}` })).toBeVisible()
   await console_.getByRole('button', { name: 'Approve Console Crew' }).click()
   await expect(console_.getByText('Approved ·')).toBeVisible()
   await expectNoAxeViolations(console_)
 
-  const display = await tablet(browser)
-  await signInAsHost(display, console_.url() + '/display')
+  // The projector runs in the same host session (its own window in real life).
+  const display = await console_.context().newPage()
+  await display.goto(console_.url() + '/display')
   await expect(display.getByRole('img', { name: 'QR code to join the game' })).toBeVisible()
   await expect(display.getByText(`Code: ${JOIN_CODES.host}`)).toBeVisible()
   await expectNoAxeViolations(display)

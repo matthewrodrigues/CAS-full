@@ -39,7 +39,12 @@ const PRIVILEGED_ROUTES = [
   '/api/host_review_team_name',
   '/api/host_skip',
   '/api/redeem_code',
+  '/api/staff_awards',
+  '/api/staff_event_settings',
+  '/api/staff_newsletter_csv',
+  '/api/staff_update_settings',
 ]
+const STAFF_ROUTES = ['/api/redeem_code', '/api/staff_awards', '/api/staff_event_settings', '/api/staff_newsletter_csv', '/api/staff_update_settings']
 
 let app: App
 let db: Db
@@ -94,7 +99,7 @@ describe('role checks', () => {
   it('a host session gets 403 from staff routes', async () => {
     const token = sessionFor(db, 'host')
     const staffOnly = routes.filter((r) => r.access === 'staff')
-    expect(staffOnly).toHaveLength(1)
+    expect(staffOnly.map((r) => r.path).sort()).toEqual(STAFF_ROUTES)
     for (const route of staffOnly) {
       expect((await request(route, token)).status).toBe(403)
     }
@@ -103,7 +108,7 @@ describe('role checks', () => {
   it('a staff session passes every host guard', async () => {
     const token = sessionFor(db, 'staff')
     const hostRoutes = routes.filter((r) => r.access === 'host')
-    expect(hostRoutes).toHaveLength(PRIVILEGED_ROUTES.length - 1)
+    expect(hostRoutes).toHaveLength(PRIVILEGED_ROUTES.length - STAFF_ROUTES.length)
     for (const route of hostRoutes) {
       expect([401, 403]).not.toContain((await request(route, token)).status)
     }

@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm'
 import type { Db } from '../db/client'
 import { events, players, themes } from '../db/schema'
 import { publicGameState } from './state'
-import { isProfane } from './teams'
+import { isProfane, teamOf } from './teams'
 
 type JoinError = 'not_found' | 'event_ended' | 'nickname_not_allowed'
 
@@ -28,7 +28,8 @@ export function joinEvent(db: Db, { joinCode, nickname, playerId }: { joinCode: 
     .get()
   const state = event && event.status !== 'draft' ? publicGameState(db, event.id) : null
   if (!event || !state) return { ok: false as const, error: 'not_found' as JoinError }
-  if (event.status === 'ended') return { ok: false as const, error: 'event_ended' as JoinError }
+  // An ended night takes no one new, but a player who played can come back for their prizes.
+  if (event.status === 'ended' && !(playerId && teamOf(db, event.id, playerId))) return { ok: false as const, error: 'event_ended' as JoinError }
 
   let id = playerId
   if (id) {
