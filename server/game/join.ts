@@ -3,14 +3,17 @@ import { eq } from 'drizzle-orm'
 import type { Db } from '../db/client'
 import { events, players, themes } from '../db/schema'
 import { publicGameState } from './state'
+import { isProfane } from './teams'
 
-type JoinError = 'not_found' | 'event_ended'
+type JoinError = 'not_found' | 'event_ended' | 'nickname_not_allowed'
 
 /**
  * join_event(join_code, nickname): finds a joinable event and creates or renames the player.
- * Draft events are hidden (not_found) and ended ones refuse new players.
+ * Draft events are hidden (not_found) and ended ones refuse new players. Nicknames get the
+ * same profanity check as team names, since other players see them on the season board.
  */
 export function joinEvent(db: Db, { joinCode, nickname, playerId }: { joinCode: string; nickname: string; playerId: string | null }) {
+  if (isProfane(nickname)) return { ok: false as const, error: 'nickname_not_allowed' as JoinError }
   const event = db
     .select({
       id: events.id,

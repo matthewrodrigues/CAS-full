@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto'
-import { and, eq, gt } from 'drizzle-orm'
+import { and, eq, gt, lte } from 'drizzle-orm'
 import type { Context } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
@@ -13,6 +13,9 @@ export const SESSION_COOKIE = 'nl_session'
 export const GUEST_SESSION_MS = 180 * 24 * 60 * 60 * 1000
 /** Host and staff sessions last one night. */
 export const ROLE_SESSION_MS = 12 * 60 * 60 * 1000
+
+/** What issuing a session needs; the rest of AppDeps is irrelevant here. */
+type SessionDeps = Pick<AppDeps, 'db' | 'config'>
 
 export type Session = { id: string; playerId: string | null; role: Role; expiresAt: number }
 
@@ -54,7 +57,7 @@ export function loadSession(db: Db) {
   })
 }
 
-function issue(c: Context<AppEnv>, { db, config }: AppDeps, role: Role, playerId: string | null): Session {
+function issue(c: Context<AppEnv>, { db, config }: SessionDeps, role: Role, playerId: string | null): Session {
   const { token, session } = createSession(db, { role, playerId })
   setCookie(c, SESSION_COOKIE, token, {
     httpOnly: true,
@@ -68,14 +71,14 @@ function issue(c: Context<AppEnv>, { db, config }: AppDeps, role: Role, playerId
 }
 
 /** The request's session, or a new guest session (and cookie) when it has none. */
-export function ensureGuestSession(c: Context<AppEnv>, deps: AppDeps): Session {
+export function ensureGuestSession(c: Context<AppEnv>, deps: SessionDeps): Session {
   return c.get('session') ?? issue(c, deps, 'player', null)
 }
 
 /** Replaces the current session with a new token, e.g. after a role change at login. */
 export function rotateSession(
   c: Context<AppEnv>,
-  deps: AppDeps,
+  deps: SessionDeps,
   { role, playerId }: { role: Role; playerId: string | null },
 ): Session {
   const current = c.get('session')
@@ -85,4 +88,9 @@ export function rotateSession(
 
 export function linkSessionPlayer(db: Db, sessionId: string, playerId: string) {
   db.update(sessions).set({ playerId }).where(eq(sessions.id, sessionId)).run()
+}
+
+/** Removes expired sessions; run at startup and every few hours. Returns how many went. */
+export function deleteExpiredSessions(db: Db): number {
+  return db.delete(sessions).where(lte(sessions.expiresAt, Date.now())).run().changes
 }

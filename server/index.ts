@@ -1,12 +1,14 @@
 import { existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
-import { WebSocketServer } from 'ws'
 import { createApp } from './app'
+import { deleteExpiredSessions } from './auth/sessions'
 import type { AppConfig } from './context'
 import { DB_FILE, openDb } from './db/client'
 import { env } from './env'
+import { createGame } from './game/engine'
+import { createRealtime } from './realtime/rooms'
+import { startServer } from './serve'
 
 const config: AppConfig = {
   hostPasscode: env.HOST_PASSCODE,
@@ -20,7 +22,20 @@ for (const key of ['HOST_PASSCODE', 'STAFF_PASSCODE'] as const) {
 
 mkdirSync(config.mediaDir, { recursive: true })
 const db = openDb(DB_FILE)
-const app = createApp({ db, config })
+const realtime = createRealtime()
+const game = createGame({ db, realtime })
+const app = createApp({ db, config, game, realtime })
+
+// A question open when the last process stopped either auto-locks on schedule or locks now.
+game.resumeTimers()
+
+const SESSION_CLEANUP_MS = 6 * 60 * 60 * 1000
+const cleanUpSessions = () => {
+  const removed = deleteExpiredSessions(db)
+  if (removed > 0) console.log(`Removed ${removed} expired sessions`)
+}
+cleanUpSessions()
+setInterval(cleanUpSessions, SESSION_CLEANUP_MS).unref()
 
 // After `npm run build`, this one process also serves the SPA (docs/SPEC.md section 10).
 if (existsSync('dist/index.html')) {
@@ -33,13 +48,11 @@ if (existsSync('dist/index.html')) {
   )
 }
 
-const server = serve(
-  { fetch: app.fetch, port: env.PORT, websocket: { server: new WebSocketServer({ noServer: true }) } },
-  (info) => console.log(`API listening on http://localhost:${info.port}`),
-)
+const server = startServer(app.fetch, env.PORT, (port) => console.log(`API listening on http://localhost:${port}`))
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.on(signal, () => {
+    game.stop()
     server.close()
     db.$client.close()
     process.exit(0)

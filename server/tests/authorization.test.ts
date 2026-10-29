@@ -35,6 +35,7 @@ const PRIVILEGED_ROUTES = [
   '/api/host_pause',
   '/api/host_resume',
   '/api/host_reveal',
+  '/api/host_review_team_name',
   '/api/host_skip',
   '/api/redeem_code',
 ]
@@ -111,7 +112,10 @@ describe('role checks', () => {
 describe('data a player can read', () => {
   it('never includes question_answers', async () => {
     const token = sessionFor(db, 'player', f.teamA.playerIds[0])
-    const query: Record<string, string> = { '/api/get_state': `?event_id=${f.eventId}` }
+    const query: Record<string, string> = {
+      '/api/get_state': `?event_id=${f.eventId}`,
+      '/api/get_leaderboard': `?event_id=${f.eventId}`,
+    }
     const bodies: string[] = []
 
     for (const route of routes.filter((r) => r.method === 'GET' && (r.access === 'public' || r.access === 'player'))) {

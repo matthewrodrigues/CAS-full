@@ -3,6 +3,8 @@ import { createApp } from '../app'
 import { createSession, SESSION_COOKIE } from '../auth/sessions'
 import type { AppConfig } from '../context'
 import { applyMigrations, openDb, type Db } from '../db/client'
+import { createGame } from '../game/engine'
+import { createRealtime } from '../realtime/rooms'
 import type { Role } from '../../shared/enums'
 
 export const TEST_HOST_PASSCODE = 'host-passcode-for-tests'
@@ -25,8 +27,11 @@ export function testConfig(overrides: Partial<AppConfig> = {}): AppConfig {
   }
 }
 
+/** The real app on an in-memory database. Call game.stop() after a test that opens a question. */
 export function makeTestApp(config: Partial<AppConfig> = {}, db: Db = makeTestDb()) {
-  return { app: createApp({ db, config: testConfig(config) }), db }
+  const realtime = createRealtime()
+  const game = createGame({ db, realtime })
+  return { app: createApp({ db, config: testConfig(config), game, realtime }), db, game, realtime }
 }
 
 /** A session row plus the raw cookie token a browser would hold. */

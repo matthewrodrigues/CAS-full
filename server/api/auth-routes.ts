@@ -3,14 +3,16 @@ import { Hono } from 'hono'
 import { LoginInput } from '../../shared/api'
 import { clientIp } from '../auth/client-ip'
 import { publicRoute } from '../auth/guards'
-import { createLoginLimiter, matchPasscode } from '../auth/login'
+import { matchPasscode } from '../auth/login'
+import { createRateLimiter } from '../auth/rate-limit'
 import { rotateSession } from '../auth/sessions'
 import type { AppDeps, AppEnv } from '../context'
 import { players } from '../db/schema'
 import { validate } from './validate'
 
 export function createAuthRoutes(deps: AppDeps) {
-  const limiter = createLoginLimiter()
+  // Every login attempt counts, right or wrong: 5 per minute per IP (docs/SPEC.md section 5).
+  const limiter = createRateLimiter({ max: 5, windowMs: 60_000 })
 
   return (
     new Hono<AppEnv>()

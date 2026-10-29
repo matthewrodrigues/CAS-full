@@ -163,6 +163,10 @@ export const eventQuestions = sqliteTable(
     position: integer('position').notNull(),
     durationS: integer('duration_s').notNull(),
     points: integer('points').notNull(),
+    // Set once the question is done, so the engine knows what comes next. Plain nullable
+    // columns on purpose: a new CHECK or FK here would make drizzle-kit rebuild the table.
+    revealedAt: integer('revealed_at'),
+    skippedAt: integer('skipped_at'),
   },
   (t) => [
     unique('event_questions_round_position_unique').on(t.roundId, t.position),

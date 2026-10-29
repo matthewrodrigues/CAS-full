@@ -44,5 +44,8 @@ export const HostAdjustScoreInput = z.object({
   note,
 })
 
+/** A host approves or rejects a team name (section 3); rejected teams keep playing, unnamed. */
+export const HostReviewTeamNameInput = z.object({ team_id: id, name_status: z.enum(['approved', 'rejected']) })
+
 export const RedeemCodeInput = z.object({ code: z.string().trim().min(10).max(32) })
 export const EmptyInput = z.strictObject({})
