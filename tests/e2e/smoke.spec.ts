@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { JOIN_CODES } from './constants'
 
 test('app shell, API and WebSocket work together through the dev proxy', async ({ page }) => {
   await page.goto('/')
@@ -10,7 +11,7 @@ test('app shell, API and WebSocket work together through the dev proxy', async (
     .toBe(200)
 
   // page.request shares the browser's cookies, so the socket below carries this guest session.
-  const join = await page.request.post('/api/join_event', { data: { join_code: 'DEMO1', nickname: 'Smoke Test' } })
+  const join = await page.request.post('/api/join_event', { data: { join_code: JOIN_CODES.smoke, nickname: 'Smoke Test' } })
   expect(join.ok()).toBe(true)
   const { event } = await join.json()
 

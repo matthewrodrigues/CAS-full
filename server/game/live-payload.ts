@@ -1,6 +1,7 @@
 // What players see while a question is open. Built only from questions, rounds and
 // event_questions: never from question_answers, and never with the fun fact (section 6, rule 3).
 import { count, eq } from 'drizzle-orm'
+import type { LiveQuestion, WagerPayload } from '../../shared/game'
 import type { Db } from '../db/client'
 import { eventQuestions, questions, rounds } from '../db/schema'
 
@@ -28,7 +29,7 @@ function questionRow(db: Db, eventQuestionId: string) {
   return row
 }
 
-export function buildLivePayload(db: Db, eventQuestionId: string) {
+export function buildLivePayload(db: Db, eventQuestionId: string): LiveQuestion {
   const row = questionRow(db, eventQuestionId)
   const inRound = db.select({ n: count() }).from(eventQuestions).where(eq(eventQuestions.roundId, row.roundId)).get()
   return {
@@ -49,7 +50,7 @@ export function buildLivePayload(db: Db, eventQuestionId: string) {
 }
 
 /** During final_wager teams see that the wager is on, but not the question. */
-export function buildWagerPayload(db: Db, eventQuestionId: string) {
+export function buildWagerPayload(db: Db, eventQuestionId: string): WagerPayload {
   return { event_question_id: eventQuestionId, round: questionRow(db, eventQuestionId).round, wager: true }
 }
 

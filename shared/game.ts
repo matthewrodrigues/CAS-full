@@ -1,7 +1,7 @@
 // Game data as the API and WebSocket send it. Shared so the client (Milestone 3) renders the
 // same shapes the server builds. None of these types carry answer data before a reveal.
 import type { Answer } from './api'
-import type { AutoResult, GamePhase, NameStatus, Phase } from './enums'
+import type { AutoResult, EventStatus, GamePhase, MediaKind, NameStatus, Phase, QuestionType, RoundFormat } from './enums'
 
 export type PublicGameState = {
   phase: Phase
@@ -13,6 +13,38 @@ export type PublicGameState = {
   live_payload: Record<string, unknown> | null
   reveal_payload: Record<string, unknown> | null
 }
+
+/** live_payload while a question is open: what players see. Never any answer data or the fun fact. */
+export type LiveQuestion = {
+  event_question_id: string
+  round: { position: number; title: string; format: RoundFormat }
+  number: number
+  of: number
+  type: QuestionType
+  prompt: string
+  /** Multiple choice only; true/false buttons are labelled by the client. */
+  options: string[] | null
+  media_kind: MediaKind
+  media_url: string | null
+  caption: string | null
+  duration_s: number
+  points: number
+}
+
+/** live_payload during final_wager: the wager is on, the question isn't shown yet. */
+export type WagerPayload = { event_question_id: string; round: LiveQuestion['round']; wager: true }
+
+/** reveal_payload after a reveal (or a skip). */
+export type RevealPayload =
+  | {
+      event_question_id: string
+      type: QuestionType
+      correct_option: number | null
+      correct_text: string | null
+      numeric_answer: number | null
+      fun_fact: string | null
+    }
+  | { event_question_id: string; skipped: true }
 
 /** The caller's team's row for one question. `result` and `points` appear only after the reveal. */
 export type PublicSubmission = {
@@ -36,7 +68,7 @@ export type ReviewItem = {
   similarity: number
 }
 
-/** A team as other players see it: the name only once approved. */
+/** A team as other players see it; the name is null when hidden (see GameView.teams). */
 export type TeamSummary = { id: string; name: string | null; member_count: number }
 
 export type MyTeam = {
@@ -55,6 +87,39 @@ export type HostView = {
   answered_teams: number
   review_queue: ReviewItem[]
   teams: HostTeam[]
+}
+
+/** The event settings a client needs to render the game (the rest stay on the server). */
+export type PublicSettings = {
+  max_team_size: number
+  team_submissions: 'any_member' | 'captain_only'
+  live_background: 'cream' | 'violet'
+}
+
+/** get_state(event_id): everything a (re)connecting client renders from. */
+export type GameView = {
+  state: PublicGameState
+  submission: PublicSubmission | null
+  my_team: MyTeam | null
+  /** Every team in the event. A name is null when the viewer may not see it (rejected, or unapproved for host sessions). */
+  teams: TeamSummary[]
+  settings: PublicSettings
+  host?: HostView
+}
+
+export type LeaderboardRow = { team_id: string; name: string | null; points: number; rank: number }
+export type Leaderboard = { teams: LeaderboardRow[] }
+
+export type JoinResult = {
+  event: {
+    id: string
+    join_code: string
+    starts_at: number
+    status: EventStatus
+    theme: { name: string; slug: string; accent_token: string }
+  }
+  state: PublicGameState
+  player: { id: string; nickname: string }
 }
 
 export const GAME_ERROR_CODES = [

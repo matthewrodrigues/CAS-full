@@ -11,6 +11,10 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
+  // Pre-bundled up front, so a cold cache doesn't reload pages mid-run (it flaked the first e2e run).
+  optimizeDeps: {
+    include: ['react', 'react-dom/client', 'react-router', 'react-router/dom', '@tanstack/react-query', 'zustand', 'i18next', 'react-i18next', 'lucide-react', 'radix-ui', 'class-variance-authority', 'cn'],
+  },
   server: {
     // The Hono server (server/index.ts) owns /api, /ws and /media; Vite only serves the SPA in dev.
     proxy: {

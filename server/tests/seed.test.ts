@@ -109,6 +109,22 @@ describe('seedDemo', () => {
     }
   })
 
+  it('seeds another event under its own join code and settings, sharing the season and theme', () => {
+    const demo = seedDemo(db, { mediaDir })
+    const other = seedDemo(db, { mediaDir, joinCode: 'E2EA1', settings: { team_submissions: 'captain_only' } })
+
+    expect(other.created).toBe(true)
+    expect(other.eventId).not.toBe(demo.eventId)
+    const event = db.select().from(t.events).where(eq(t.events.id, other.eventId)).get()!
+    expect(event).toMatchObject({ joinCode: 'E2EA1', status: 'ready' })
+    expect(event.settings).toMatchObject({ team_submissions: 'captain_only', max_team_size: 6, grace_ms: 1200 })
+    expect(db.select().from(t.seasons).all()).toHaveLength(1)
+    expect(db.select().from(t.themes).all()).toHaveLength(1)
+    expect(db.select().from(t.eventQuestions).where(eq(t.eventQuestions.eventId, other.eventId)).all()).toHaveLength(29)
+    expect(db.select().from(t.rewards).all()).toHaveLength(3)
+    expect(seedDemo(db, { mediaDir, joinCode: 'E2EA1' })).toEqual({ eventId: other.eventId, created: false })
+  })
+
   it('does nothing when DEMO1 already exists', () => {
     const first = seedDemo(db, { mediaDir })
     const counts = () => [t.events, t.questions, t.rewards, t.rounds].map((table) => db.select().from(table).all().length)
