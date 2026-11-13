@@ -3,7 +3,7 @@
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { seedDemo } from '../db/seed-demo'
 import { bodyOf, call, cookieFrom, makeTestApp, sessionFor } from './helpers'
 
@@ -20,6 +20,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  vi.useRealTimers()
   test.game.stop()
   rmSync(mediaDir, { recursive: true, force: true })
 })
@@ -53,6 +54,8 @@ describe('error statuses', () => {
     expect((await post('/api/create_team', loner, { event_id: eventId, name: 'shit happens' })).status).toBe(400)
 
     await hostDoes('host_next') // question 1, mc
+    // Freeze the clock so the six writes below land in one rate-limit second even on a loaded machine.
+    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() })
     expect((await answer(loner, { option: 0 })).status).toBe(403)
     expect((await answer(a.token, { text: 'Challenger Deep' })).status).toBe(400) // write 1 of 5 this second
     for (let i = 0; i < 4; i++) expect((await answer(a.token, { option: 0 }, true)).status).toBe(200)

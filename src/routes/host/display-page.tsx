@@ -62,7 +62,26 @@ function Lobby({ view }: { view: GameView }) {
       </p>
       <p className="text-5xl font-bold tracking-widest">{t('display.code', { code: view.event.join_code })}</p>
       <p className="text-2xl">{t('display.teams', { count: view.teams.length })}</p>
+      <Prizes eventId={view.event.id} />
     </section>
+  )
+}
+
+/** "Tonight's top teams name an Academy animal": the naming prizes, by place. */
+function Prizes({ eventId }: { eventId: string }) {
+  const { t } = useTranslation()
+  const prizes = useQuery({ queryKey: ['event-prizes', eventId], queryFn: () => api.eventPrizes(eventId) })
+  const list = prizes.data?.prizes ?? []
+  if (list.length === 0) return null
+  return (
+    <div className="flex flex-col gap-3 rounded-xl bg-surface p-6 text-ink">
+      <h2 className="font-heading text-3xl font-semibold">{t('display.prizes')}</h2>
+      <ol className="flex flex-col gap-1 text-2xl">
+        {list.map((prize) => (
+          <li key={prize.place}>{t('naming.prizeRow', { place: prize.place, species: prize.animal.species })}</li>
+        ))}
+      </ol>
+    </div>
   )
 }
 

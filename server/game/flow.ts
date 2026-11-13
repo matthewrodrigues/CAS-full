@@ -10,6 +10,7 @@ import { broadcastState, fail, ok, type GameContext, type GameResult } from './c
 import { buildLivePayload, buildWagerPayload } from './live-payload'
 import { loadEventPlan, nextStep } from './plan'
 import { buildRevealPayload, skippedRevealPayload } from './reveal'
+import { awardNamingRights } from './animals'
 import { awardPrizes } from './rewards'
 import { gradeQuestion, pushReviewQueue, scoreQuestion } from './scoring'
 import { publicGameState } from './state'
@@ -104,6 +105,7 @@ export function next(ctx: GameContext, eventId: string): GameResult<PublicGameSt
       ctx.timers.disarm(eventId)
       ctx.db.update(events).set({ status: 'ended' }).where(eq(events.id, eventId)).run()
       awardPrizes(ctx.db, eventId)
+      awardNamingRights(ctx.db, eventId)
       return write(ctx, eventId, { phase: 'ended', livePayload: null, revealPayload: null, opensAt: null, closesAt: null })
   }
 }

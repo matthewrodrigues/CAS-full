@@ -26,6 +26,7 @@ import {
   GAME_PHASES,
   MEDIA_KINDS,
   NAME_STATUSES,
+  NAMING_STATUSES,
   OVERRIDE_RESULTS,
   PHASES,
   QUESTION_TYPES,
@@ -359,6 +360,106 @@ export const rewardAwards = sqliteTable(
     check('reward_awards_code_check', sql`length(${t.code}) >= 10`),
     check('reward_awards_redeemed_check', sql`(${t.status} = 'redeemed') = (${t.redeemedAt} is not null)`),
   ],
+)
+
+// Animal naming prizes and the My Animal feed --------------------------------------------------
+// The night's prizes are naming rights: the team in place 1 names one Academy animal, place 2
+// another, and so on. Everyone who played follows the night's animals and sees staff updates.
+
+/** One Academy animal (an individual, not a species). `name` stays null until a winning name is approved. */
+export const animals = sqliteTable(
+  'animals',
+  {
+    id: id(),
+    species: text('species').notNull(),
+    scientificName: text('scientific_name'),
+    /** Where visitors can find it in the museum. */
+    exhibit: text('exhibit').notNull(),
+    about: text('about'),
+    imageUrl: text('image_url'),
+    name: text('name'),
+    namedAt: integer('named_at'),
+    namedEventId: text('named_event_id').references(() => events.id, { onDelete: 'set null' }),
+    /** The winning team's name as it was when the animal was named; null if it was never approved. */
+    namedByTeam: text('named_by_team'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (t) => [check('animals_named_check', sql`(${t.name} is null) = (${t.namedAt} is null)`)],
+)
+
+/** Tonight's prize list: the team(s) finishing in `place` win the right to name `animal_id`. */
+export const namingPrizes = sqliteTable(
+  'naming_prizes',
+  {
+    id: id(),
+    eventId: text('event_id')
+      .notNull()
+      .references(() => events.id, { onDelete: 'cascade' }),
+    animalId: text('animal_id')
+      .notNull()
+      .references(() => animals.id, { onDelete: 'restrict' }),
+    place: integer('place').notNull(),
+  },
+  (t) => [
+    check('naming_prizes_place_check', sql`${t.place} >= 1`),
+    unique('naming_prizes_event_place_unique').on(t.eventId, t.place),
+    // An animal is offered at one night only, so two nights can't both name it.
+    unique('naming_prizes_animal_unique').on(t.animalId),
+  ],
+)
+
+/** A winning team's right to name a prize animal, written at `ended`. Tied teams each get one; staff approve one name. */
+export const namingRights = sqliteTable(
+  'naming_rights',
+  {
+    id: id(),
+    prizeId: text('prize_id')
+      .notNull()
+      .references(() => namingPrizes.id, { onDelete: 'cascade' }),
+    teamId: text('team_id')
+      .notNull()
+      .references(() => teams.id, { onDelete: 'cascade' }),
+    status: text('status', { enum: NAMING_STATUSES }).notNull().default('open'),
+    proposedName: text('proposed_name'),
+    proposedBy: text('proposed_by').references(() => players.id, { onDelete: 'set null' }),
+    proposedAt: integer('proposed_at'),
+    reviewedAt: integer('reviewed_at'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (t) => [
+    check('naming_rights_status_check', oneOf(t.status, NAMING_STATUSES)),
+    check('naming_rights_proposed_check', sql`${t.status} = 'open' or ${t.proposedName} is not null`),
+    unique('naming_rights_prize_team_unique').on(t.prizeId, t.teamId),
+  ],
+)
+
+/** Staff news about an animal: the My Animal feed. */
+export const animalUpdates = sqliteTable(
+  'animal_updates',
+  {
+    id: id(),
+    animalId: text('animal_id')
+      .notNull()
+      .references(() => animals.id, { onDelete: 'cascade' }),
+    body: text('body').notNull(),
+    postedAt: integer('posted_at').notNull(),
+  },
+  (t) => [check('animal_updates_body_check', sql`length(trim(${t.body})) > 0`)],
+)
+
+/** Animals a player tracks. Self only. */
+export const animalFollows = sqliteTable(
+  'animal_follows',
+  {
+    playerId: text('player_id')
+      .notNull()
+      .references(() => players.id, { onDelete: 'cascade' }),
+    animalId: text('animal_id')
+      .notNull()
+      .references(() => animals.id, { onDelete: 'cascade' }),
+    followedAt: integer('followed_at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.playerId, t.animalId] })],
 )
 
 export const newsletterOptins = sqliteTable('newsletter_optins', {

@@ -15,6 +15,8 @@ export function EndedScreen() {
   const { eventId, live } = usePlay()
   const board = useQuery({ queryKey: leaderboardKey(eventId), queryFn: () => api.getLeaderboard(eventId) })
   const own = board.data?.teams.find((row) => row.team_id === live.view?.my_team?.id)
+  const rights = useQuery({ queryKey: ['naming-rights', true], queryFn: api.myNamingRights, staleTime: 0 })
+  const won = rights.data?.rights.find((r) => r.team_id === live.view?.my_team?.id &&r.animal.name === null)
 
   return (
     <section className="flex flex-col gap-4">
@@ -24,7 +26,15 @@ export function EndedScreen() {
         <h1 className="font-heading text-3xl font-semibold text-ink">{t('ended.title')}</h1>
       </div>
       {own ? <p className="text-xl text-ink">{t('ended.rank', { rank: own.rank, points: own.points })}</p> : null}
-      <Button asChild size="lg">
+      {won ? (
+        <div className="flex flex-col gap-3 rounded-lg bg-win p-4">
+          <p className="text-xl font-semibold text-ink">{t('ended.naming', { species: won.animal.species })}</p>
+          <Button asChild size="lg">
+            <Link to="rewards">{t('ended.nameIt')}</Link>
+          </Button>
+        </div>
+      ) : null}
+      <Button asChild size="lg" variant={won ? 'outline' : 'default'}>
         <Link to="leaderboard">{t('ended.board')}</Link>
       </Button>
       <FeedbackForm eventId={eventId} />

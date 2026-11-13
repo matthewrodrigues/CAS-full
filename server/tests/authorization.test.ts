@@ -39,12 +39,28 @@ const PRIVILEGED_ROUTES = [
   '/api/host_review_team_name',
   '/api/host_skip',
   '/api/redeem_code',
+  '/api/staff_animals',
   '/api/staff_awards',
+  '/api/staff_create_animal',
   '/api/staff_event_settings',
   '/api/staff_newsletter_csv',
+  '/api/staff_post_animal_update',
+  '/api/staff_review_animal_name',
+  '/api/staff_set_naming_prize',
   '/api/staff_update_settings',
 ]
-const STAFF_ROUTES = ['/api/redeem_code', '/api/staff_awards', '/api/staff_event_settings', '/api/staff_newsletter_csv', '/api/staff_update_settings']
+const STAFF_ROUTES = [
+  '/api/redeem_code',
+  '/api/staff_animals',
+  '/api/staff_awards',
+  '/api/staff_create_animal',
+  '/api/staff_event_settings',
+  '/api/staff_newsletter_csv',
+  '/api/staff_post_animal_update',
+  '/api/staff_review_animal_name',
+  '/api/staff_set_naming_prize',
+  '/api/staff_update_settings',
+]
 
 let app: App
 let db: Db
@@ -118,9 +134,13 @@ describe('role checks', () => {
 describe('data a player can read', () => {
   it('never includes question_answers', async () => {
     const token = sessionFor(db, 'player', f.teamA.playerIds[0])
+    const animalId = randomUUID()
+    db.insert(t.animals).values({ id: animalId, species: 'Fixture eel', exhibit: 'Fixture reef', createdAt: Date.now() }).run()
     const query: Record<string, string> = {
       '/api/get_state': `?event_id=${f.eventId}`,
       '/api/get_leaderboard': `?event_id=${f.eventId}`,
+      '/api/event_prizes': `?event_id=${f.eventId}`,
+      '/api/animal': `?animal_id=${animalId}`,
     }
     const bodies: string[] = []
 

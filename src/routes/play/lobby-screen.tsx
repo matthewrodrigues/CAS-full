@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { StatusBanner } from '@/components/status-banner'
 import { Button } from '@/components/ui/button'
 import { usePlay } from './context'
+import { PrizeList } from './prize-list'
 import { TeamScreen } from './team-screen'
 
 /** Before the first question: your team, its members and the name's approval. Placeholder layout. */
 export function LobbyScreen() {
   const { t } = useTranslation()
-  const { live } = usePlay()
+  const { eventId, live } = usePlay()
   const [switching, setSwitching] = useState(false)
   const team = live.view!.my_team!
 
@@ -43,6 +44,7 @@ export function LobbyScreen() {
           ))}
         </ul>
       </div>
+      <PrizeList eventId={eventId} />
       <div className="flex flex-col gap-2">
         <p className="text-sm text-ink-muted">{t('play.lobby.switchHint')}</p>
         <Button variant="outline" onClick={() => setSwitching(true)}>

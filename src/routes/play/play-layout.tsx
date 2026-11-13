@@ -36,6 +36,7 @@ function JoinedLayout({ result, joinCode }: { result: JoinResult; joinCode: stri
     { to: '.', label: t('play.tabs.play'), end: true },
     { to: 'leaderboard', label: t('play.tabs.leaderboard'), end: false },
     { to: 'rewards', label: t('play.tabs.rewards'), end: false },
+    { to: 'animals', label: t('play.tabs.animals'), end: false },
   ]
 
   return (
@@ -54,7 +55,7 @@ function JoinedLayout({ result, joinCode }: { result: JoinResult; joinCode: stri
       <LiveRegion state={live.view?.state} />
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-6">{live.view ? <Outlet context={context} /> : <Loading />}</main>
       <nav aria-label={t('play.tabs.label')} className="border-t border-border bg-surface">
-        <ul className="mx-auto grid max-w-md grid-cols-3">
+        <ul className="mx-auto grid max-w-md grid-cols-4">
           {tabs.map((tab) => (
             <li key={tab.to}>
               <NavLink
@@ -62,7 +63,7 @@ function JoinedLayout({ result, joinCode }: { result: JoinResult; joinCode: stri
                 end={tab.end}
                 className={({ isActive }) =>
                   cn(
-                    'flex h-14 items-center justify-center text-base font-medium text-ink-muted outline-offset-[-2px]',
+                    'flex h-14 items-center justify-center px-1 text-center text-sm font-medium text-ink-muted outline-offset-[-2px]',
                     isActive && 'border-t-4 border-brand text-ink',
                   )
                 }

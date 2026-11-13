@@ -1,7 +1,7 @@
 // Game data as the API and WebSocket send it. Shared so the client (Milestone 3) renders the
 // same shapes the server builds. None of these types carry answer data before a reveal.
 import type { Answer } from './api'
-import type { AutoResult, EventStatus, GamePhase, MediaKind, NameStatus, Phase, QuestionType, RoundFormat } from './enums'
+import type { AutoResult, EventStatus, GamePhase, MediaKind, NameStatus, NamingStatus, Phase, QuestionType, RoundFormat } from './enums'
 
 export type PublicGameState = {
   phase: Phase
@@ -117,7 +117,54 @@ export type MyReward = { id: string; name: string; description: string | null; t
 /** One row of the staff redemption list. */
 export type StaffAward = { id: string; reward: string; code: string; status: 'issued' | 'redeemed' | 'expired'; nickname: string | null; issued_at: number; redeemed_at: number | null }
 
-export type LeaderboardRow = { team_id: string; name: string | null; points: number; rank: number }
+/** An Academy animal's public details. `name` is null until a winning team's name is approved. */
+export type AnimalInfo = {
+  id: string
+  species: string
+  scientific_name: string | null
+  exhibit: string
+  about: string | null
+  image_url: string | null
+  name: string | null
+  named_at: number | null
+  named_by_team: string | null
+}
+
+export type AnimalUpdate = { id: string; body: string; posted_at: number }
+
+/** One row of the Animals tab. */
+export type AnimalCard = AnimalInfo & { following: boolean; update_count: number; latest_update: AnimalUpdate | null }
+export type AnimalDetail = AnimalCard & { updates: AnimalUpdate[] }
+
+/** Tonight's prize list: the team finishing in `place` names this animal. */
+export type NamingPrize = { place: number; animal: AnimalInfo }
+
+/** A naming right the player's team won. */
+export type MyNamingRight = {
+  id: string
+  place: number
+  status: NamingStatus
+  proposed_name: string | null
+  team_id: string
+  team_name: string
+  animal: AnimalInfo
+}
+
+export type StaffAnimal = AnimalInfo & { update_count: number; follower_count: number; prize: { event_id: string; join_code: string; place: number } | null }
+
+/** A proposed name waiting for staff (or one they turned down). */
+export type StaffNamingRight = {
+  id: string
+  status: NamingStatus
+  proposed_name: string | null
+  proposed_at: number | null
+  team_name: string
+  join_code: string
+  place: number
+  animal: { id: string; species: string }
+}
+
+export type LeaderboardRow ={ team_id: string; name: string | null; points: number; rank: number }
 export type Leaderboard = { teams: LeaderboardRow[] }
 
 export type JoinResult = {
@@ -151,5 +198,8 @@ export const GAME_ERROR_CODES = [
   'rate_limited',
   'already_redeemed',
   'code_expired',
+  'already_named',
+  'animal_taken',
+  'not_pending',
 ] as const
 export type GameErrorCode = (typeof GAME_ERROR_CODES)[number]

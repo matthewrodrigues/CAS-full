@@ -19,7 +19,16 @@ beforeEach(() => {
   test = makeTestApp()
   mediaDir = mkdtempSync(join(tmpdir(), 'nightlife-rewards-'))
   eventId = seedDemo(test.db, { mediaDir }).eventId
-  host = sessionFor(test.db, 'host')
+  // The seed's prizes are animal naming rights; code prizes are optional tiers staff can add.
+  test.db
+    .insert(t.rewards)
+    .values([
+      { name: 'Top team prize', tier: 1, expiresAfterDays: 30 },
+      { name: 'Runner-up prize', tier: 2, expiresAfterDays: 60 },
+      { name: 'Thanks for playing', tier: 3, expiresAfterDays: 90 },
+    ])
+    .run()
+  host =sessionFor(test.db, 'host')
   staff = sessionFor(test.db, 'staff')
 })
 afterEach(() => {

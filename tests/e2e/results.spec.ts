@@ -124,6 +124,6 @@ test('the leaderboard has an empty state, and so do rewards', async ({ browser }
   await fresh.getByRole('link', { name: 'Leaderboard', exact: true }).click()
   await expect(fresh.getByText('Scores appear once the round starts.')).toBeVisible()
   await fresh.getByRole('link', { name: 'Rewards', exact: true }).click()
-  await expect(fresh.getByText('Prizes show up here after the game. Good luck tonight!')).toBeVisible()
+  await expect(fresh.getByText('Prizes show up here after the game. Win and your team names an Academy animal. Good luck tonight!')).toBeVisible()
   await expectNoAxeViolations(fresh)
 })

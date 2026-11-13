@@ -12,9 +12,33 @@ import type {
   SubmitAnswerInput,
   SubmitFeedbackInput,
   SubmitWagerInput,
+  FollowAnimalInput,
+  ProposeAnimalNameInput,
+  StaffCreateAnimalInput,
+  StaffPostAnimalUpdateInput,
+  StaffReviewAnimalNameInput,
+  StaffSetNamingPrizeInput,
 } from '../../shared/api'
 import type { Role } from '../../shared/enums'
-import type { GameView, HostEvent, JoinResult, Leaderboard, MyReward, MyTeam, PublicGameState, PublicSubmission, StaffAward, TeamSummary } from '../../shared/game'
+import type {
+  AnimalCard,
+  AnimalDetail,
+  AnimalUpdate,
+  GameView,
+  HostEvent,
+  JoinResult,
+  Leaderboard,
+  MyNamingRight,
+  MyReward,
+  MyTeam,
+  NamingPrize,
+  PublicGameState,
+  PublicSubmission,
+  StaffAnimal,
+  StaffAward,
+  StaffNamingRight,
+  TeamSummary,
+} from '../../shared/game'
 import type { EventSettings } from '../../shared/settings'
 
 export type HostOperation = 'host_next' | 'host_lock' | 'host_reveal' | 'host_open_question' | 'host_pause' | 'host_resume' | 'host_skip'
@@ -71,6 +95,17 @@ export const api = {
   deleteMyAccount: () => request<{ ok: true }>('/api/delete_my_account', {}),
   redeemCode: (code: string) => request<{ code: string; reward: string; status: 'redeemed'; nickname: string | null }>('/api/redeem_code', { code }),
   staffAwards: () => request<{ awards: StaffAward[] }>('/api/staff_awards'),
+  eventPrizes: (eventId: string) => request<{ prizes: NamingPrize[] }>(query('/api/event_prizes', eventId)),
+  myNamingRights: () => request<{ rights: MyNamingRight[] }>('/api/my_naming_rights'),
+  proposeAnimalName: (input: z.input<typeof ProposeAnimalNameInput>) => request<MyNamingRight>('/api/propose_animal_name', input),
+  animals: () => request<{ animals: AnimalCard[] }>('/api/animals'),
+  animal: (animalId: string) => request<AnimalDetail>(`/api/animal?animal_id=${encodeURIComponent(animalId)}`),
+  followAnimal: (input: z.input<typeof FollowAnimalInput>) => request<{ following: boolean }>('/api/follow_animal', input),
+  staffAnimals: () => request<{ animals: StaffAnimal[]; rights: StaffNamingRight[] }>('/api/staff_animals'),
+  staffCreateAnimal: (input: z.input<typeof StaffCreateAnimalInput>) => request<StaffAnimal>('/api/staff_create_animal', input),
+  staffSetNamingPrize: (input: z.input<typeof StaffSetNamingPrizeInput>) => request<{ prizes: NamingPrize[] }>('/api/staff_set_naming_prize', input),
+  staffReviewAnimalName: (input: z.input<typeof StaffReviewAnimalNameInput>) => request<{ id: string; status: 'approved' | 'rejected' }>('/api/staff_review_animal_name', input),
+  staffPostAnimalUpdate: (input: z.input<typeof StaffPostAnimalUpdateInput>) => request<AnimalUpdate>('/api/staff_post_animal_update', input),
   staffEventSettings: (eventId: string) => request<{ settings: EventSettings }>(query('/api/staff_event_settings', eventId)),
   staffUpdateSettings: (eventId: string, settings: Partial<EventSettings>) => request<{ settings: EventSettings }>('/api/staff_update_settings', { event_id: eventId, settings }),
   me: () => request<{ role: Role | null; player: { id: string; nickname: string } | null }>('/api/me'),

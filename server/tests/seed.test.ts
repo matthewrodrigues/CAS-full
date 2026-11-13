@@ -35,7 +35,7 @@ function seededQuestions() {
 }
 
 describe('seedDemo', () => {
-  it('seeds one season, theme, event DEMO1, 4 rounds, 29 questions and 3 rewards', () => {
+  it('seeds one season, theme, event DEMO1, 4 rounds, 29 questions and 3 animal naming prizes', () => {
     const { eventId, created } = seedDemo(db, { mediaDir })
 
     expect(created).toBe(true)
@@ -46,7 +46,24 @@ describe('seedDemo', () => {
     expect(db.select().from(t.rounds).all()).toHaveLength(4)
     expect(db.select().from(t.questions).all()).toHaveLength(29)
     expect(db.select().from(t.questionAnswers).all()).toHaveLength(29)
-    expect(db.select().from(t.rewards).all()).toHaveLength(3)
+    // The prizes are naming rights, not codes.
+    expect(db.select().from(t.rewards).all()).toHaveLength(0)
+    const prizes = db.select().from(t.namingPrizes).orderBy(asc(t.namingPrizes.place)).all()
+    expect(prizes.map((p) => ({ eventId: p.eventId, place: p.place }))).toEqual([1, 2, 3].map((place) => ({ eventId, place })))
+    // Three unnamed prize animals plus one already-named animal to follow.
+    const animals = db.select().from(t.animals).all()
+    expect(animals).toHaveLength(4)
+    expect(animals.filter((a) => a.name !== null)).toMatchObject([{ name: 'Noodle' }])
+    expect(db.select().from(t.animalUpdates).all().length).toBeGreaterThanOrEqual(4)
+  })
+
+  it('adds naming prizes to a DEMO1 seeded before they existed, once', () => {
+    const { eventId } = seedDemo(db, { mediaDir })
+    db.delete(t.namingPrizes).run()
+    seedDemo(db, { mediaDir })
+    expect(db.select().from(t.namingPrizes).where(eq(t.namingPrizes.eventId, eventId)).all()).toHaveLength(3)
+    seedDemo(db, { mediaDir })
+    expect(db.select().from(t.namingPrizes).all()).toHaveLength(3)
   })
 
   it('covers every question type in each of rounds 1-3, with images in round 2 and audio in round 3', () => {
@@ -121,13 +138,14 @@ describe('seedDemo', () => {
     expect(db.select().from(t.seasons).all()).toHaveLength(1)
     expect(db.select().from(t.themes).all()).toHaveLength(1)
     expect(db.select().from(t.eventQuestions).where(eq(t.eventQuestions.eventId, other.eventId)).all()).toHaveLength(29)
-    expect(db.select().from(t.rewards).all()).toHaveLength(3)
+    expect(db.select().from(t.namingPrizes).where(eq(t.namingPrizes.eventId, other.eventId)).all()).toHaveLength(3)
+    expect(db.select().from(t.animals).all()).toHaveLength(7)
     expect(seedDemo(db, { mediaDir, joinCode: 'E2EA1' })).toEqual({ eventId: other.eventId, created: false })
   })
 
   it('does nothing when DEMO1 already exists', () => {
     const first = seedDemo(db, { mediaDir })
-    const counts = () => [t.events, t.questions, t.rewards, t.rounds].map((table) => db.select().from(table).all().length)
+    const counts = () => [t.events, t.questions, t.animals, t.namingPrizes, t.rounds].map((table) => db.select().from(table).all().length)
     const before = counts()
 
     const second = seedDemo(db, { mediaDir })

@@ -18,7 +18,8 @@
       "label": "Game sections",
       "play": "Play",
       "leaderboard": "Leaderboard",
-      "rewards": "Rewards"
+      "rewards": "Rewards",
+      "animals": "Animals"
     },
     "join": {
       "title": "Join the game",
@@ -130,6 +131,7 @@
     "ended": "Final scores",
     "wager": "Final wager",
     "wagerBody": "Place your bets on your phone.",
+    "prizes": "Tonight's top teams name an Academy animal",
     "paused": "Paused"
   },
   "staff": {
@@ -176,6 +178,30 @@
       "violet": "Violet"
     },
     "invalid": "Those settings are not valid: {{issues}}",
+    "animalsTab": "Animals",
+    "animalsTitle": "Animals and naming prizes",
+    "pendingNames": "Names to check",
+    "noPendingNames": "No names waiting.",
+    "proposal": "{{team}} ({{code}}, place {{place}}) wants to name the {{species}} “{{name}}”",
+    "approveName": "Approve the name {{name}}",
+    "rejectName": "Reject the name {{name}}",
+    "nightPrizes": "Prizes for a night",
+    "placeLabel": "Place {{place}} names",
+    "noPrize": "No prize",
+    "animalList": "Animals",
+    "noAnimals": "No animals yet. Add one below.",
+    "animalStats": "{{updates}} updates · {{followers}} following",
+    "offered": "prize for {{code}} place {{place}}",
+    "updateLabel": "New update about {{animal}}",
+    "postUpdate": "Post update",
+    "posted": "Posted.",
+    "addAnimal": "Add an animal",
+    "animalFields": {
+      "species": "Species (e.g. African penguin chick)",
+      "scientific_name": "Scientific name (optional)",
+      "exhibit": "Where to see it",
+      "about": "About it (optional)"
+    },
     "newsletterTitle": "Newsletter sign-ups",
     "download": "Download CSV"
   },
@@ -213,7 +239,10 @@
     "network": "Can't reach the game. Check your connection and try again.",
     "unknown": "Something went wrong. Please try again.",
     "already_redeemed": "That code has already been redeemed.",
-    "code_expired": "That code has expired."
+    "code_expired": "That code has expired.",
+    "already_named": "This animal already has a name.",
+    "animal_taken": "That animal is already a prize at another night.",
+    "not_pending": "That name has already been checked."
   },
   "leaderboard": {
     "title": "Tonight's leaderboard",
@@ -225,7 +254,7 @@
   },
   "rewards": {
     "title": "Rewards",
-    "empty": "Prizes show up here after the game. Good luck tonight!",
+    "empty": "Prizes show up here after the game. Win and your team names an Academy animal. Good luck tonight!",
     "show": "Show this code to staff to collect your prize.",
     "code": "Code: {{code}}",
     "qr": "QR code for {{name}}",
@@ -235,6 +264,43 @@
       "redeemed": "Collected",
       "expired": "Expired"
     }
+  },
+  "naming": {
+    "tonight": "Tonight's prizes",
+    "prizeRow": "Place {{place}}: name the {{species}}",
+    "won": "Place {{place}} · {{team}}",
+    "title": "Name the {{species}}",
+    "named": "{{name}} the {{species}}",
+    "label": "Your team's name for it",
+    "relabel": "Suggest a different name",
+    "submit": "Suggest this name",
+    "notAllowed": "Please pick a different name.",
+    "track": "Follow its updates",
+    "status": {
+      "open": "Your team won the right to name this animal!",
+      "pending": "“{{name}}” is with Academy staff for approval.",
+      "approved": "Approved! The animal is now called {{name}}.",
+      "rejected": "Staff couldn't use “{{name}}”. Try another name.",
+      "other": "Another winning team's name was picked."
+    }
+  },
+  "animals": {
+    "title": "Academy animals",
+    "intro": "Follow the animals trivia teams have named and see news from the keepers.",
+    "mine": "Animals you follow",
+    "all": "Named by trivia winners",
+    "empty": "Play a game to follow tonight's animals, or follow one below.",
+    "unnamed": "{{species}} (no name yet)",
+    "exhibit": "See it at {{exhibit}}",
+    "latest": "{{date}}: {{body}}",
+    "back": "All animals",
+    "namedBy": "Named by {{team}} on {{date}}",
+    "namedOn": "Named on {{date}}",
+    "awaiting": "Waiting for a winning team to name it.",
+    "follow": "Follow this animal",
+    "following": "Following · tap to stop",
+    "updates": "Updates",
+    "noUpdates": "No updates yet."
   },
   "question": {
     "meta": "{{round}} · Question {{number}} of {{of}}",
@@ -299,7 +365,9 @@
   "ended": {
     "title": "Thanks for playing!",
     "rank": "Your team finished #{{rank}} with {{points}} points.",
-    "board": "See the leaderboard"
+    "board": "See the leaderboard",
+    "naming": "Your team won the right to name the {{species}}!",
+    "nameIt": "Pick a name"
   },
   "gate": {
     "hostTitle": "Host sign-in",
@@ -334,7 +402,8 @@
     "body": [
       "NightLife Trivia keeps only what the game needs: your nickname, your team and its answers, and a random session cookie so this phone stays signed in. There are no accounts or passwords.",
       "If you sign up for the newsletter, we keep your email address and when you agreed. Staff can export the list to send NightLife news, and nothing else.",
-      "Prize codes are linked to your nickname so staff can hand them over. Feedback ratings are kept to improve the game."
+      "Prize codes are linked to your nickname so staff can hand them over. Feedback ratings are kept to improve the game.",
+      "If your team names an animal, the name you suggest is kept and the approved name is shown with your team name. The animals you follow are linked to this phone's session."
     ],
     "deleteTitle": "Delete my data",
     "deleteBody": "This removes your nickname, team memberships, prize codes and newsletter sign-up from this game. Team scores stay, without your name.",

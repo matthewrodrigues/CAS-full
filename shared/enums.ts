@@ -28,6 +28,8 @@ export const OVERRIDE_RESULTS = ['correct', 'incorrect'] as const
 export const SCORE_REASONS = ['correct', 'speed', 'wager', 'adjust'] as const
 export const AWARD_STATUSES = ['issued', 'redeemed', 'expired'] as const
 export const ROLES = ['player', 'host', 'staff'] as const
+/** A winning team's naming right: open (no name yet) → pending (staff to check) → approved or rejected (can try again). */
+export const NAMING_STATUSES = ['open', 'pending', 'approved', 'rejected'] as const
 
 export type EventStatus = (typeof EVENT_STATUSES)[number]
 export type RoundFormat = (typeof ROUND_FORMATS)[number]
@@ -42,3 +44,4 @@ export type OverrideResult = (typeof OVERRIDE_RESULTS)[number]
 export type ScoreReason = (typeof SCORE_REASONS)[number]
 export type AwardStatus = (typeof AWARD_STATUSES)[number]
 export type Role = (typeof ROLES)[number]
+export type NamingStatus = (typeof NAMING_STATUSES)[number]

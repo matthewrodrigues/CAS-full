@@ -4,12 +4,13 @@ import { NotFound } from './routes/not-found'
 import { DisplayPage } from './routes/host/display-page'
 import { HostHome } from './routes/host/host-home'
 import { HostPage } from './routes/host/host-page'
+import { AnimalDetailPage, AnimalsPage } from './routes/play/animals-page'
 import { LeaderboardPage } from './routes/play/leaderboard-page'
 import { PlayLayout } from './routes/play/play-layout'
 import { PlayScreen } from './routes/play/play-screen'
 import { RewardsPage } from './routes/play/rewards-page'
 import { PrivacyPage } from './routes/privacy-page'
-import { CodesPage, NewsletterPage, RedeemPage, SettingsPage, StaffPage } from './routes/staff/staff-page'
+import { AnimalsAdminPage, CodesPage, NewsletterPage, RedeemPage, SettingsPage, StaffPage } from './routes/staff/staff-page'
 
 // Route groups from docs/SPEC.md section 3. The player's tabs are nested under /play/:joinCode.
 export const router = createBrowserRouter([
@@ -21,6 +22,8 @@ export const router = createBrowserRouter([
       { index: true, element: <PlayScreen /> },
       { path: 'leaderboard', element: <LeaderboardPage /> },
       { path: 'rewards', element: <RewardsPage /> },
+      { path: 'animals', element: <AnimalsPage /> },
+      { path: 'animals/:animalId', element: <AnimalDetailPage /> },
     ],
   },
   { path: '/host', element: <HostHome /> },
@@ -32,6 +35,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <RedeemPage /> },
       { path: 'redeem', element: <RedeemPage /> },
+      { path: 'animals', element: <AnimalsAdminPage /> },
       { path: 'codes', element: <CodesPage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: 'newsletter', element: <NewsletterPage /> },
