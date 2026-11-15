@@ -18,6 +18,12 @@ export const EnvSchema = z
     DATA_DIR: z.string().min(1).default('./data'),
     HOST_PASSCODE: optionalSecret,
     STAFF_PASSCODE: optionalSecret,
+    /** Where players reach the app, if not the address the big screen was opened on (e.g. a screen on a local network). */
+    PUBLIC_URL: z
+      .string()
+      .optional()
+      .transform((value) => value || undefined)
+      .pipe(z.url({ protocol: /^https?$/ }).transform((url) => url.replace(/\/+$/, '')).optional()),
   })
   .superRefine((env, ctx) => {
     // In development an unset passcode only disables that role's login, so a clean clone still runs.

@@ -9,6 +9,8 @@ export type AppConfig = {
   staffPasscode?: string
   secureCookies: boolean
   mediaDir: string
+  /** The join link's origin on the big screen; the screen's own origin when unset. */
+  publicUrl?: string
 }
 
 /** One game and one set of WebSocket rooms per process: there is only ever one server instance. */

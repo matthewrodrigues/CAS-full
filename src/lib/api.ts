@@ -108,6 +108,7 @@ export const api = {
   staffPostAnimalUpdate: (input: z.input<typeof StaffPostAnimalUpdateInput>) => request<AnimalUpdate>('/api/staff_post_animal_update', input),
   staffEventSettings: (eventId: string) => request<{ settings: EventSettings }>(query('/api/staff_event_settings', eventId)),
   staffUpdateSettings: (eventId: string, settings: Partial<EventSettings>) => request<{ settings: EventSettings }>('/api/staff_update_settings', { event_id: eventId, settings }),
+  appConfig: () => request<{ public_url: string | null }>('/api/app_config'),
   me: () => request<{ role: Role | null; player: { id: string; nickname: string } | null }>('/api/me'),
   serverTime: () => request<{ now: number }>('/api/server_time'),
   joinEvent: (input: z.input<typeof JoinEventInput>) => request<JoinResult>('/api/join_event', input),

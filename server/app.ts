@@ -16,6 +16,7 @@ export function createApp(deps: AppDeps) {
       db.get(sql`select 1`)
       return c.json({ ok: true })
     })
+    .get('/api/app_config', publicRoute(), (c) => c.json({ public_url: deps.config.publicUrl ?? null }))
     .route('/', createAuthRoutes(deps))
     .route('/', createGameRoutes(deps))
     // Question images and audio. File names are random, so they can't be guessed or give answers away.

@@ -15,6 +15,7 @@ const config: AppConfig = {
   staffPasscode: env.STAFF_PASSCODE,
   secureCookies: env.NODE_ENV === 'production',
   mediaDir: join(env.DATA_DIR, 'media'),
+  publicUrl: env.PUBLIC_URL,
 }
 for (const key of ['HOST_PASSCODE', 'STAFF_PASSCODE'] as const) {
   if (!env[key]) console.warn(`${key} is not set, so that role's login is disabled. Set it in .env.`)

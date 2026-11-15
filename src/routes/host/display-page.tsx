@@ -48,7 +48,8 @@ function Display() {
 
 function Lobby({ view }: { view: GameView }) {
   const { t } = useTranslation()
-  const url = `${location.origin}/play/${view.event.join_code}`
+  const config = useQuery({ queryKey: ['app-config'], queryFn: api.appConfig, staleTime: Infinity })
+  const url = `${config.data?.public_url ?? location.origin}/play/${view.event.join_code}`
   const [qr, setQr] = useState<string | null>(null)
   useEffect(() => {
     void QRCode.toDataURL(url, { margin: 1, width: 360 }).then(setQr)
