@@ -63,3 +63,4 @@ Background agents die with the session. Rebuild from what's on disk:
 - 2026-11-17: T7 merged (7 of 12 build tasks in); T4+T7 integration fix f518a2e; unit 524/524, e2e 32/32, typecheck green. Wave D (T8 paper sheet, T9 after-game, T10 big screen, T11 host/staff) dispatched in parallel worktrees.
 - 2026-11-17 check: Wave D (T8–T11) mid-build in their worktrees, nothing committed yet. 7 of 12 build tasks merged.
 - 2026-11-17 (before a usage-limit stop): **to resume the build, read `.superpowers/sdd/2026-11-16-ui-redesign-build/RESUME.md`** (git-ignored, on disk). It lists the in-flight Wave D agents (T8–T11), their worktrees, ports and briefs, and the exact next steps. T1–T7 are merged on ui-redesign.
+- 2026-11-17 (after the limit reset): all four Wave D agents (T8–T11) were interrupted mid-task and have been resumed. RESUME.md in the build ledger folder still applies if this stops again.
