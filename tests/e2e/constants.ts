@@ -15,4 +15,7 @@ export const JOIN_CODES = {
   screens: 'E2ES1',
   screensStressTeams: 'E2ET1',
   screensStressLobby: 'E2EU1',
+  nudge: 'E2E8A',
+  sheetStress: 'E2E8B',
+  sheetRounds: 'E2E8C',
 } as const

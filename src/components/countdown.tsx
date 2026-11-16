@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PublicGameState } from '../../shared/game'
+import { ringLeft } from '@/game/answer-sheet'
 import { remainingMs } from '@/game/clock'
-import { cn } from '@/lib/utils'
 
 /**
- * Time left on the server's clock (docs/SPEC.md section 5, Timing), frozen while paused.
- * role="timer" is not announced as it ticks; the live region announces only phase changes.
+ * Time left on the server's clock (docs/SPEC.md section 5, Timing), frozen while paused, drawn as
+ * the kit's ring with the seconds in the hand font (kit.md section 10). role="timer" is not
+ * announced as it ticks; the live region announces only phase changes. The number always ticks;
+ * only the ring's glide is motion, and the kit stops it under reduced motion.
  */
 export function Countdown({ state, offset }: { state: PublicGameState; offset: number }) {
   const { t } = useTranslation()
@@ -19,25 +21,21 @@ export function Countdown({ state, offset }: { state: PublicGameState; offset: n
 
   const left = remainingMs(state, offset, now)
   if (left === null || state.opens_at === null || state.closes_at === null) return null
-  const total = Math.max(1, state.closes_at - state.opens_at)
   const seconds = Math.ceil(left / 1000)
-  const urgent = seconds <= 5
+  const paused = state.phase === 'paused'
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="h-4 flex-1 overflow-hidden rounded-full border-2 border-brand-deep bg-surface" aria-hidden>
-        <div
-          className={cn('h-full rounded-full transition-[width] duration-300 ease-linear motion-reduce:transition-none', urgent ? 'bg-urgent' : 'bg-brand')}
-          style={{ width: `${Math.min(100, (left / total) * 100)}%` }}
-        />
-      </div>
-      <div
-        role="timer"
-        aria-label={t('question.timer')}
-        className={cn('min-w-16 rounded-full border-2 border-brand-deep px-2 py-1 text-center text-lg font-semibold text-ink tabular-nums shadow-pop-sm', urgent ? 'bg-urgent' : 'bg-surface')}
-      >
-        {t('question.seconds', { count: seconds })}
-      </div>
+    <div
+      className={seconds <= 5 ? 'countdown is-urgent' : 'countdown'}
+      role="timer"
+      aria-label={paused ? t('question.timerPaused') : t('question.timer')}
+      style={{ '--left': ringLeft(left, state.closes_at - state.opens_at) } as React.CSSProperties}
+    >
+      <svg className="countdown__ring" viewBox="0 0 54 54" aria-hidden="true">
+        <circle className="countdown__track" cx="27" cy="27" r="23" />
+        <circle className="countdown__fill" cx="27" cy="27" r="23" pathLength="100" />
+      </svg>
+      <span className="countdown__num">{seconds}</span>
     </div>
   )
 }

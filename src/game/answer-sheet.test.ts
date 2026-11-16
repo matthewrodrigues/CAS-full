@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { circledFor, sendLabel, shouldNudge, tapOption } from './answer-sheet'
+import { circledFor, parseWager, ringLeft, sendLabel, shouldNudge, sheetLine, tapOption } from './answer-sheet'
 
 describe('shouldNudge', () => {
   const base = { circled: 1, sent: null, msLeft: 5000, locked: false }
@@ -32,5 +32,47 @@ describe('the circle', () => {
   })
   it('nothing circled yet', () => {
     expect(circledFor(null, 'q1')).toBe(null)
+  })
+})
+
+describe('sheetLine', () => {
+  const base = { type: 'mc' as const, mediaKind: 'none' as const, paused: false, readOnly: false, sent: false, nudging: false }
+  it('asks per question type', () => {
+    expect(sheetLine(base)).toBe('question.mc')
+    expect(sheetLine({ ...base, type: 'true_false' })).toBe('question.true_false')
+    expect(sheetLine({ ...base, type: 'typed' })).toBe('question.typed')
+    expect(sheetLine({ ...base, type: 'closest_number' })).toBe('question.closest_number')
+  })
+  it('a picture or sound clip sets the line, whatever the type', () => {
+    expect(sheetLine({ ...base, mediaKind: 'image' })).toBe('question.image')
+    expect(sheetLine({ ...base, type: 'typed', mediaKind: 'audio' })).toBe('question.audio')
+  })
+  it('says got it once the team has sent', () => expect(sheetLine({ ...base, sent: true })).toBe('question.sent'))
+  it('nudges before anything else live', () => expect(sheetLine({ ...base, nudging: true, sent: true })).toBe('question.nudge'))
+  it('cheers the captain on for everyone else', () => expect(sheetLine({ ...base, readOnly: true, sent: true })).toBe('question.captainOnly'))
+  it('takes a breather while paused', () => expect(sheetLine({ ...base, paused: true, nudging: true, readOnly: true })).toBe('question.paused'))
+})
+
+describe('parseWager', () => {
+  it('accepts a whole number from 0 to the score', () => {
+    expect(parseWager('0', 180)).toBe(0)
+    expect(parseWager(' 100 ', 180)).toBe(100)
+    expect(parseWager('180', 180)).toBe(180)
+  })
+  it('rejects more than the score, negatives, fractions and words', () => {
+    expect(parseWager('181', 180)).toBeNull()
+    expect(parseWager('-1', 180)).toBeNull()
+    expect(parseWager('2.5', 180)).toBeNull()
+    expect(parseWager('lots', 180)).toBeNull()
+    expect(parseWager('', 180)).toBeNull()
+  })
+})
+
+describe('ringLeft', () => {
+  it('is the fraction of time left, kept between 0 and 1', () => {
+    expect(ringLeft(10_000, 20_000)).toBe(0.5)
+    expect(ringLeft(-5, 20_000)).toBe(0)
+    expect(ringLeft(30_000, 20_000)).toBe(1)
+    expect(ringLeft(1000, 0)).toBe(0)
   })
 })

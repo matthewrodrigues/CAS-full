@@ -60,9 +60,9 @@ test('a full night hosted from the console while the big screen follows', async 
 
   // Question 2: a borderline typed answer, accepted from the review queue before the reveal.
   await primary('Next')
-  await phone.getByLabel('Your answer').fill('octopuss')
+  await phone.getByLabel('Our answer').fill('octopuss')
   await phone.getByRole('button', { name: "That's our answer!" }).click()
-  await expect(phone.getByText('Submitted', { exact: true })).toBeVisible()
+  await expect(phone.getByText(/^Sent! Edit it/)).toBeVisible()
   await primary('Lock answers')
   await expect(console_.getByText('Console Crew: “octopuss” (70% match)')).toBeVisible()
   await console_.getByRole('button', { name: 'Accept Console Crew’s answer' }).click()
@@ -73,7 +73,7 @@ test('a full night hosted from the console while the big screen follows', async 
   // Pause and resume, a skip, and a score adjustment.
   await primary('Next')
   await console_.getByRole('button', { name: 'Pause' }).click()
-  await expect(phone.getByText('Paused by the host')).toBeVisible()
+  await expect(phone.getByText('Paused by the host', { exact: true })).toBeVisible()
   await expect(display.getByText('Paused')).toBeVisible()
   await primary('Resume')
   await console_.getByRole('button', { name: 'Skip question' }).click()
