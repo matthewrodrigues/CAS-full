@@ -21,13 +21,14 @@ export function animalCharacter(avatar: AnimalAvatar, happy = false): CharacterN
   return happy ? `animals/${avatar}-happy` : `animals/${avatar}`
 }
 
-export function Character({ name, size, label }: { name: CharacterName; size: CharacterSize; label?: string }) {
+/** `idle` adds the kit's slow breathing loop (.char--idle): one character per screen at most, never on a timed question. */
+export function Character({ name, size, label, idle = false }: { name: CharacterName; size: CharacterSize; label?: string; idle?: boolean }) {
   // Static art we ship ourselves (src/assets/characters), never user input, so inlining the markup is safe.
   // Inlining lets the SVGs pick up theme colors through var(--color-*).
   const raw = CHARACTER_ART[`../assets/characters/${name}.svg`] ?? ''
   // The art ships role="img" and a <title>; the wrapper owns the semantics, so hide the SVG itself.
   const svg = raw.replace(/^(\s*<svg[^>]*?)\s+role="img"/, '$1').replace(/^(\s*<svg)/, '$1 aria-hidden="true"')
-  const className = `char char--${size}`
+  const className = `char char--${size}${idle ? ' char--idle' : ''}`
   return label ? (
     <span className={className} role="img" aria-label={label} dangerouslySetInnerHTML={{ __html: svg }} />
   ) : (

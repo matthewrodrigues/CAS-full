@@ -42,15 +42,53 @@ export async function joinAsPlayer(page: Page, joinCode: string, nickname: strin
   await page.goto(`/play/${joinCode}`)
   const joined = page.waitForResponse((res) => res.url().endsWith('/api/join_event') && res.status() === 200)
   await page.getByLabel('Your nickname').fill(nickname)
-  await page.getByRole('button', { name: 'Join the game' }).click()
+  await page.getByRole('button', { name: "That's me!" }).click()
   return (await (await joined).json()).event.id
 }
 
 /** Creates a team from the team screen and waits for the lobby. */
 export async function createTeam(page: Page, name: string) {
   await page.getByLabel('Team name').fill(name)
-  await page.getByRole('button', { name: 'Create team' }).click()
+  await page.getByRole('button', { name: 'Start our team!' }).click()
   await expect(page.getByRole('heading', { name })).toBeVisible()
+}
+
+/** Taps a team on the team screen, then "Count me in!" (tap, then send), and waits for the team screen to close. */
+export async function joinTeam(page: Page, name: string) {
+  // A team row's name is the team name, a space, then its member line ("Kelp Crew 2 players").
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  await page.getByRole('button', { name: new RegExp(`^${escaped} `) }).click()
+  await page.getByRole('button', { name: 'Count me in!' }).click()
+  await expect(page.getByRole('button', { name: 'Count me in!' })).toHaveCount(0)
+}
+
+/** A player driven over the API (its own cookie jar), to fill a game with other teams and teammates. */
+export async function botPlayer(baseURL: string, joinCode: string, nickname: string) {
+  const context = await request.newContext({ baseURL, extraHTTPHeaders: loginBucket() })
+  const post = async (path: string, data: unknown) => {
+    const res = await context.post(path, { data })
+    const body = await res.json()
+    expect({ path, nickname, status: res.status(), body }).toMatchObject({ status: 200 })
+    return body
+  }
+  const joined = await post('/api/join_event', { join_code: joinCode, nickname })
+  return {
+    eventId: joined.event.id as string,
+    createTeam: async (name: string): Promise<string> => (await post('/api/create_team', { event_id: joined.event.id, name })).id,
+    joinTeam: (teamId: string) => post('/api/join_team', { team_id: teamId }),
+    dispose: () => context.dispose(),
+  }
+}
+
+/**
+ * Saves a full-page shot of the current screen as test-results/screens/<name>.png, named after its
+ * design/screens/<name>.html reference so a reviewer can compare it with
+ * design/review/shots/screens__<name>.png, then runs the axe check.
+ */
+export async function captureScreen(page: Page, name: string) {
+  await page.evaluate(() => document.fonts.ready)
+  await page.screenshot({ path: `test-results/screens/${name}.png`, fullPage: true, animations: 'disabled' })
+  await expectNoAxeViolations(page)
 }
 
 /** No WCAG 2.2 AA violations on the current screen. */

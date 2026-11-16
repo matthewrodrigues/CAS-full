@@ -2,7 +2,7 @@
 // One event (E2EB1) played in order, so the tests run serially and share the host and player.
 import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 import { JOIN_CODES } from './constants'
-import { createTeam, tapAndSend, expectNoAxeViolations, expectNoHorizontalScroll, hostApi, joinAsPlayer, type HostApi } from './support'
+import { createTeam, tapAndSend, expectNoAxeViolations, expectNoHorizontalScroll, hostApi, joinAsPlayer, joinTeam, type HostApi } from './support'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -138,7 +138,7 @@ test('a captain-only event lets only the captain answer', async ({ browser }) =>
   await createTeam(captain, 'Captained')
   const crew = await browser.newPage()
   await joinAsPlayer(crew, JOIN_CODES.captainOnly, 'Crew Lee')
-  await crew.getByRole('button', { name: 'Join Captained' }).click()
+  await joinTeam(crew, 'Captained')
 
   await host.act('host_next', crewEvent)
   await expect(crew.getByText('Your captain answers for the team.')).toBeVisible()

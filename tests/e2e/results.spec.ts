@@ -121,7 +121,8 @@ test("the leaderboard tab lists tonight's teams with your own marked", async () 
 test('the leaderboard has an empty state, and so do rewards', async ({ browser }) => {
   const fresh = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage()
   await joinAsPlayer(fresh, JOIN_CODES.smoke, 'Early Bird')
-  await fresh.getByRole('link', { name: 'Leaderboard', exact: true }).click()
+  // No team yet, so the tab bar is hidden (still joining): open the tab by its address.
+  await fresh.goto(`/play/${JOIN_CODES.smoke}/leaderboard`)
   await expect(fresh.getByText('Scores appear once the round starts.')).toBeVisible()
   await fresh.getByRole('link', { name: 'Rewards', exact: true }).click()
   await expect(fresh.getByText('Prizes show up here after the game. Win and your team names an Academy animal. Good luck tonight!')).toBeVisible()

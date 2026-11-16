@@ -25,6 +25,10 @@ const EVENTS = [
   { joinCode: 'E2EF1', settings: { team_submissions: 'captain_only' as const } },
   { joinCode: 'E2EG1' },
   { joinCode: 'E2EH1' },
+  // Screen captures for the redesign (join.spec.ts): the normal join flow, then the stress cases.
+  { joinCode: 'E2ES1' },
+  { joinCode: 'E2ET1' },
+  { joinCode: 'E2EU1', settings: { max_team_size: 8 } },
 ]
 
 const db = openDb(DB_FILE)
