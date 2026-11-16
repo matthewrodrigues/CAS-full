@@ -57,3 +57,4 @@ Background agents die with the session. Rebuild from what's on disk:
 - 2026-11-16: Task 6 done; every finding fixed, plus 3 small kit tweaks (picked team initial in pen, big-screen check/lightbulb scale, lone top-row note on the right). Review 2 started with the user.
 - 2026-11-16: the user approved review 2. Writing the build plan.
 - 2026-11-16: the user says the only prize is naming an animal, so prize codes are removed from the mockups (redeem-code deleted), and the placeholder animal names stay. Build plan written: `docs/superpowers/plans/2026-11-16-ui-redesign-build.md`.
+- 2026-11-16: BUILD started (subagent-driven, parallel waves in worktrees). **The build ledger is `.superpowers/sdd/2026-11-16-ui-redesign-build/progress.md`** (git-ignored): waves, rulings, agent IDs, per-task status. Resume from it. Wave A (T1, T2, T5) dispatched.
