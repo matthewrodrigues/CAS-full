@@ -49,9 +49,9 @@
     <section class="stack" aria-labelledby="join-title">
       <h2 class="h2" id="join-title">Or join a team</h2>
       <ul class="options" aria-label="Teams" id="teams">
-        <li><button type="button" class="option" aria-pressed="false" data-team="The Anglerfish Five"><span class="option__letter" aria-hidden="true">A</span><span class="option__label">The Anglerfish Five<span class="option__sub">4 players · Priya is captain</span></span></button></li>
-        <li><button type="button" class="option" aria-pressed="false" data-team="Kraken Up"><span class="option__letter" aria-hidden="true">K</span><span class="option__label">Kraken Up<span class="option__sub">2 players · Jess is captain</span></span></button></li>
-        <li><button type="button" class="option" disabled aria-label="Squid Pro Quo: full"><span class="option__letter" aria-hidden="true">S</span><span class="option__label">Squid Pro Quo<span class="option__sub">6 of 6 players · this team is full</span></span></button></li>
+        <li><button type="button" class="option" aria-pressed="false" data-team="The Anglerfish Five"><span class="initial initial--sm" aria-hidden="true">A</span><span class="option__label">The Anglerfish Five<span class="option__sub">4 players · Priya is captain</span></span></button></li>
+        <li><button type="button" class="option" aria-pressed="false" data-team="The Blobfish Brigade"><span class="initial initial--sm" aria-hidden="true">B</span><span class="option__label">The Blobfish Brigade<span class="option__sub">2 players · Jess is captain</span></span></button></li>
+        <li><button type="button" class="option" disabled aria-label="Squid Pro Quo: full"><span class="initial initial--sm" aria-hidden="true">S</span><span class="option__label">Squid Pro Quo<span class="option__sub">6 of 6 players · this team is full</span></span></button></li>
       </ul>
       <p class="small muted" id="none" hidden>No teams yet. Start the first one!</p>
     </section>
@@ -124,7 +124,7 @@
   if (state === 'picked') teams[1]?.setAttribute('aria-pressed', 'true')
   if (state === 'typed') input.value = 'Pressure Drop'
   if (state === 'taken') {
-    input.value = 'Kraken Up'
+    input.value = 'The Blobfish Brigade'
     input.setAttribute('aria-invalid', 'true')
     error.innerHTML =
       '<p class="field__error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5v.01"/></svg><span>Another team already has that name. Tap it below to join them instead?</span></p>'

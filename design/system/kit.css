@@ -2013,3 +2013,6 @@ a.list-row {
     transform: translateY(-1.5%) scale(1.01, 0.995);
   }
 }
+
+/* A picked team row (join-team) marks its initial in pen, like a picked answer's letter and the "you" row. */
+.option[aria-pressed='true'] .initial { border-color: var(--color-pen); color: var(--color-pen); }
