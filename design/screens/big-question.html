@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Big screen: question</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/big-screen.css">
+<script src="../system/include.js"></script>
+</head>
+<body class="big">
+
+<main class="screen screen--big screen--night">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--live"><span class="pill__dot" aria-hidden="true"></span>Question live</span>
+    </div>
+    <p class="big-note">Round 1 of 4 · Late? Join with code DEMO1</p>
+  </div>
+
+  <section class="stage stage--hero" aria-label="Your host">
+    <p class="bubble bubble--down" id="speech">Let's start in the deep end!</p>
+    <span class="char char--400" data-character="hosts/rocco/asking" role="img" aria-label="Rocco the raccoon, asking the question"></span>
+    <p class="body" id="answered">14 of 20 teams have sent an answer</p>
+  </section>
+
+  <div class="big-col">
+    <article class="paper" aria-labelledby="prompt">
+      <header class="paper__head">
+        <div class="paper__meta">
+          <p class="hand">Question 1 of 10</p>
+          <p class="small">Into the Abyss · 10 points</p>
+        </div>
+        <div class="countdown countdown--xl" role="timer" aria-label="Seconds left" id="timer" style="--left: 0.6">
+          <svg class="countdown__ring" viewBox="0 0 54 54" aria-hidden="true">
+            <circle class="countdown__track" cx="27" cy="27" r="23"/>
+            <circle class="countdown__fill" cx="27" cy="27" r="23" pathLength="100"/>
+          </svg>
+          <span class="countdown__num" id="seconds">12</span>
+        </div>
+      </header>
+      <div class="paper__body">
+        <h1 class="question" id="prompt" data-role="question">What is the deepest known point in Earth's oceans?</h1>
+        <ul class="options" aria-label="Answers">
+          <li><div class="option"><span class="option__letter" aria-hidden="true">A</span><span class="option__label">Challenger Deep</span></div></li>
+          <li><div class="option"><span class="option__letter" aria-hidden="true">B</span><span class="option__label">Puerto Rico Trench</span></div></li>
+          <li><div class="option"><span class="option__letter" aria-hidden="true">C</span><span class="option__label">Tonga Trench</span></div></li>
+          <li><div class="option"><span class="option__letter" aria-hidden="true">D</span><span class="option__label">Java Trench</span></div></li>
+        </ul>
+      </div>
+    </article>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Big-screen flow">
+  <span>Big screen, in game order:</span>
+  <a href="big-lobby.html">Lobby</a>
+  <a href="big-question.html">Question</a>
+  <a href="big-round-intro.html">Round intro</a>
+  <a href="big-leaderboard.html">Leaderboard</a>
+  <a href="big-locked.html">Locked</a>
+  <a href="big-reveal.html">Reveal</a>
+  <a href="big-prizes.html">Prizes</a>
+</nav>
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="big-question.html">12 seconds left</a>
+  <a href="big-question.html?left=5">5 seconds left (urgent)</a>
+</nav>
+
+<script>
+  // Mockup behavior: the countdown ticks once a second (20 seconds for multiple choice, starting
+  // at 12). The number always ticks; the ring only glides when motion is allowed (kit.css).
+  // At 5 seconds the ring turns Poppy and Rocco nudges the room to send.
+  const timer = document.getElementById('timer')
+  const seconds = document.getElementById('seconds')
+  const speech = document.getElementById('speech')
+  const total = 20
+  let left = Number(new URLSearchParams(location.search).get('left') ?? 12)
+  function render() {
+    seconds.textContent = left
+    timer.style.setProperty('--left', left / total)
+    timer.classList.toggle('is-urgent', left <= 5)
+    if (left <= 5 && left > 0) speech.textContent = "5 seconds! Don't forget to send!"
+  }
+  render()
+  const tick = setInterval(() => {
+    left = Math.max(0, left - 1)
+    render()
+    if (left === 0) {
+      clearInterval(tick)
+      document.getElementById('phase').innerHTML =
+        '<span class="pill pill--locked"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Answers locked</span>'
+      speech.textContent = 'Pencils down! Let’s see…'
+    }
+  }, 1000)
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Big screen: answers locked</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/big-screen.css">
+<script src="../system/include.js"></script>
+</head>
+<body class="big">
+
+<main class="screen screen--big screen--night">
+  <div class="screen__top">
+    <div role="status" aria-live="polite">
+      <span class="pill pill--locked">
+        <svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        Answers locked
+      </span>
+    </div>
+    <p class="big-note">Round 3 of 4</p>
+  </div>
+
+  <section class="stage stage--hero" aria-label="Your host">
+    <p class="bubble bubble--down">Pencils down! Let's see…</p>
+    <span class="char char--400" data-character="hosts/june/waiting" role="img" aria-label="Dr. June the scientist, waiting for the reveal"></span>
+    <p class="body">19 of 20 teams sent an answer</p>
+  </section>
+
+  <div class="big-col">
+    <div class="paper-shadow">
+      <article class="paper paper--torn" aria-labelledby="prompt">
+        <header class="paper__head">
+          <div class="paper__meta">
+            <p class="hand">Question 5 of 10</p>
+            <p class="small">Ocean Sounds · 10 points</p>
+          </div>
+          <p class="hand">Time's up!</p>
+        </header>
+        <div class="paper__body">
+          <h1 class="question" id="prompt" data-role="question">Snapping shrimp make this crackling. What makes the snap?</h1>
+          <p class="big-caption">
+            <svg class="big-caption__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>
+            <span><span class="sr-only">Caption: </span>[Constant crackling, like bacon frying]</span>
+          </p>
+          <ul class="options" aria-label="Answers">
+            <li><div class="option" aria-disabled="true"><span class="option__letter" aria-hidden="true">A</span><span class="option__label">A collapsing bubble from the claw</span></div></li>
+            <li><div class="option" aria-disabled="true"><span class="option__letter" aria-hidden="true">B</span><span class="option__label">Shells knocking together</span></div></li>
+            <li><div class="option" aria-disabled="true"><span class="option__letter" aria-hidden="true">C</span><span class="option__label">Legs rubbing together</span></div></li>
+            <li><div class="option" aria-disabled="true"><span class="option__letter" aria-hidden="true">D</span><span class="option__label">Teeth grinding</span></div></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Big-screen flow">
+  <span>Big screen, in game order:</span>
+  <a href="big-lobby.html">Lobby</a>
+  <a href="big-question.html">Question</a>
+  <a href="big-round-intro.html">Round intro</a>
+  <a href="big-leaderboard.html">Leaderboard</a>
+  <a href="big-locked.html">Locked</a>
+  <a href="big-reveal.html">Reveal</a>
+  <a href="big-prizes.html">Prizes</a>
+</nav>
+</body>
+</html>

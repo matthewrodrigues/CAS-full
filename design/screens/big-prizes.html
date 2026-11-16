@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Big screen: prizes</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/big-screen.css">
+<script src="../system/include.js"></script>
+</head>
+<body class="big">
+
+<main class="screen screen--big screen--night">
+  <div class="screen__top">
+    <div role="status" aria-live="polite">
+      <span class="pill pill--results">
+        <svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>
+        Results are in
+      </span>
+    </div>
+    <p class="big-note">Final scores · thanks for playing!</p>
+  </div>
+
+  <section class="stage stage--sky stage--hero" aria-label="Your host">
+    <p class="bubble bubble--down">What a night! Congrats!</p>
+    <span class="char char--400 char--idle" data-character="hosts/rocco/cheering" role="img" aria-label="Rocco the raccoon, cheering"></span>
+    <p class="body">Winners: check your phone to pick a name</p>
+  </section>
+
+  <div class="big-col">
+    <h1 class="h1" id="prizes-title">Tonight's top teams name an Academy animal</h1>
+    <ol class="list list--board" aria-labelledby="prizes-title">
+      <li class="list-row is-top">
+        <span class="list-row__rank">1</span>
+        <span class="char char--160" data-character="animals/penguin-chick-happy" role="img" aria-label="African penguin chick"></span>
+        <span class="list-row__name">The Bioluminescent Bar Snacks!<span class="list-row__sub">Place 1: name the African penguin chick</span></span>
+        <span class="list-row__score">290<span class="sr-only"> points</span></span>
+      </li>
+      <li class="list-row is-top">
+        <span class="list-row__rank">2</span>
+        <span class="char char--160" data-character="animals/giant-pacific-octopus-happy" role="img" aria-label="Giant Pacific octopus"></span>
+        <span class="list-row__name">Hadal Zone Hooligans of SF Bay<span class="list-row__sub">Place 2: name the Giant Pacific octopus</span></span>
+        <span class="list-row__score">270<span class="sr-only"> points</span></span>
+      </li>
+      <li class="list-row is-top">
+        <span class="list-row__rank">3</span>
+        <span class="char char--160" data-character="animals/pacific-seahorse-happy" role="img" aria-label="Pacific seahorse"></span>
+        <span class="list-row__name">Kelp Me If You Can<span class="list-row__sub">Place 3: name the Pacific seahorse</span></span>
+        <span class="list-row__score">255<span class="sr-only"> points</span></span>
+      </li>
+    </ol>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Big-screen flow">
+  <span>Big screen, in game order:</span>
+  <a href="big-lobby.html">Lobby</a>
+  <a href="big-question.html">Question</a>
+  <a href="big-round-intro.html">Round intro</a>
+  <a href="big-leaderboard.html">Leaderboard</a>
+  <a href="big-locked.html">Locked</a>
+  <a href="big-reveal.html">Reveal</a>
+  <a href="big-prizes.html">Prizes</a>
+</nav>
+</body>
+</html>

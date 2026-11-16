@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Big screen: round intro</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/big-screen.css">
+<script src="../system/include.js"></script>
+</head>
+<body class="big">
+
+<main class="screen screen--big screen--night">
+  <div class="screen__top">
+    <div role="status" aria-live="polite">
+      <span class="pill pill--waiting">
+        <svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10M7 21h10M8 3v3l4 6-4 6v3M16 3v3l-4 6 4 6v3"/></svg>
+        Waiting for the host
+      </span>
+    </div>
+    <p class="big-note">Round 1 complete · Join with code DEMO1</p>
+  </div>
+
+  <section class="stage stage--butter stage--hero" aria-labelledby="takeover">
+    <p class="bubble bubble--down">Waddle you know? Let's see!</p>
+    <span class="char char--400 char--idle" data-character="hosts/pebble/greeting" role="img" aria-label="Pebble the penguin, waving hello"></span>
+    <h1 class="h1" id="takeover">Pebble's taking Round 2!</h1>
+  </section>
+
+  <div class="big-col">
+    <article class="paper" aria-labelledby="round-title">
+      <header class="paper__head">
+        <div class="paper__meta">
+          <p class="hand">Round 2 of 4</p>
+          <p class="small">Picture round · 10 questions · 10 points each</p>
+        </div>
+      </header>
+      <div class="paper__body">
+        <h2 class="display" id="round-title">Who Lives Down There?</h2>
+        <p class="h2 muted">Look closely at each picture, then answer on your phone.</p>
+        <div class="row big-row">
+          <span class="char char--160" data-character="hosts/rocco/relaxing" role="img" aria-label="Rocco the raccoon, relaxing"></span>
+          <p class="bubble">Over to you, Pebble!</p>
+        </div>
+      </div>
+    </article>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Big-screen flow">
+  <span>Big screen, in game order:</span>
+  <a href="big-lobby.html">Lobby</a>
+  <a href="big-question.html">Question</a>
+  <a href="big-round-intro.html">Round intro</a>
+  <a href="big-leaderboard.html">Leaderboard</a>
+  <a href="big-locked.html">Locked</a>
+  <a href="big-reveal.html">Reveal</a>
+  <a href="big-prizes.html">Prizes</a>
+</nav>
+</body>
+</html>

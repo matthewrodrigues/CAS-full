@@ -20,7 +20,7 @@
 | 5a Joining | ✅ done | see log; 7 screens + `kit-additions/joining.css` |
 | 5b Paper sheet | ⏳ dispatched 2026-11-15 | brief `design/briefs/5b-paper.md` |
 | 5c After the game | ✅ done | 11 screens + `kit-additions/after.css` (adds the 4-tab bar) |
-| 5d Big screen | ⏳ dispatched 2026-11-15 | brief `design/briefs/5d-big-screen.md` |
+| 5d Big screen | ✅ done | 7 screens + `kit-additions/big-screen.css` |
 | 5e Characters | ⏳ dispatched 2026-11-15 | brief `design/briefs/5e-characters.md` |
 | 5 wrap-up | ☐ | after 5e: rerun check with the real art; merge reviewed `design/system/kit-additions/*.css` into kit.css |
 | 6 Consistency review | ☐ | plan Task 6 |
@@ -49,3 +49,4 @@ Background agents die with the session. Rebuild from what's on disk:
 - 2026-11-15: Tasks 1–4 done. Swarm 5a–5e dispatched in parallel.
 - 2026-11-15: 5a done and committed. README fixed: labeled character spans need `role="img"` (axe).
 - 2026-11-15: 5c done and committed. For Task 6: the tab bar (Play/Leaderboard/Rewards/Animals) exists only in 5c screens, so check whether 5a/5b screens need it. Made-up copy to confirm at review 2: prize "NightLife tote bag", code format, keeper update author line.
+- 2026-11-15: 5d done and committed. For the wrap-up: big-screen.css has kit FIXES to fold into kit.css (bubble flex in hero stage, list-row ink on night, aria-disabled options, locked pill outline on night, paper tape/fold at big scale). The join URL on big-lobby is a placeholder (real one comes from PUBLIC_URL).
