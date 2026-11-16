@@ -29,7 +29,7 @@ const view: GameView = {
   submission: null,
   my_team: null,
   teams: [],
-  settings: { max_team_size: 6, team_submissions: 'any_member', live_background: 'cream' },
+  settings: { max_team_size: 6, team_submissions: 'any_member' },
 }
 
 describe('applyMessage', () => {

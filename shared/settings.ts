@@ -10,7 +10,6 @@ export const EventSettings = z
     grace_ms: z.int().min(0).max(10_000).default(1200),
     auto_accept_threshold: z.number().min(0).max(1).default(0.8),
     review_threshold: z.number().min(0).max(1).default(0.5),
-    live_background: z.enum(['cream', 'violet']).default('cream'),
   })
   .refine((s) => s.review_threshold <= s.auto_accept_threshold, {
     message: 'review_threshold must not exceed auto_accept_threshold',

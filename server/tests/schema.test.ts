@@ -159,8 +159,12 @@ describe('event settings', () => {
       grace_ms: 1200,
       auto_accept_threshold: 0.8,
       review_threshold: 0.5,
-      live_background: 'cream',
     })
+  })
+
+  it('parseSettings ignores a stored live_background', () => {
+    const parsed = parseSettings({ live_background: 'violet' })
+    expect(parsed).not.toHaveProperty('live_background')
   })
 
   it('rejects a review threshold above the auto-accept threshold', () => {

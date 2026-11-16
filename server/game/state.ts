@@ -75,7 +75,7 @@ function shownName(team: { id: string; name: string; nameStatus: string }, { own
 
 function publicSettings(db: Db, eventId: string): PublicSettings {
   const { settings } = db.select({ settings: events.settings }).from(events).where(eq(events.id, eventId)).get()!
-  return { max_team_size: settings.max_team_size, team_submissions: settings.team_submissions, live_background: settings.live_background }
+  return { max_team_size: settings.max_team_size, team_submissions: settings.team_submissions }
 }
 
 function hostView(ctx: GameContext, eventId: string): HostView {
