@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Design tokens: the ONLY place colors, fonts, shadows and radii are defined (docs/SPEC.md section 7).
  * "Lamplight at the Academy": cream index cards under a honey lamp, a midnight-blue sky, cocoa ink and
  * soft pastel stages. Source of truth: design/system/tokens.css. Tailwind emits the @theme variables as
@@ -7,6 +7,7 @@
  * Color meaning: green (--color-correct) means correct, red (--color-incorrect) means incorrect, and
  * neither is ever decoration. Correct/incorrect always pairs color with an icon and a word.
  *
+ * incorrect, and neither is ever decoration. Correct/incorrect always pairs color with an icon and a word.
  *
  * ---------------------------------------------------------------------------------------------
  * CONTRAST: every text/background pair the kit intends (WCAG 2 relative luminance).

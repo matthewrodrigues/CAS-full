@@ -1,4 +1,4 @@
-﻿/*
+/*
  * NightLife Trivia design kit: warm, cozy, cute and character-led.
  * Spec: design/system/kit.md. Colors come only from design/system/tokens.css.
  * Motion lives only inside @media (prefers-reduced-motion: no-preference), at the end of this file.
@@ -18,20 +18,20 @@
   --space-14: 56px;
 
   /* Type scale (phone). The question is never below 20px; it starts at 24px. */
-  --text-sm: 16px; /* the smallest text in the app: captions, hints */
-  --text-md: 18px; /* body, list names */
-  --text-lg: 20px; /* answers, buttons, the hand font */
-  --text-question: 24px; /* the question; long prompts may drop to --text-question-min */
-  --text-question-min: 20px;
-  --text-h2: 24px;
-  --text-h1: 30px;
-  --text-display: 38px;
+  --kit-text-sm: 16px; /* the smallest text in the app: captions, hints */
+  --kit-text-md: 18px; /* body, list names */
+  --kit-text-lg: 20px; /* answers, buttons, the hand font */
+  --kit-text-question: 24px; /* the question; long prompts may drop to --kit-text-question-min */
+  --kit-text-question-min: 20px;
+  --kit-text-h2: 24px;
+  --kit-text-h1: 30px;
+  --kit-text-display: 38px;
 
   /* Corners: round = happy. Paper is the one exception: a real card has small corners. */
-  --radius-paper: 10px;
-  --radius-control: 18px; /* buttons, answer options, inputs */
-  --radius-card: 22px; /* stages, list cards, bubbles */
-  --radius-pill: 999px;
+  --kit-radius-paper: 10px;
+  --kit-radius-control: 18px; /* buttons, answer options, inputs */
+  --kit-radius-card: 22px; /* stages, list cards, bubbles */
+  --kit-radius-pill: 999px;
 
   /* Sizes */
   --tap: 44px; /* the minimum tap target */
@@ -43,8 +43,8 @@
   --dur-fast: 120ms;
   --dur: 260ms;
   --dur-slow: 420ms;
-  --ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --kit-ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
+  --kit-ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 
   /* The hand-drawn pen loop, as a mask: a little off-center, overshooting its start.
      Shared by a picked answer (.option) and a picked choice (.choice). */
@@ -58,17 +58,17 @@
   --space-6: 40px;
   --space-8: 56px;
   --space-10: 72px;
-  --text-sm: 26px;
-  --text-md: 30px;
-  --text-lg: 38px;
-  --text-question: 64px;
-  --text-question-min: 52px;
-  --text-h2: 44px;
-  --text-h1: 64px;
-  --text-display: 88px;
-  --radius-paper: 18px;
-  --radius-control: 28px;
-  --radius-card: 40px;
+  --kit-text-sm: 26px;
+  --kit-text-md: 30px;
+  --kit-text-lg: 38px;
+  --kit-text-question: 64px;
+  --kit-text-question-min: 52px;
+  --kit-text-h2: 44px;
+  --kit-text-h1: 64px;
+  --kit-text-display: 88px;
+  --kit-radius-paper: 18px;
+  --kit-radius-control: 28px;
+  --kit-radius-card: 40px;
   --button-h: 96px;
   --option-h: 104px;
   --letter: 64px;
@@ -90,7 +90,7 @@ body {
   background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
@@ -127,6 +127,8 @@ a {
 }
 }
 
+/* Every kit component and layout rule sits in @layer components, so Tailwind utilities override kit classes. */
+@layer components {
 /* ---------------------------------------------------------------- layout */
 /* One phone screen. Designed at 390x844; content scrolls if it must, the action stays in reach. */
 .screen {
@@ -222,16 +224,16 @@ a {
   min-height: var(--tap);
   padding: 0 var(--space-3);
   font-weight: 700;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
 }
 
 /*
  * The player app's four tabs (src/routes/play/play-layout.tsx): Play, Leaderboard, Rewards, Animals.
  * Shown on the lobby, the round break and every after-game screen; hidden on landing, join, staff and
- * every timed or in-flow sheet (question, wager, locked, reveal, paused). See kit.md Â§6.
+ * every timed or in-flow sheet (question, wager, locked, reveal, paused). See kit.md §6.
  * The last child of .screen, full bleed past the gutters. In the build it's fixed to the bottom of the
  * viewport; in the mockups it sits in the flow so full-page screenshots don't show it over the list.
- * <nav class="tabbar" aria-label="Game sections"><ul class="tabbar__list"><li><a class="tabbar__link" aria-current="page">â€¦
+ * <nav class="tabbar" aria-label="Game sections"><ul class="tabbar__list"><li><a class="tabbar__link" aria-current="page">…
  */
 .tabbar {
   position: relative;
@@ -260,7 +262,7 @@ a {
   padding: var(--space-2) var(--space-1);
   color: var(--color-ink-muted);
   font-weight: 700;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   line-height: 1.1;
   text-decoration: none;
 }
@@ -297,7 +299,7 @@ a {
   grid-template-columns: 1fr 1fr;
   gap: var(--space-1);
   padding: var(--space-1);
-  border-radius: var(--radius-pill);
+  border-radius: var(--kit-radius-pill);
   background: var(--color-paper-edge);
 }
 .seg__link {
@@ -305,10 +307,10 @@ a {
   align-items: center;
   justify-content: center;
   min-height: var(--tap);
-  border-radius: var(--radius-pill);
+  border-radius: var(--kit-radius-pill);
   color: var(--color-ink);
   font-weight: 700;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   text-decoration: none;
 }
 .seg__link[aria-current='page'] {
@@ -349,48 +351,48 @@ a {
 .display {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-display);
+  font-size: var(--kit-text-display);
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
 .h1 {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-h1);
+  font-size: var(--kit-text-h1);
   line-height: 1.15;
 }
 .h2 {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-h2);
+  font-size: var(--kit-text-h2);
   line-height: 1.2;
 }
 /* The question prompt. Mark it data-role="question". */
 .question {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-question);
+  font-size: var(--kit-text-question);
   line-height: 1.25;
   color: var(--color-ink);
   text-wrap: pretty;
 }
 .question--long {
-  font-size: var(--text-question-min);
+  font-size: var(--kit-text-question-min);
 }
 .body {
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
 }
 .muted {
   color: var(--color-ink-muted);
 }
 .small {
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
 }
 /* The hand font: short accents only (question number, timer, points, the host's speech). */
 .hand {
   font-family: var(--font-hand);
   font-weight: 500;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   line-height: 1.25;
   color: var(--color-pencil);
 }
@@ -398,7 +400,7 @@ a {
   color: var(--color-ink);
 }
 .hand--sm {
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
 }
 /* The hand note on Midnight (the big screen's top-right "Round 1 of 4"). Pencil is too dark there. */
 .hand--night {
@@ -423,14 +425,14 @@ a {
 /*
  * The index card: washi tape on top, a small folded corner at top right, one honey header rule.
  * Use for the live question, wager, locked and reveal. Not for lists, forms or chrome.
- * <article class="paper"> <header class="paper__head">â€¦</header> <div class="paper__body">â€¦</div> </article>
+ * <article class="paper"> <header class="paper__head">…</header> <div class="paper__body">…</div> </article>
  */
 .paper {
   --fold: 22px;
   position: relative;
   background:
     linear-gradient(225deg, transparent calc(var(--fold) * 0.7071), var(--color-paper) calc(var(--fold) * 0.7071 + 0.5px));
-  border-radius: var(--radius-paper) 0 var(--radius-paper) var(--radius-paper);
+  border-radius: var(--kit-radius-paper) 0 var(--kit-radius-paper) var(--kit-radius-paper);
   box-shadow: var(--shadow-card);
   padding: var(--space-5) var(--space-5) var(--space-5);
   color: var(--color-ink);
@@ -491,7 +493,7 @@ a {
   min-width: 0;
 }
 .paper__meta .hand {
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
 }
 .paper__meta .small {
   color: var(--color-ink-muted);
@@ -509,7 +511,7 @@ a {
   filter: drop-shadow(0 3px 0 var(--color-paper-edge)) drop-shadow(0 10px 14px var(--color-shadow-soft));
 }
 .paper--torn {
-  border-radius: 0 0 var(--radius-paper) var(--radius-paper);
+  border-radius: 0 0 var(--kit-radius-paper) var(--kit-radius-paper);
   background: var(--color-paper);
   box-shadow: none;
   padding-top: calc(var(--space-5) + 8px);
@@ -531,10 +533,10 @@ a {
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   background: var(--color-surface);
   border: 2px dashed var(--color-line);
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
 }
 .note__icon {
   flex: none;
@@ -559,12 +561,12 @@ a {
 .fact__label {
   font-family: var(--font-hand);
   font-weight: 600;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   line-height: 1.25;
   color: var(--color-pencil);
 }
 .big .fact p {
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
 }
 
 /* A big number with its label (round break, wager). */
@@ -577,13 +579,13 @@ a {
 .tally__num {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-display);
+  font-size: var(--kit-text-display);
   line-height: 1;
   color: var(--color-ink);
   font-variant-numeric: tabular-nums;
 }
 .tally__label {
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   font-weight: 700;
 }
 
@@ -598,7 +600,7 @@ a {
   display: block;
   width: 100%;
   aspect-ratio: 2 / 1;
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   background: var(--color-depth);
   box-shadow: 0 3px 0 var(--color-paper-edge);
   overflow: hidden;
@@ -612,7 +614,7 @@ a {
 }
 .media figcaption,
 .media__caption {
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-ink-muted);
 }
 
@@ -622,7 +624,7 @@ a {
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-3);
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   background: var(--color-surface);
   border: 2px solid var(--color-line);
 }
@@ -661,7 +663,7 @@ a {
 .clip__track {
   flex: 1;
   height: 10px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--kit-radius-pill);
   background: var(--color-paper-edge);
   overflow: hidden;
 }
@@ -676,7 +678,7 @@ a {
   flex: none;
   font-family: var(--font-hand);
   font-weight: 600;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-pencil);
   font-variant-numeric: tabular-nums;
 }
@@ -686,7 +688,7 @@ a {
   gap: var(--space-2);
   padding-top: var(--space-2);
   border-top: 2px dashed var(--color-line);
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   line-height: 1.35;
 }
 .clip__caption-label {
@@ -699,12 +701,12 @@ a {
   place-items: center;
   width: var(--tap);
   height: var(--tap);
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   border: 2px solid var(--color-line);
   background: var(--color-surface);
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-ink-muted);
   cursor: pointer;
 }
@@ -720,7 +722,7 @@ a {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   font-weight: 700;
   color: var(--color-ink-muted);
 }
@@ -740,11 +742,11 @@ a {
   min-height: var(--button-h);
   min-width: var(--tap);
   padding: 0 var(--space-6);
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   border: 0;
   font-family: var(--font-sans);
   font-weight: 800;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   line-height: 1.2;
   text-align: center;
   text-decoration: none;
@@ -831,13 +833,13 @@ a {
   min-height: var(--option-h);
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
   border: 2px solid var(--color-line);
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   background: var(--color-surface);
   box-shadow: var(--shadow-option);
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   line-height: 1.25;
   text-align: left;
   cursor: pointer;
@@ -861,7 +863,7 @@ a {
   border: 2px solid var(--color-line);
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   color: var(--color-pencil);
 }
 .option__label {
@@ -874,7 +876,7 @@ a {
   flex: none;
   font-family: var(--font-hand);
   font-weight: 600;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   color: var(--color-pen);
 }
 /* Picked. Works with aria-pressed="true" or .is-picked. */
@@ -912,11 +914,11 @@ a {
 .option--static {
   cursor: default;
 }
-/* A second line inside an answer-style option (team rows on join-team: "3 players Â· Sam is captain"). */
+/* A second line inside an answer-style option (team rows on join-team: "3 players · Sam is captain"). */
 .option__sub {
   display: block;
   font-weight: 600;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-ink-muted);
 }
 /* A quiet row tag ("our pick") on a reveal, where brand is dropped. */
@@ -926,7 +928,7 @@ a {
 /* The revealed answer on the big screen: one full-width option, one type step up, so it's the payoff. */
 .option.option--answer {
   min-height: calc(var(--option-h) * 1.2);
-  font-size: var(--text-h2);
+  font-size: var(--kit-text-h2);
 }
 /* True / false: two tall tiles side by side, the word centered under its bubble. */
 .option--tf {
@@ -935,7 +937,7 @@ a {
   min-height: calc(var(--option-h) * 1.8);
   padding: var(--space-3);
   text-align: center;
-  font-size: var(--text-h2);
+  font-size: var(--kit-text-h2);
   font-family: var(--font-heading);
   font-weight: 600;
 }
@@ -955,18 +957,18 @@ a {
 }
 .field__label {
   font-weight: 700;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
 }
 .field__input {
   width: 100%;
   min-height: var(--option-h);
   padding: var(--space-3) var(--space-4);
   border: 2px solid var(--color-border);
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   background: var(--color-surface);
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   color: var(--color-ink);
 }
 .field__input::placeholder {
@@ -985,7 +987,7 @@ a {
   display: flex;
   justify-content: space-between;
   gap: var(--space-3);
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-ink-muted);
 }
 /* "7 / 200" never wraps next to a long hint. */
@@ -1002,7 +1004,7 @@ a {
   align-items: flex-start;
   gap: var(--space-2);
   font-weight: 700;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   color: var(--color-incorrect);
 }
 .field__error svg {
@@ -1019,7 +1021,7 @@ a {
   min-height: 120px;
   resize: vertical;
   font-weight: 600;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   line-height: 1.45;
 }
 /* A labeled select for staff pages (the event picker). Wrap the <select> in .select for the chevron. */
@@ -1046,17 +1048,17 @@ a {
   min-height: var(--option-h);
   padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
   border: 2px solid var(--color-border);
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   background: var(--color-surface);
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   color: var(--color-ink);
 }
 .field--number .field__input {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-h1);
+  font-size: var(--kit-text-h1);
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
@@ -1067,7 +1069,7 @@ a {
 
 /*
  * A radio group of picture choices (staff round hosts: four choices with a 48px avatar each).
- * <fieldset class="choices"><legend>â€¦</legend><label class="choice"><input type="radio">â€¦</label></fieldset>
+ * <fieldset class="choices"><legend>…</legend><label class="choice"><input type="radio">…</label></fieldset>
  * The picked choice gets the same pen circle as a picked answer (a shape, not just color).
  */
 .choices {
@@ -1083,7 +1085,7 @@ a {
   padding: 0;
   margin-bottom: var(--space-2);
   font-weight: 700;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
 }
 .choices > legend .hand {
   display: block;
@@ -1097,11 +1099,11 @@ a {
   min-height: 96px;
   padding: var(--space-2) var(--space-1);
   border: 2px solid var(--color-line);
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   background: var(--color-surface);
   box-shadow: var(--shadow-option);
   font-weight: 700;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   line-height: 1.2;
   text-align: center;
   cursor: pointer;
@@ -1156,7 +1158,7 @@ a {
   outline-offset: 3px;
 }
 
-/* 1â€“5 stars. Each star is a label around a real radio, 52px, so it's tappable and keyboard-friendly. */
+/* 1–5 stars. Each star is a label around a real radio, 52px, so it's tappable and keyboard-friendly. */
 .rating {
   margin: 0;
   padding: 0;
@@ -1168,7 +1170,7 @@ a {
 .rating__legend {
   padding: 0;
   font-weight: 700;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
 }
 .rating__stars {
   display: flex;
@@ -1180,7 +1182,7 @@ a {
   place-items: center;
   width: 52px;
   height: 52px;
-  border-radius: var(--radius-control);
+  border-radius: var(--kit-radius-control);
   color: var(--color-border);
   cursor: pointer;
 }
@@ -1215,7 +1217,7 @@ a {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   cursor: pointer;
 }
 .check__control {
@@ -1273,10 +1275,10 @@ a {
   gap: var(--space-2);
   min-height: 36px;
   padding: var(--space-1) var(--space-4) var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
+  border-radius: var(--kit-radius-pill);
   font-family: var(--font-sans);
   font-weight: 800;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   line-height: 1.1;
   white-space: nowrap;
 }
@@ -1382,7 +1384,7 @@ a {
   position: relative;
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   line-height: 1;
   color: var(--color-ink);
   font-variant-numeric: tabular-nums;
@@ -1404,7 +1406,7 @@ a {
   height: 200px;
 }
 .countdown--xl .countdown__num {
-  font-size: var(--text-display);
+  font-size: var(--kit-text-display);
 }
 
 /* ---------------------------------------------------------------- characters */
@@ -1453,7 +1455,7 @@ a {
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-card);
+  border-radius: var(--kit-radius-card);
   background: var(--color-stage);
   color: var(--color-ink);
   overflow: hidden;
@@ -1504,7 +1506,7 @@ a {
   background: var(--color-paper);
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   line-height: 1;
   color: var(--color-pencil);
 }
@@ -1523,12 +1525,12 @@ a {
   flex: 1;
   min-width: 0;
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-card);
+  border-radius: var(--kit-radius-card);
   background: var(--color-surface);
   box-shadow: var(--shadow-soft);
   font-family: var(--font-hand);
   font-weight: 500;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   line-height: 1.25;
   color: var(--color-ink);
 }
@@ -1572,10 +1574,10 @@ a {
   gap: var(--space-2);
   min-height: 44px;
   padding: var(--space-1) var(--space-5) var(--space-1) var(--space-2);
-  border-radius: var(--radius-pill);
+  border-radius: var(--kit-radius-pill);
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-h2);
+  font-size: var(--kit-text-h2);
   line-height: 1.1;
 }
 .result__icon {
@@ -1633,7 +1635,7 @@ a {
 }
 
 /* ---------------------------------------------------------------- list rows */
-/* Leaderboards, prizes and animals. <ol class="list"><li class="list-row">â€¦</li></ol> */
+/* Leaderboards, prizes and animals. <ol class="list"><li class="list-row">…</li></ol> */
 .list {
   list-style: none;
   margin: 0;
@@ -1648,7 +1650,7 @@ a {
   gap: var(--space-3);
   min-height: 64px;
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
-  border-radius: var(--radius-card);
+  border-radius: var(--kit-radius-card);
   background: var(--color-surface);
   box-shadow: 0 2px 0 var(--color-paper-edge);
   /* A Milk row always needs Cocoa ink, on any background (Midnight would otherwise give it paper text). */
@@ -1660,7 +1662,7 @@ a {
   text-align: center;
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   color: var(--color-pencil);
   font-variant-numeric: tabular-nums;
 }
@@ -1668,21 +1670,21 @@ a {
   flex: 1;
   min-width: 0;
   font-weight: 700;
-  font-size: var(--text-md);
+  font-size: var(--kit-text-md);
   line-height: 1.25;
   overflow-wrap: anywhere;
 }
 .list-row__sub {
   display: block;
   font-weight: 600;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-ink-muted);
 }
 .list-row__score {
   flex: none;
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
   color: var(--color-ink);
   font-variant-numeric: tabular-nums;
 }
@@ -1710,11 +1712,11 @@ a.list-row {
   align-items: center;
   min-height: 26px;
   padding: 0 var(--space-2);
-  border-radius: var(--radius-pill);
+  border-radius: var(--kit-radius-pill);
   background: var(--color-pen);
   color: var(--color-paper);
   font-weight: 800;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   line-height: 1;
   vertical-align: middle;
 }
@@ -1731,13 +1733,13 @@ a.list-row {
 }
 /* The big leaderboard and prize list: names and scores one step up, so they read across the room. */
 .list--board .list-row__name {
-  font-size: var(--text-lg);
+  font-size: var(--kit-text-lg);
 }
 .list--board .list-row__score {
-  font-size: var(--text-h2);
+  font-size: var(--kit-text-h2);
 }
 .list--board .list-row__sub {
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
 }
 
 /* A small item status (icon + words): a prize ready, a name approved. Not game status (that's .pill)
@@ -1749,11 +1751,11 @@ a.list-row {
   align-self: flex-start;
   min-height: 32px;
   padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
-  border-radius: var(--radius-pill);
+  border-radius: var(--kit-radius-pill);
   background: var(--color-bg);
   color: var(--color-ink);
   font-weight: 800;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   line-height: 1.2;
 }
 .chip__icon {
@@ -1768,7 +1770,7 @@ a.list-row {
 /* ---------------------------------------------------------------- cards */
 /*
  * The one Milk card, for things that aren't the game sheet: a form section, a team list, a won prize,
- * an animal's facts. Kit Â§7: forms and lists use surface cards with --radius-card, never paper.
+ * an animal's facts. Kit §7: forms and lists use surface cards with --kit-radius-card, never paper.
  * .card__head is an icon or avatar plus a title; .card__head--split puts a title left and a note right.
  */
 .card {
@@ -1776,7 +1778,7 @@ a.list-row {
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-4);
-  border-radius: var(--radius-card);
+  border-radius: var(--kit-radius-card);
   background: var(--color-surface);
   box-shadow: 0 2px 0 var(--color-paper-edge);
 }
@@ -1802,7 +1804,7 @@ a.list-row {
 .code-display {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-h1);
+  font-size: var(--kit-text-h1);
   line-height: 1.1;
   letter-spacing: 0.12em;
   font-variant-numeric: tabular-nums;
@@ -1810,7 +1812,7 @@ a.list-row {
 }
 /* Room scale: "DEMO1" read from the back of the room. */
 .code-display--xl {
-  font-size: calc(var(--text-display) * 1.6);
+  font-size: calc(var(--kit-text-display) * 1.6);
   line-height: 1;
   letter-spacing: 0.08em;
 }
@@ -1822,7 +1824,7 @@ a.list-row {
   width: 232px;
   height: 232px;
   padding: var(--space-4);
-  border-radius: var(--radius-card);
+  border-radius: var(--kit-radius-card);
   background: var(--color-surface);
   box-shadow: inset 0 0 0 2px var(--color-line);
 }
@@ -1847,7 +1849,7 @@ a.list-row {
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 3;
-  border-radius: var(--radius-card);
+  border-radius: var(--kit-radius-card);
   background: var(--color-paper);
   color: var(--color-ink-muted);
   border: 2px dashed var(--color-border);
@@ -1857,7 +1859,7 @@ a.list-row {
   height: 56px;
 }
 .photo-slot__caption {
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-ink-muted);
 }
 
@@ -1877,7 +1879,7 @@ a.list-row {
   gap: var(--space-1);
   margin-left: var(--space-5);
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-card);
+  border-radius: var(--kit-radius-card);
   background: var(--color-surface);
   box-shadow: 0 2px 0 var(--color-paper-edge);
   overflow-wrap: anywhere;
@@ -1905,11 +1907,11 @@ a.list-row {
 .feed__date {
   font-family: var(--font-hand);
   font-weight: 600;
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-pencil);
 }
 .feed__who {
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-ink-muted);
 }
 
@@ -1921,7 +1923,7 @@ a.list-row {
   gap: var(--space-2);
   padding: var(--space-4);
   border-top: 2px dashed var(--color-line);
-  font-size: var(--text-sm);
+  font-size: var(--kit-text-sm);
   color: var(--color-ink-muted);
 }
 .mock-controls a {
@@ -1937,15 +1939,15 @@ a.list-row {
   .btn,
   .option {
     transition:
-      transform var(--dur-fast) var(--ease-out),
-      box-shadow var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--kit-ease-out),
+      box-shadow var(--dur-fast) var(--kit-ease-out),
       background-color var(--dur-fast) linear,
       border-color var(--dur-fast) linear;
   }
   .clip__play {
     transition:
-      transform var(--dur-fast) var(--ease-out),
-      box-shadow var(--dur-fast) var(--ease-out);
+      transform var(--dur-fast) var(--kit-ease-out),
+      box-shadow var(--dur-fast) var(--kit-ease-out);
   }
   .choice {
     transition:
@@ -1953,7 +1955,7 @@ a.list-row {
       background-color var(--dur-fast) linear;
   }
   .choice:has(input:checked) .choice__avatar::after {
-    animation: kit-circle-in var(--dur) var(--ease-bounce) both;
+    animation: kit-circle-in var(--dur) var(--kit-ease-bounce) both;
   }
   .countdown__fill {
     transition: stroke-dashoffset 1s linear;
@@ -1961,19 +1963,19 @@ a.list-row {
   /* The pen circle is drawn on when an option is picked. */
   .option[aria-pressed='true'] .option__letter::after,
   .option.is-picked .option__letter::after {
-    animation: kit-circle-in var(--dur) var(--ease-bounce) both;
+    animation: kit-circle-in var(--dur) var(--kit-ease-bounce) both;
   }
   /* A card arrives by sliding up a little. */
   .paper,
   .paper-shadow,
   .enter {
-    animation: kit-rise var(--dur-slow) var(--ease-out) both;
+    animation: kit-rise var(--dur-slow) var(--kit-ease-out) both;
   }
   .bubble {
-    animation: kit-pop var(--dur) var(--ease-bounce) 120ms both;
+    animation: kit-pop var(--dur) var(--kit-ease-bounce) 120ms both;
   }
   .result {
-    animation: kit-pop var(--dur) var(--ease-bounce) both;
+    animation: kit-pop var(--dur) var(--kit-ease-bounce) both;
   }
   /* The live dot breathes slowly (2.4s, opacity only between 55% and 100%: not a flash). */
   .pill--live .pill__dot,
@@ -2023,3 +2025,4 @@ a.list-row {
 
 /* A lone item in the top row (a hand note on tab pages with no status pill) sits on the right, as section 6 says. */
 .screen__top > :only-child { margin-left: auto; }
+}
