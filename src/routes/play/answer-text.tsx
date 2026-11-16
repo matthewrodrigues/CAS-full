@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { debounce } from '@/game/debounce'
-import { cn } from '@/lib/utils'
 
 const DRAFT_MS = 500
 
@@ -16,14 +15,12 @@ export function AnswerText({
   numeric,
   initial,
   disabled,
-  violet,
   onDraft,
   onSubmit,
 }: {
   numeric: boolean
   initial: string
   disabled: boolean
-  violet: boolean
   onDraft(value: string | number): void
   onSubmit(value: string | number): void
 }) {
@@ -67,7 +64,7 @@ export function AnswerText({
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-3" noValidate>
-      <label htmlFor={id} className={cn('text-base font-medium', violet ? 'text-surface' : 'text-ink')}>
+      <label htmlFor={id} className={'text-base font-medium text-ink'}>
         {numeric ? t('question.numberLabel') : t('question.answerLabel')}
       </label>
       <Input
@@ -84,7 +81,7 @@ export function AnswerText({
         aria-describedby={invalid ? `${id}-error` : undefined}
       />
       {invalid ? (
-        <p id={`${id}-error`} role="alert" className={cn('text-base font-medium', violet ? 'text-surface' : 'text-incorrect')}>
+        <p id={`${id}-error`} role="alert" className={'text-base font-medium text-incorrect'}>
           {t('question.notNumber')}
         </p>
       ) : null}

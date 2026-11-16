@@ -93,7 +93,6 @@ export type HostView = {
 export type PublicSettings = {
   max_team_size: number
   team_submissions: 'any_member' | 'captain_only'
-  live_background: 'cream' | 'violet'
 }
 
 /** get_state(event_id): everything a (re)connecting client renders from. */

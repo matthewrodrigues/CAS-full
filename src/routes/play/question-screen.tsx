@@ -35,8 +35,7 @@ export function QuestionScreen({ paused }: { paused: boolean }) {
   const question = liveQuestion(view.state)!
   const submission = view.submission
   const team = view.my_team!
-  const violet = view.settings.live_background === 'violet'
-  const muted = violet ? 'text-info-soft' : 'text-ink-muted'
+  const muted = 'text-ink-muted'
   const readOnly = view.settings.team_submissions === 'captain_only' && team.captain_id !== playerId
   const keep = useKeepSubmission()
   const eventQuestionId = question.event_question_id
@@ -60,7 +59,7 @@ export function QuestionScreen({ paused }: { paused: boolean }) {
   const initial = submission?.answer && !('option' in submission.answer) ? answerText(submission.answer, question, t) : ''
 
   return (
-    <section className={cn('flex flex-col gap-5 rounded-xl', violet ? 'bg-brand-deep p-4 text-surface' : 'text-ink')}>
+    <section className={'flex flex-col gap-5 rounded-xl text-ink'}>
       {paused ? null : <StatusBanner status="live">{t('play.status.live')}</StatusBanner>}
       <p className={cn('text-base', muted)}>
         {t('question.meta', { round: question.round.title, number: question.number, of: question.of })} · {t('question.points', { count: question.points })}
@@ -72,14 +71,13 @@ export function QuestionScreen({ paused }: { paused: boolean }) {
       {readOnly ? (
         <p className="rounded-lg bg-surface p-4 text-lg text-ink">{t('question.captainOnly')}</p>
       ) : choice ? (
-        <AnswerChoice options={choiceOptions(question, t)} selected={chosen} disabled={paused} violet={violet} onPick={(option) => submit.mutate({ option })} />
+        <AnswerChoice options={choiceOptions(question, t)} selected={chosen} disabled={paused} onPick={(option) => submit.mutate({ option })} />
       ) : (
         <AnswerText
           key={eventQuestionId}
           numeric={question.type === 'closest_number'}
           initial={initial}
           disabled={paused}
-          violet={violet}
           onDraft={onDraft}
           onSubmit={(value) => submit.mutate(asAnswer(value))}
         />
@@ -92,7 +90,7 @@ export function QuestionScreen({ paused }: { paused: boolean }) {
         {shown && (readOnly || (!choice && !submission?.is_draft)) ? <p>{t('question.teamAnswer', { answer: shown })}</p> : null}
       </div>
       {submit.error ? (
-        <p role="alert" className={cn('text-base font-medium', violet ? 'text-surface' : 'text-incorrect')}>
+        <p role="alert" className={'text-base font-medium text-incorrect'}>
           {errorMessage(errorCode(submit.error), t)}
         </p>
       ) : null}

@@ -151,7 +151,6 @@ export function CodesPage() {
 const SELECTS = {
   team_submissions: ['any_member', 'captain_only'],
   speed_bonus: ['off', 'tiered'],
-  live_background: ['cream', 'violet'],
 } as const
 const NUMBERS = ['max_team_size', 'grace_ms', 'auto_accept_threshold', 'review_threshold'] as const
 

@@ -158,10 +158,10 @@ describe('feedback, newsletter and account deletion', () => {
 describe('event settings (staff)', () => {
   it('reads and changes the configurable settings, validated', async () => {
     const read = async () => (await bodyOf(await get(`/api/staff_event_settings?event_id=${eventId}`, staff))).settings
-    expect(await read()).toMatchObject({ max_team_size: 6, team_submissions: 'any_member', speed_bonus: 'off', live_background: 'cream' })
-    const saved = await post('/api/staff_update_settings', staff, { event_id: eventId, settings: { speed_bonus: 'tiered', live_background: 'violet' } })
+    expect(await read()).toMatchObject({ max_team_size: 6, team_submissions: 'any_member', speed_bonus: 'off' })
+    const saved = await post('/api/staff_update_settings', staff, { event_id: eventId, settings: { speed_bonus: 'tiered' } })
     expect(saved.status).toBe(200)
-    expect(await read()).toMatchObject({ speed_bonus: 'tiered', live_background: 'violet', max_team_size: 6 })
+    expect(await read()).toMatchObject({ speed_bonus: 'tiered', max_team_size: 6 })
     expect((await post('/api/staff_update_settings', staff, { event_id: eventId, settings: { review_threshold: 0.9, auto_accept_threshold: 0.8 } })).status).toBe(400)
     expect((await post('/api/staff_update_settings', host, { event_id: eventId, settings: {} })).status).toBe(403)
   })

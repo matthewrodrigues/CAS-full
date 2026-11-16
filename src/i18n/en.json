@@ -166,16 +166,13 @@
       "speed_bonus": "Speed bonus",
       "grace_ms": "Grace after the timer (ms)",
       "auto_accept_threshold": "Auto-accept typed answers at (0–1)",
-      "review_threshold": "Send typed answers to review at (0–1)",
-      "live_background": "Live-question background"
+      "review_threshold": "Send typed answers to review at (0–1)"
     },
     "options": {
       "any_member": "Any member",
       "captain_only": "Captain only",
       "off": "Off",
-      "tiered": "Tiered",
-      "cream": "Cream",
-      "violet": "Violet"
+      "tiered": "Tiered"
     },
     "invalid": "Those settings are not valid: {{issues}}",
     "animalsTab": "Animals",

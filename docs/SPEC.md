@@ -42,7 +42,7 @@ Use these defaults. Items marked *(configurable)* must be a setting, not hard-co
 | Speed bonus | Off for the first build *(configurable: `off` \| `tiered`)* |
 | Typed answers | Normalize, then exact match or trigram similarity (a TypeScript implementation that mirrors `pg_trgm`); borderline answers flagged for host review |
 | Question authoring | Google Sheet exported to CSV, loaded with an import script |
-| Live-question background | Cream by default *(configurable: `cream` \| `violet`, for an A/B test)* |
+| Live-question background | Paper answer sheet; no alternative background (removed in the 2026-11 redesign) |
 | i18n | All user-facing strings through `react-i18next` from day one; English only for now |
 
 Do not add libraries beyond these without asking.
@@ -246,7 +246,7 @@ Components must never use a raw color value. Use Tailwind v4 and define these to
 | `--color-bg` | `#FBF6EA` | App background (cream) |
 | `--color-surface` | `#FFFFFF` | Cards |
 | `--color-brand` | `#7C4DFF` | Primary buttons, brand accent |
-| `--color-brand-deep` | `#35236B` | Headers, nav, optional violet live-question background |
+| `--color-brand-deep` | `#35236B` | Headers, nav |
 | `--color-correct` | `#1FA58A` | Correct answers, success |
 | `--color-incorrect` | `#C62D3A` | Incorrect answers, errors, destructive actions |
 | `--color-depth` | `#1F5C4D` | Depth, secondary surfaces |

@@ -130,7 +130,7 @@ describe('get_state', () => {
       ]),
     )
     expect(player).not.toHaveProperty('host')
-    expect(player.settings).toEqual({ max_team_size: 6, team_submissions: 'any_member', live_background: 'cream' })
+    expect(player.settings).toEqual({ max_team_size: 6, team_submissions: 'any_member' })
 
     const hostView = await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))
     expect(hostView.host).toMatchObject({ connected_teams: 0, answered_teams: 0, review_queue: [] })
