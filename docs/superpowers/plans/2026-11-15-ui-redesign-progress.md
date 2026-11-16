@@ -23,7 +23,7 @@
 | 5d Big screen | ✅ done | 7 screens + `kit-additions/big-screen.css` |
 | 5e Characters | ✅ done | 8f4b934, 28 SVGs + `system/characters.html`; generators in `design/characters/_src/` |
 | 5 wrap-up | ◐ | full check passes on 43 pages with the real art. Kit-additions merge is folded into Task 6 (the reviewer writes the merge plan) |
-| 6 Consistency review | ⏳ dispatched 2026-11-15 | brief `design/briefs/6-consistency.md` → `design/review/consistency.md`; then fix agents per owner + kit merge |
+| 6 Consistency review | ◐ review done (7060586) | phase 1 kit merge: `design/briefs/6b-kit-merge.md` ⏳. Phase 2 fixes per area: `design/briefs/6c-fixes.md` + area line (5a/5b/5c/5d) ☐, after phase 1 |
 | 7 User review 2 | ☐ | then write the build plan (superpowers:writing-plans) |
 
 ## How to resume after an interruption
@@ -52,3 +52,4 @@ Background agents die with the session. Rebuild from what's on disk:
 - 2026-11-15: 5d done and committed. For the wrap-up: big-screen.css has kit FIXES to fold into kit.css (bubble flex in hero stage, list-row ink on night, aria-disabled options, locked pill outline on night, paper tape/fold at big scale). The join URL on big-lobby is a placeholder (real one comes from PUBLIC_URL).
 - 2026-11-15: 5b and 5e done. All five swarm areas committed; design:check passes 43/43. Task 6 reviewer dispatched. Screen generators saved in `design/screens/_src/`.
 - 2026-11-15 (evening): the Task 6 reviewer hit the 5-hour usage limit before writing consistency.md. Resumed it after the reset (its transcript is kept). If it fails again, re-dispatch from `design/briefs/6-consistency.md`.
+- 2026-11-16: Task 6 review done: 24 findings, 5e clean. The 4 user questions get provisional defaults (in decisions.md), to be asked at review 2. Phase 1 (kit merge) dispatched.

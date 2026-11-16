@@ -17,3 +17,10 @@
 - This changes today's one-tap behavior (`src/routes/play/answer-choice.tsx`), so the build plan updates the answer flow and its tests.
 
 **4. The look is approved: "Lamplight at the Academy"** (`tokens.css`, `kit.css`, `kit.md`). The user approved the oat and cream colors, the honey tape, the handwritten touches and the midnight-blue accents as they are.
+
+## Provisional defaults (orchestrator, 2026-11-16): confirm at review 2
+
+The Task 6 review raised these for the user. Each one is applied as below so the fixes can proceed, and each will be asked at review 2.
+- **Status words:** two are added to the kit's four. "Paused by the host" (`.pill--paused`) and "Place your wager" (for the wager screen).
+- **The tab bar** shows on the lobby, the round break and every after-game screen. It's hidden on landing, join, staff, and every question, wager, locked, reveal and paused screen, so nobody opens the leaderboard mid-question.
+- **Made-up copy stays as clearly placeholder content:** the "NightLife tote bag" prize and its pickup/expiry, the animal locations, keeper updates and "Professor Wiggles".
