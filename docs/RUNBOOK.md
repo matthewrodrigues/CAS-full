@@ -20,7 +20,7 @@ How to run a night with the pilot build. The build spec is [SPEC.md](SPEC.md).
 
 ## Settings
 
-Staff can change each event's settings at `/staff/settings`: team size, who can answer (any member or captain only), speed bonus, grace window, typed-answer thresholds, and the live-question background (cream or violet).
+Staff can change each event's settings at `/staff/settings`: team size, who can answer (any member or captain only), speed bonus, grace window, and typed-answer thresholds.
 
 ## Load check
 
