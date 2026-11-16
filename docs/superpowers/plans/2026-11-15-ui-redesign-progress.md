@@ -18,12 +18,12 @@
 | 3 Design lead: kit | ✅ done | 9c62aa8 (tokens, kit.css, kit.md, host-options, question-mc) |
 | 4 User review 1 | ✅ done | bfa5d22, 0db24cc. Rocco is the main host; 3 hosts rotate by round (Random default, no repeats); tap then send with a 5 s nudge; look approved |
 | 5a Joining | ✅ done | see log; 7 screens + `kit-additions/joining.css` |
-| 5b Paper sheet | ⏳ dispatched 2026-11-15 | brief `design/briefs/5b-paper.md` |
+| 5b Paper sheet | ✅ done | 0b8f621, 16 screens + `kit-additions/paper.css` |
 | 5c After the game | ✅ done | 11 screens + `kit-additions/after.css` (adds the 4-tab bar) |
 | 5d Big screen | ✅ done | 7 screens + `kit-additions/big-screen.css` |
-| 5e Characters | ⏳ dispatched 2026-11-15 | brief `design/briefs/5e-characters.md` |
-| 5 wrap-up | ☐ | after 5e: rerun check with the real art; merge reviewed `design/system/kit-additions/*.css` into kit.css |
-| 6 Consistency review | ☐ | plan Task 6 |
+| 5e Characters | ✅ done | 8f4b934, 28 SVGs + `system/characters.html`; generators in `design/characters/_src/` |
+| 5 wrap-up | ◐ | full check passes on 43 pages with the real art. Kit-additions merge is folded into Task 6 (the reviewer writes the merge plan) |
+| 6 Consistency review | ⏳ dispatched 2026-11-15 | brief `design/briefs/6-consistency.md` → `design/review/consistency.md`; then fix agents per owner + kit merge |
 | 7 User review 2 | ☐ | then write the build plan (superpowers:writing-plans) |
 
 ## How to resume after an interruption
@@ -50,3 +50,4 @@ Background agents die with the session. Rebuild from what's on disk:
 - 2026-11-15: 5a done and committed. README fixed: labeled character spans need `role="img"` (axe).
 - 2026-11-15: 5c done and committed. For Task 6: the tab bar (Play/Leaderboard/Rewards/Animals) exists only in 5c screens, so check whether 5a/5b screens need it. Made-up copy to confirm at review 2: prize "NightLife tote bag", code format, keeper update author line.
 - 2026-11-15: 5d done and committed. For the wrap-up: big-screen.css has kit FIXES to fold into kit.css (bubble flex in hero stage, list-row ink on night, aria-disabled options, locked pill outline on night, paper tape/fold at big scale). The join URL on big-lobby is a placeholder (real one comes from PUBLIC_URL).
+- 2026-11-15: 5b and 5e done. All five swarm areas committed; design:check passes 43/43. Task 6 reviewer dispatched. Screen generators saved in `design/screens/_src/`.
