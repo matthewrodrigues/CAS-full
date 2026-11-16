@@ -29,6 +29,10 @@ const EVENTS = [
   { joinCode: 'E2ES1' },
   { joinCode: 'E2ET1' },
   { joinCode: 'E2EU1', settings: { max_team_size: 8 } },
+  // Round hosts (round-hosts.spec.ts): staff control, host console select, and a started round.
+  { joinCode: 'E11A1' },
+  { joinCode: 'E11B1' },
+  { joinCode: 'E11C1' },
 ]
 
 const db = openDb(DB_FILE)

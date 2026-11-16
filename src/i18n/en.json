@@ -134,6 +134,7 @@
     "adjustNote": "Reason",
     "adjustApply": "Apply",
     "adjustLabel": "Adjust {{team}}’s score",
+    "nextHost": "Next round's host",
     "stageLabel": "Your host",
     "label": "{{name}}, {{expression}}",
     "names": {
@@ -247,7 +248,20 @@
       "penguin-chick": "Penguin chick"
     },
     "newsletterTitle": "Newsletter sign-ups",
-    "download": "Download CSV"
+    "download": "Download CSV",
+    "roundHostsTitle": "Round hosts",
+    "roundHostsIntro": "Pick who hosts each round. Random never picks the same host twice in a row.",
+    "roundLabel": "Round {{number}}",
+    "roundStarted": "Started. Hosted by {{host}}.",
+    "roundHostsSave": "Save round hosts",
+    "roundHostsSaved": "Saved! Round hosts are set.",
+    "roundHostsHint": "The live host can still swap hosts before each round.",
+    "hostChoices": {
+      "random": "Random",
+      "rocco": "Rocco",
+      "pebble": "Pebble",
+      "june": "Dr. June"
+    }
   },
   "notFound": {
     "title": "Page not found",
