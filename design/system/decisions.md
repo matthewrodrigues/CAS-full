@@ -16,4 +16,4 @@
 - Players can forget to send, so the host nudges near the end: at 5 seconds, if your circled answer isn't sent, the host says something like "Don't forget to send!"
 - This changes today's one-tap behavior (`src/routes/play/answer-choice.tsx`), so the build plan updates the answer flow and its tests.
 
-**4. The look: "Lamplight at the Academy"** (`tokens.css`, `kit.css`, `kit.md`), as reviewed. *(The user has seen the question screen and the hosts; their explicit sign-off on the palette and paper is pending. See the review 1 message.)*
+**4. The look is approved: "Lamplight at the Academy"** (`tokens.css`, `kit.css`, `kit.md`). The user approved the oat and cream colors, the honey tape, the handwritten touches and the midnight-blue accents as they are.
