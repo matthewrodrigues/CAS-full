@@ -34,3 +34,7 @@ The Task 6 review raised these for the user. Each one is applied as below so the
 - the animal copy kept as placeholder copy
 
 The build plan lists the two copy items as open questions to confirm with the user before deploying.
+
+**Follow-ups during build planning (2026-11-16, the user):**
+- **"The prize should be naming an animal."** It's the only prize. The made-up tote bag and prize code are gone: the prize-code section is removed from `rewards.html`, and `redeem-code.html` is deleted. The server's code-redemption engine and the staff redeem pages are left as they are (re-themed only), with no player-facing prize codes.
+- **"Keep the placeholder animal names."** "Professor Wiggles" and the other placeholder animal copy stay.

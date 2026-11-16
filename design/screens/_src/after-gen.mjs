@@ -414,19 +414,6 @@ ${tabTop('My rewards')}
     <a class="btn btn--quiet" href="my-animal.html" id="follow-link">Follow its updates</a>
   </section>
 
-  <section class="stack" aria-labelledby="codes-title">
-    <div class="stack stack--tight">
-      <h2 class="h2" id="codes-title">Prize codes</h2>
-      <p class="small muted">Show this code to staff to collect your prize.</p>
-    </div>
-    <ul class="list">
-      <li><a class="list-row" href="redeem-code.html">
-        <span class="list-row__rank">${svg('btn__icon', I.gift)}</span>
-        <span class="list-row__name">NightLife tote bag<span class="list-row__sub">Ready to collect · Expires Dec 12</span></span>
-        <span class="list-row__score">${svg('btn__icon', I.chev)}<span class="sr-only">Show my code</span></span>
-      </a></li>
-    </ul>
-  </section>
 ${tabbar('rewards')}
 </main>
 
@@ -485,7 +472,7 @@ ${foot(`
   update()
 `)}`
 
-// ------------------------------------------------------------------ redeem-code
+// ------------------------------------------------------------------ (prize codes removed 2026-11-16: the only prize is naming an animal)
 // A deterministic QR-like placeholder: three finder squares plus seeded modules. The app draws the real one.
 function qrPlaceholder() {
   const n = 25
@@ -498,53 +485,6 @@ function qrPlaceholder() {
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (!inFinder(x, y) && rnd() < 0.48) cells.push(`M${x} ${y}h1v1h-1z`)
   return `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges" fill="var(--color-ink)" aria-hidden="true">${finder(0, 0)}${finder(n - 7, 0)}${finder(0, n - 7)}<path d="${cells.join('')}"/></svg>`
 }
-files['redeem-code.html'] = `${head('Rewards: redeem code')}
-<!-- No character on this screen (kit.md section 15): the QR stays clear of art so it scans cleanly. -->
-<main class="screen">
-${tabTop('Prize code', { href: 'rewards.html', label: 'My rewards' })}
-
-  <section class="stack center" aria-labelledby="reward-title">
-    <h1 class="h1" id="reward-title">NightLife tote bag</h1>
-    <p class="body muted">Pick it up at the info desk before you head home.</p>
-    <div role="status" aria-live="polite" id="code-status">
-      <p class="chip chip--win" id="chip-ready">${svg('chip__icon', I.check)}<span>Ready to collect</span></p>
-      <p class="chip" id="chip-done" hidden>${svg('chip__icon', I.check)}<span>Collected</span></p>
-      <p class="chip" id="chip-expired" hidden>${svg('chip__icon', I.clock)}<span>Expired</span></p>
-    </div>
-  </section>
-
-  <section class="stack center" aria-label="Your prize code" id="code-block">
-    <div class="qr" role="img" aria-label="QR code for NightLife tote bag" id="qr">${qrPlaceholder()}</div>
-    <p class="small muted">Staff can also type it in:</p>
-    <p class="code-display" aria-label="Code: K 7 Q M R X 4 T P A">K7QMR X4TPA</p>
-    <p class="small muted" id="expiry">Expires Dec 12, 2026</p>
-  </section>
-
-  <p class="note" id="bright-note">
-    ${svg('note__icon', I.sun)}
-    <span>Turn your screen brightness up so staff can scan it.</span>
-  </p>
-
-${tabbar('rewards')}
-</main>
-
-${mock([
-  ['redeem-code.html', 'Ready'],
-  ['redeem-code.html?state=redeemed', 'Collected'],
-  ['redeem-code.html?state=expired', 'Expired'],
-])}
-${foot(`
-  // Mockup behavior: once a code is collected or expired, the app stops showing the QR.
-  const state = new URLSearchParams(location.search).get('state')
-  if (state === 'redeemed' || state === 'expired') {
-    document.getElementById('chip-ready').hidden = true
-    document.getElementById(state === 'redeemed' ? 'chip-done' : 'chip-expired').hidden = false
-    document.getElementById('qr').hidden = true
-    document.getElementById('bright-note').hidden = true
-    document.getElementById('expiry').textContent = state === 'redeemed' ? 'Collected Nov 12, 2026. Enjoy!' : 'This code expired on Dec 12, 2026.'
-  }
-`)}`
-
 // ================================================================== feedback
 const stars = [1, 2, 3, 4, 5]
   .map(
