@@ -247,7 +247,8 @@
     "code_expired": "That code has expired.",
     "already_named": "This animal already has a name.",
     "animal_taken": "That animal is already a prize at another night.",
-    "not_pending": "That name has already been checked."
+    "not_pending": "That name has already been checked.",
+    "round_started": "That round has started, so its host can't change now."
   },
   "leaderboard": {
     "title": "Tonight's leaderboard",

@@ -150,3 +150,41 @@ describe('get_state', () => {
     expect(await submission()).toMatchObject({ result: 'correct', points: 10 })
   })
 })
+
+describe('round hosts', () => {
+  const roundIds = async (token: string) => (await bodyOf(await get(`/api/round_hosts?event_id=${eventId}`, token))).rounds as { round_id: string; position: number }[]
+
+  it('get_state carries the cast: Rocco in the lobby, then the round 1 host', async () => {
+    expect((await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))).cast).toEqual({ host: 'rocco', incoming_host: null })
+    const [first] = await roundIds(host)
+    await post('/api/set_round_host', host, { event_id: eventId, round_id: first.round_id, host_choice: 'pebble' })
+    await hostDoes('host_next')
+    expect((await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))).cast).toEqual({ host: 'pebble', incoming_host: null })
+  })
+
+  it('set_round_host refuses a started round', async () => {
+    const [first] = await roundIds(host)
+    await hostDoes('host_next')
+    const res = await post('/api/set_round_host', host, { event_id: eventId, round_id: first.round_id, host_choice: 'june' })
+    expect(res.status).toBe(409)
+    expect(await bodyOf(res)).toEqual({ error: 'round_started' })
+  })
+
+  it('staff and hosts read and set round hosts', async () => {
+    for (const role of ['host', 'staff'] as const) {
+      const token = sessionFor(test.db, role)
+      const third = (await roundIds(token))[2]
+      const choice = role === 'host' ? 'pebble' : 'june'
+      const set = await post('/api/set_round_host', token, { event_id: eventId, round_id: third.round_id, host_choice: choice })
+      expect(set.status).toBe(200)
+      expect(await bodyOf(set)).toEqual({ host_choice: choice, host: null })
+      expect((await roundIds(token))[2]).toMatchObject({ position: 3, host_choice: choice, host: null, started: false })
+    }
+  })
+
+  it('rejects a host choice that is not one of the cast, and a round of another event', async () => {
+    const [first] = await roundIds(host)
+    expect((await post('/api/set_round_host', host, { event_id: eventId, round_id: first.round_id, host_choice: 'octopus' })).status).toBe(400)
+    expect((await post('/api/set_round_host', host, { event_id: crypto.randomUUID(), round_id: first.round_id, host_choice: 'june' })).status).toBe(404)
+  })
+})

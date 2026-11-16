@@ -30,6 +30,7 @@ const view: GameView = {
   my_team: null,
   teams: [],
   settings: { max_team_size: 6, team_submissions: 'any_member' },
+  cast: { host: 'rocco', incoming_host: null },
 }
 
 describe('applyMessage', () => {

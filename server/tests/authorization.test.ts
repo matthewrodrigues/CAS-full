@@ -39,6 +39,8 @@ const PRIVILEGED_ROUTES = [
   '/api/host_review_team_name',
   '/api/host_skip',
   '/api/redeem_code',
+  '/api/round_hosts',
+  '/api/set_round_host',
   '/api/staff_animals',
   '/api/staff_awards',
   '/api/staff_create_animal',
