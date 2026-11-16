@@ -195,4 +195,19 @@ describe('staff manage animals and prizes', () => {
     expect(await bodyOf(await set(3, created.id))).toEqual({ error: 'event_ended' })
     expect((await post('/api/staff_create_animal', host, { species: 'X', exhibit: 'Y' })).status).toBe(403)
   })
+
+  it('stores the avatar staff choose', async () => {
+    const created = await bodyOf(await post('/api/staff_create_animal', staff, { species: 'Moray eel', exhibit: 'Philippine Coral Reef', avatar: 'moray-eel' }))
+    expect(created.avatar).toBe('moray-eel')
+  })
+
+  it('defaults a new animal to the mystery avatar', async () => {
+    const created = await bodyOf(await post('/api/staff_create_animal', staff, { species: 'Coral catshark', exhibit: 'Philippine Coral Reef' }))
+    expect(created.avatar).toBe('mystery')
+  })
+
+  it('rejects an unknown avatar', async () => {
+    const res = await post('/api/staff_create_animal', staff, { species: 'Shark', exhibit: 'Y', avatar: 'shark' })
+    expect(res.status).toBe(400)
+  })
 })

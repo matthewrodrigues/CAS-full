@@ -4,6 +4,7 @@
 // the animal carries it from then on. Everyone who played follows the night's animals, and
 // anyone can follow a named animal to see the updates staff post about it.
 import { and, asc, count, desc, eq, inArray, isNotNull, or } from 'drizzle-orm'
+import type { AnimalAvatar } from '../../shared/characters'
 import type { AnimalCard, AnimalDetail, AnimalInfo, AnimalUpdate, MyNamingRight, NamingPrize, StaffAnimal, StaffNamingRight } from '../../shared/game'
 import type { Db } from '../db/client'
 import { eventLeaderboard } from '../db/queries'
@@ -20,6 +21,7 @@ const info = (a: AnimalRow): AnimalInfo => ({
   exhibit: a.exhibit,
   about: a.about,
   image_url: a.imageUrl,
+  avatar: a.avatar,
   name: a.name,
   named_at: a.namedAt,
   named_by_team: a.namedByTeam,
@@ -194,9 +196,9 @@ export function staffNamingRights(db: Db): StaffNamingRight[] {
     }))
 }
 
-export function createAnimal(db: Db, input: { species: string; scientific_name: string | null; exhibit: string; about: string | null }): GameResult<StaffAnimal> {
+export function createAnimal(db: Db, input: { species: string; scientific_name: string | null; exhibit: string; about: string | null; avatar: AnimalAvatar }): GameResult<StaffAnimal> {
   const id = crypto.randomUUID()
-  db.insert(animals).values({ id, species: input.species, scientificName: input.scientific_name, exhibit: input.exhibit, about: input.about, createdAt: Date.now() }).run()
+  db.insert(animals).values({ id, species: input.species, scientificName: input.scientific_name, exhibit: input.exhibit, about: input.about, avatar: input.avatar, createdAt: Date.now() }).run()
   return ok(staffAnimals(db).find((a) => a.id === id)!)
 }
 

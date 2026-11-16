@@ -1,9 +1,13 @@
 import { randomUUID } from 'node:crypto'
 import { eq, sum } from 'drizzle-orm'
+import { mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { parseSettings } from '../../shared/settings'
 import type { Db } from '../db/client'
 import * as t from '../db/schema'
+import { seedDemo } from '../db/seed-demo'
 import { buildFixture, type Fixture } from './fixtures'
 import { makeTestDb } from './helpers'
 
@@ -147,6 +151,26 @@ describe('schema constraints', () => {
     expect(db.select({ playerId: t.rewardAwards.playerId }).from(t.rewardAwards).get()).toEqual({ playerId: null })
     const total = db.select({ points: sum(t.scoreEvents.points) }).from(t.scoreEvents).where(eq(t.scoreEvents.teamId, f.teamA.id)).get()
     expect(Number(total?.points)).toBe(10)
+  })
+})
+
+describe('animal avatars', () => {
+  it('seeds the demo animals with their avatars', () => {
+    const mediaDir = mkdtempSync(join(tmpdir(), 'nightlife-schema-'))
+    try {
+      seedDemo(db, { mediaDir })
+      const avatarOf = (species: string) => db.select().from(t.animals).where(eq(t.animals.species, species)).get()?.avatar
+      expect(avatarOf('African penguin chick')).toBe('penguin-chick')
+      expect(avatarOf('Giant Pacific octopus')).toBe('giant-pacific-octopus')
+      expect(avatarOf('Pacific seahorse')).toBe('pacific-seahorse')
+      expect(avatarOf('Moray eel')).toBe('moray-eel')
+    } finally {
+      rmSync(mediaDir, { recursive: true, force: true })
+    }
+  })
+
+  it('rejects an avatar outside the set', () => {
+    expect(() => db.$client.prepare("insert into animals (id, species, exhibit, avatar, created_at) values ('a', 's', 'e', 'shark', 0)").run()).toThrow()
   })
 })
 

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ANIMAL_AVATARS } from './characters'
 import { OVERRIDE_RESULTS } from './enums'
 
 // Input schemas for every API route (docs/SPEC.md section 5). Keys are snake_case, as in the spec.
@@ -76,6 +77,7 @@ export const StaffCreateAnimalInput = z.object({
   scientific_name: optionalText(80),
   exhibit: z.string().trim().min(1).max(80),
   about: optionalText(500),
+  avatar: z.enum(ANIMAL_AVATARS).default('mystery'),
 })
 /** Puts an animal up as the prize for `place` at an event; `animal_id: null` clears that place. */
 export const StaffSetNamingPrizeInput = z.object({ event_id: id, place: z.int().min(1).max(10), animal_id: id.nullable() })

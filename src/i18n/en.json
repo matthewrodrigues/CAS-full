@@ -197,7 +197,15 @@
       "species": "Species (e.g. African penguin chick)",
       "scientific_name": "Scientific name (optional)",
       "exhibit": "Where to see it",
-      "about": "About it (optional)"
+      "about": "About it (optional)",
+      "avatar": "Picture"
+    },
+    "avatars": {
+      "giant-pacific-octopus": "Giant Pacific octopus",
+      "moray-eel": "Moray eel",
+      "mystery": "Mystery animal",
+      "pacific-seahorse": "Pacific seahorse",
+      "penguin-chick": "Penguin chick"
     },
     "newsletterTitle": "Newsletter sign-ups",
     "download": "Download CSV"
