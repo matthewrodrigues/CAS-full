@@ -1,6 +1,7 @@
 // Game data as the API and WebSocket send it. Shared so the client (Milestone 3) renders the
 // same shapes the server builds. None of these types carry answer data before a reveal.
 import type { Answer } from './api'
+import type { AnimalAvatar } from './characters'
 import type { AutoResult, EventStatus, GamePhase, MediaKind, NameStatus, NamingStatus, Phase, QuestionType, RoundFormat } from './enums'
 
 export type PublicGameState = {
@@ -125,6 +126,7 @@ export type AnimalInfo = {
   exhibit: string
   about: string | null
   image_url: string | null
+  avatar: AnimalAvatar
   name: string | null
   named_at: number | null
   named_by_team: string | null

@@ -291,6 +291,7 @@ const PRIZE_ANIMALS = [
   {
     row: {
       species: 'African penguin chick',
+      avatar: 'penguin-chick' as const,
       scientificName: 'Spheniscus demersus',
       exhibit: 'African Hall penguin colony',
       about: 'Hatched this fall. It will trade its fluffy grey down for waterproof adult feathers in a few months.',
@@ -300,6 +301,7 @@ const PRIZE_ANIMALS = [
   {
     row: {
       species: 'Giant Pacific octopus',
+      avatar: 'giant-pacific-octopus' as const,
       scientificName: 'Enteroctopus dofleini',
       exhibit: 'Steinhart Aquarium, Northern California Coast',
       about: 'Can change the color and texture of its skin in a fraction of a second, and loves puzzle feeders.',
@@ -309,6 +311,7 @@ const PRIZE_ANIMALS = [
   {
     row: {
       species: 'Pacific seahorse',
+      avatar: 'pacific-seahorse' as const,
       scientificName: 'Hippocampus ingens',
       exhibit: 'Steinhart Aquarium, Water Planet',
       about: 'In seahorses the father carries the eggs in a pouch until they hatch.',
@@ -320,6 +323,7 @@ const PRIZE_ANIMALS = [
 const NAMED_ANIMAL = {
   row: {
     species: 'Moray eel',
+    avatar: 'moray-eel' as const,
     scientificName: 'Gymnothorax javanicus',
     exhibit: 'Philippine Coral Reef',
     about: 'Hides in the reef by day and comes out to explore at night.',

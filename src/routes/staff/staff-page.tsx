@@ -2,8 +2,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router'
+import { ANIMAL_AVATARS, type AnimalAvatar } from '../../../shared/characters'
 import type { StaffAnimal, StaffNamingRight } from '../../../shared/game'
 import type { EventSettings } from '../../../shared/settings'
+import { Character, animalCharacter } from '@/components/character'
 import { RoleGate } from '@/components/role-gate'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -385,7 +387,7 @@ function NewAnimal() {
   const { t } = useTranslation()
   const id = useId()
   const queryClient = useQueryClient()
-  const empty = { species: '', scientific_name: '', exhibit: '', about: '' }
+  const empty = { species: '', scientific_name: '', exhibit: '', about: '', avatar: 'mystery' as AnimalAvatar }
   const [form, setForm] = useState(empty)
   const create = useMutation({
     mutationFn: () => api.staffCreateAnimal(form),
@@ -410,6 +412,26 @@ function NewAnimal() {
           <Input id={`${id}-${field}`} value={form[field]} onChange={(e) => setForm({ ...form, [field]: e.target.value })} />
         </div>
       ))}
+      <div className="flex items-center gap-3">
+        <Character name={animalCharacter(form.avatar)} size={48} />
+        <div className="flex flex-1 flex-col gap-1">
+          <label htmlFor={`${id}-avatar`} className="text-base font-medium text-ink">
+            {t('staff.animalFields.avatar')}
+          </label>
+          <select
+            id={`${id}-avatar`}
+            value={form.avatar}
+            onChange={(e) => setForm({ ...form, avatar: e.target.value as AnimalAvatar })}
+            className="h-12 rounded-lg border border-border bg-surface px-3 text-lg text-ink"
+          >
+            {ANIMAL_AVATARS.map((avatar) => (
+              <option key={avatar} value={avatar}>
+                {t(`staff.avatars.${avatar}`)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
       <Button type="submit" size="lg" disabled={create.isPending || !form.species.trim() || !form.exhibit.trim()}>
         {t('staff.addAnimal')}
       </Button>

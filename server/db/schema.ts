@@ -35,6 +35,7 @@ import {
   SCORE_REASONS,
 } from '../../shared/enums'
 import type { Answer } from '../../shared/api'
+import { ANIMAL_AVATARS } from '../../shared/characters'
 import type { EventSettings } from '../../shared/settings'
 
 const id = () =>
@@ -377,6 +378,8 @@ export const animals = sqliteTable(
     exhibit: text('exhibit').notNull(),
     about: text('about'),
     imageUrl: text('image_url'),
+    /** Which illustrated avatar draws this animal (docs: shared/characters.ts). */
+    avatar: text('avatar', { enum: ANIMAL_AVATARS }).notNull().default('mystery'),
     name: text('name'),
     namedAt: integer('named_at'),
     namedEventId: text('named_event_id').references(() => events.id, { onDelete: 'set null' }),
@@ -384,7 +387,10 @@ export const animals = sqliteTable(
     namedByTeam: text('named_by_team'),
     createdAt: integer('created_at').notNull(),
   },
-  (t) => [check('animals_named_check', sql`(${t.name} is null) = (${t.namedAt} is null)`)],
+  (t) => [
+    check('animals_named_check', sql`(${t.name} is null) = (${t.namedAt} is null)`),
+    check('animals_avatar_check', oneOf(t.avatar, ANIMAL_AVATARS)),
+  ],
 )
 
 /** Tonight's prize list: the team(s) finishing in `place` win the right to name `animal_id`. */
