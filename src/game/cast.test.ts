@@ -35,6 +35,7 @@ function view(phase: Phase, submission: Partial<PublicSubmission> | null = null)
     my_team: { id: 't1', name: 'Reef', name_status: 'approved', captain_id: 'p1', score: 0, members: [] },
     teams: [],
     settings: { max_team_size: 6, team_submissions: 'any_member' },
+    cast: { host: 'rocco', incoming_host: null },
   } as GameView
 }
 
