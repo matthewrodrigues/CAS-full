@@ -8,6 +8,7 @@ import type { Db } from '../db/client'
 import { eventLeaderboard, teamScore } from '../db/queries'
 import { eventQuestions, events, gameState, scoreEvents, submissions, teamMembers, teams, themes } from '../db/schema'
 import { hostCounts, type GameContext } from './context'
+import { castOf } from './hosts'
 import { reviewQueue } from './scoring'
 import { toPublicSubmission } from './submissions'
 import { myTeam, teamOf } from './teams'
@@ -110,6 +111,7 @@ export function getState(
     my_team: teamId ? myTeam(db, teamId) : null,
     teams: teamRows(db, eventId).map((team) => ({ id: team.id, name: shownName(team, { ownTeamId: teamId, isHost }), member_count: team.members })),
     settings: publicSettings(db, eventId),
+    cast: castOf(db, eventId, state),
   }
   return isHost ? { ...view, host: hostView(ctx, eventId) } : view
 }

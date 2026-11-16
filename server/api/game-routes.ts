@@ -18,6 +18,7 @@ import {
   JoinEventInput,
   JoinTeamInput,
   RedeemCodeInput,
+  SetRoundHostInput,
   NewsletterOptinInput,
   StaffUpdateSettingsInput,
   SubmitAnswerInput,
@@ -171,6 +172,12 @@ export function createGameRoutes(deps: AppDeps) {
       .post('/api/host_adjust_score', host, validate('json', HostAdjustScoreInput), (c) => {
         const { team_id, points, note } = c.req.valid('json')
         return respond(c, game.adjustScore({ teamId: team_id, points, note }))
+      })
+      // Round hosts: staff set them in event settings, the host can too (host also admits staff).
+      .get('/api/round_hosts', host, validate('query', EventIdInput), (c) => c.json({ rounds: game.roundHosts(c.req.valid('query').event_id) }))
+      .post('/api/set_round_host', host, validate('json', SetRoundHostInput), (c) => {
+        const { event_id, round_id, host_choice } = c.req.valid('json')
+        return respond(c, game.setRoundHost({ eventId: event_id, roundId: round_id, hostChoice: host_choice }))
       })
       .post('/api/host_review_team_name', host, validate('json', HostReviewTeamNameInput), (c) => {
         const { team_id, name_status } = c.req.valid('json')

@@ -1,7 +1,7 @@
 // Game data as the API and WebSocket send it. Shared so the client (Milestone 3) renders the
 // same shapes the server builds. None of these types carry answer data before a reveal.
 import type { Answer } from './api'
-import type { AnimalAvatar } from './characters'
+import type { AnimalAvatar, Host, HostChoice } from './characters'
 import type { AutoResult, EventStatus, GamePhase, MediaKind, NameStatus, NamingStatus, Phase, QuestionType, RoundFormat } from './enums'
 
 export type PublicGameState = {
@@ -105,8 +105,20 @@ export type GameView = {
   /** Every team in the event. A name is null when the viewer may not see it (rejected, or unapproved for host sessions). */
   teams: TeamSummary[]
   settings: PublicSettings
+  cast: Cast
   host?: HostView
 }
+
+/**
+ * Who is on stage. `host` is the current round's host (Rocco in the lobby and at the end).
+ * `incoming_host` is the host taking over: the next round's in round_break, and the final
+ * round's in final_wager when a round came before it. Null otherwise. A paused game shows the
+ * cast of the phase it paused from.
+ */
+export type Cast = { host: Host; incoming_host: Host | null }
+
+/** One row of the staff "Round hosts" control. `host` is null until the round's host is picked. */
+export type RoundHost = { round_id: string; position: number; title: string; host_choice: HostChoice; host: Host | null; started: boolean }
 
 /** host_events: what a host picks from to run a night. */
 export type HostEvent = { id: string; join_code: string; status: EventStatus; starts_at: number; theme: string; phase: Phase }
@@ -202,5 +214,6 @@ export const GAME_ERROR_CODES = [
   'already_named',
   'animal_taken',
   'not_pending',
+  'round_started',
 ] as const
 export type GameErrorCode = (typeof GAME_ERROR_CODES)[number]

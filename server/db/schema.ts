@@ -35,7 +35,7 @@ import {
   SCORE_REASONS,
 } from '../../shared/enums'
 import type { Answer } from '../../shared/api'
-import { ANIMAL_AVATARS } from '../../shared/characters'
+import { ANIMAL_AVATARS, HOST_CHOICES, HOSTS } from '../../shared/characters'
 import type { EventSettings } from '../../shared/settings'
 
 const id = () =>
@@ -101,9 +101,15 @@ export const rounds = sqliteTable(
     position: integer('position').notNull(),
     title: text('title').notNull(),
     format: text('format', { enum: ROUND_FORMATS }).notNull(),
+    /** Who staff want to host this round: one of the cast, or random (server/game/hosts.ts). */
+    hostChoice: text('host_choice', { enum: HOST_CHOICES }).notNull().default('random'),
+    /** The host actually picked. Null until resolved, then stored so a reconnect never re-rolls it. */
+    host: text('host', { enum: HOSTS }),
   },
   (t) => [
     check('rounds_format_check', oneOf(t.format, ROUND_FORMATS)),
+    check('rounds_host_choice_check', oneOf(t.hostChoice, HOST_CHOICES)),
+    check('rounds_host_check', oneOf(t.host, HOSTS)),
     unique('rounds_event_position_unique').on(t.eventId, t.position),
     // "Must be last" needs other rows, so content-rules.ts checks it; SQLite can enforce "at most one".
     uniqueIndex('rounds_one_wager_per_event').on(t.eventId).where(sql`${t.format} = 'wager'`),

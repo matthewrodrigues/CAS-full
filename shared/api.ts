@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ANIMAL_AVATARS } from './characters'
+import { ANIMAL_AVATARS, HOST_CHOICES } from './characters'
 import { OVERRIDE_RESULTS } from './enums'
 
 // Input schemas for every API route (docs/SPEC.md section 5). Keys are snake_case, as in the spec.
@@ -22,6 +22,9 @@ export const JoinEventInput = z.object({
 export const EventIdInput = z.object({ event_id: id })
 export const CreateTeamInput = z.object({ event_id: id, name: z.string().trim().min(1).max(30) })
 export const JoinTeamInput = z.object({ team_id: id })
+
+/** Staff or the host pick a round's host, until its first question opens. */
+export const SetRoundHostInput = z.object({ event_id: id, round_id: id, host_choice: z.enum(HOST_CHOICES) })
 
 /** mc and true_false answer with an option index (true_false: 0 = True, 1 = False). */
 export const AnswerInput = z.union([

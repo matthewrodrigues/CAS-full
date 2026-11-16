@@ -29,6 +29,13 @@
       "when": 1794820171272,
       "tag": "0003_nasty_greymalkin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1794854201699,
+      "tag": "0004_curved_zaladane",
+      "breakpoints": true
     }
   ]
 }
