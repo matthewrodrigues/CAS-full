@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reveal: correct</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/paper.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--results"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg>Results are in</span>
+    </div>
+    <p class="hand hand--sm">Round 1 of 4</p>
+  </div>
+  <section class="stage stage--sky stage--hero" aria-label="Your result">
+    <p class="bubble bubble--down">Yes! Deep-sea pros!</p>
+    <span class="char char--160 char--idle" role="img" aria-label="Rocco the raccoon, cheering" data-character="hosts/rocco/cheering"></span>
+    <span class="result result--correct"><svg class="result__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Correct!</span>
+    <p class="hand hand--ink">+10 points for your team!</p>
+  </section>
+
+  <article class="paper" aria-labelledby="prompt">
+    <header class="paper__head">
+      <div class="paper__meta">
+        <p class="hand">Question 1 of 10</p>
+        <p class="small">Into the Abyss · 10&nbsp;points</p>
+      </div>
+      
+    </header>
+    <div class="paper__body">
+      <h2 class="question" id="prompt" data-role="question">What is the deepest known point in Earth&#x27;s oceans?</h2>
+      <ul class="options" aria-label="The answer">
+        <li><div class="option is-correct"><span class="option__mark option__mark--correct"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span class="sr-only">Right answer: </span><span class="option__label">Challenger Deep</span><span class="option__note option__note--muted">our pick</span></div></li>
+      </ul>
+      <div class="fact">
+        <svg class="fact__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>
+        <div>
+          <p class="fact__label">Fun fact</p>
+          <p>Challenger Deep lies at the southern end of the Mariana Trench in the western Pacific.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <div class="screen__actions">
+    <p class="small muted center">The next question is coming up.</p>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="locked.html">Back: Locked</a>
+  <a href="question-mc-nudge.html">Next: Nudge at 5 s</a>
+</nav>
+</body>
+</html>

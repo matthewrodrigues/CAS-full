@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round break</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/paper.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--results"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg>Results are in</span>
+    </div>
+    <p class="hand hand--sm">Round 2 of 4</p>
+  </div>
+  <section class="stage stage--butter stage--hero" aria-labelledby="new-host">
+    <p class="bubble bubble--down">Hi, friends! Ready to dive in?</p>
+    <span class="char char--160 char--idle" role="img" aria-label="Pebble the penguin, greeting" data-character="hosts/pebble/greeting"></span>
+    <div class="stack stack--tight">
+      <h1 class="h1" id="new-host">Pebble's taking Round 2!</h1>
+      <p class="body"><strong>Who Lives Down There?</strong></p>
+      <p class="small muted">A picture round</p>
+    </div>
+  </section>
+
+  <article class="paper" aria-labelledby="summary">
+    <header class="paper__head">
+      <div class="paper__meta">
+        <h2 class="hand" id="summary">Round 1 done!</h2>
+        <p class="small">Into the Abyss · 10 questions</p>
+      </div>
+    </header>
+    <div class="paper__body">
+      <div class="stack stack--tight">
+        <p class="body"><strong>The Anglerfish Five</strong></p>
+        <p class="tally"><span class="tally__num">#3</span><span class="tally__label">of 18 teams, with 70 points</span></p>
+      </div>
+      <div class="row">
+        <span class="char char--64" role="img" aria-label="Rocco the raccoon, relaxing" data-character="hosts/rocco/relaxing"></span>
+        <p class="small muted">Rocco's taking a breather. He'll be back for the final!</p>
+      </div>
+    </div>
+  </article>
+
+  <div class="screen__actions">
+    <a class="btn btn--quiet" href="leaderboard-tonight.html">See the whole leaderboard</a>
+    <p class="small muted center">The next round starts soon.</p>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="question-number.html">Back: Closest number</a>
+  <a href="question-image.html">Next: Picture</a>
+</nav>
+</body>
+</html>

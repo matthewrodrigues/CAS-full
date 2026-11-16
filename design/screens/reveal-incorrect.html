@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reveal: not quite</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/paper.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--results"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg>Results are in</span>
+    </div>
+    <p class="hand hand--sm">Round 2 of 4</p>
+  </div>
+  <section class="stage stage--hero" aria-label="Your result">
+    <p class="bubble bubble--down">Aw, so close! Next one!</p>
+    <span class="char char--160 char--idle" role="img" aria-label="Pebble the penguin, consoling" data-character="hosts/pebble/consoling"></span>
+    <span class="result result--incorrect"><svg class="result__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>Not quite</span>
+    <p class="hand hand--ink">No points this time</p>
+  </section>
+
+  <article class="paper" aria-labelledby="prompt">
+    <header class="paper__head">
+      <div class="paper__meta">
+        <p class="hand">Question 3 of 9</p>
+        <p class="small">Who Lives Down There? · 10&nbsp;points</p>
+      </div>
+      
+    </header>
+    <div class="paper__body">
+      <h2 class="question" id="prompt" data-role="question">The blobfish looks just as blobby in its deep-sea home.</h2>
+      <ul class="options options--tf" aria-label="The answer">
+        <li><div class="option option--tf is-incorrect"><span class="option__mark option__mark--incorrect"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span class="sr-only">Not this one: </span><span class="option__label">True</span><span class="option__note option__note--muted">our pick</span></div></li>
+        <li><div class="option option--tf is-correct"><span class="option__mark option__mark--correct"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span class="sr-only">Right answer: </span><span class="option__label">False</span></div></li>
+      </ul>
+      <div class="fact">
+        <svg class="fact__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>
+        <div>
+          <p class="fact__label">Fun fact</p>
+          <p>At depth the water pressure holds its body in shape. It only sags into a blob when brought to the surface.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <div class="screen__actions">
+    <p class="small muted center">The next question is coming up.</p>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="question-captain-only.html">Back: Captain only</a>
+  <a href="question-audio.html">Next: Sound</a>
+</nav>
+</body>
+</html>

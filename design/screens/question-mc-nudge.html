@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question: don&#x27;t forget to send</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/paper.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen" data-state="picking">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--live"><span class="pill__dot" aria-hidden="true"></span>Question live</span>
+    </div>
+    <p class="hand hand--sm">Round 1 of 4</p>
+  </div>
+  <section class="stage" aria-label="Your host">
+    <span class="char char--96" role="img" aria-label="Rocco the raccoon, asking" data-character="hosts/rocco/asking" data-host="asking"></span>
+    <span class="char char--96" role="img" aria-label="Rocco the raccoon, waiting" data-character="hosts/rocco/waiting" data-host="waiting" hidden></span>
+    <p class="bubble" id="speech" data-asking="Glowing answers only!" data-waiting="Got it! Fingers crossed…" data-nudge="Don&#x27;t forget to send!" data-locked="Pencils down!">Don&#x27;t forget to send!</p>
+  </section>
+
+  <article class="paper" aria-labelledby="prompt">
+    <header class="paper__head">
+      <div class="paper__meta">
+        <p class="hand">Question 5 of 10</p>
+        <p class="small">Into the Abyss · 10&nbsp;points</p>
+      </div>
+      <div class="countdown is-urgent" role="timer" aria-label="Seconds left" id="timer" data-total="20" data-start="5" data-frozen="" style="--left: 0.25">
+        <svg class="countdown__ring" viewBox="0 0 54 54" aria-hidden="true">
+          <circle class="countdown__track" cx="27" cy="27" r="23"/>
+          <circle class="countdown__fill" cx="27" cy="27" r="23" pathLength="100"/>
+        </svg>
+        <span class="countdown__num" id="seconds">5</span>
+      </div>
+    </header>
+    <div class="paper__body">
+      <h1 class="question" id="prompt" data-role="question">What is the name for light made by living things, common in the deep sea?</h1>
+      <ul class="options" aria-label="Answers">
+        <li><button type="button" class="option" aria-pressed="true"><span class="option__letter" aria-hidden="true">A</span><span class="option__label">Bioluminescence</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false"><span class="option__letter" aria-hidden="true">B</span><span class="option__label">Phosphorescence</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false"><span class="option__letter" aria-hidden="true">C</span><span class="option__label">Fluorescence</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false"><span class="option__letter" aria-hidden="true">D</span><span class="option__label">Incandescence</span></button></li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="screen__actions">
+    <div role="status" aria-live="polite"><p class="note" id="nudge" hidden>
+      <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v14"/><path d="M6 13l6 6 6-6"/></svg>
+      <span>It&#x27;s circled, but your team doesn&#x27;t have it yet. Send it now!</span>
+    </p></div>
+    <button type="button" class="btn btn--primary btn--block" id="send" data-first="That&#x27;s our answer!" data-again="Send this one instead">That&#x27;s our answer!</button>
+    <p class="small muted center" id="hint" data-empty="Tap an answer to circle it." data-picked="You can change it until time&#x27;s up.">You can change it until time&#x27;s up.</p>
+    <div role="status" aria-live="polite"><p class="note" id="sent" hidden>
+      <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>
+      <span>Sent! Tap another answer to change it before time&#x27;s up.</span>
+    </p></div>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="reveal-correct.html">Back: Reveal: correct</a>
+  <a href="question-true-false.html">Next: True or false</a>
+  <a href="question-mc.html">Picking</a>
+  <a href="question-mc-submitted.html">Submitted</a>
+  <a href="question-mc-nudge.html">Nudge</a>
+</nav>
+
+<script>
+  // Mockup behavior for the answer sheet. Tapping circles an answer on your own sheet only;
+  // "That's our answer!" sends it for the team, and the team can change and resend until the lock.
+  // At 5 seconds, a circled answer that isn't sent gets the host's nudge. Real logic lives in the app.
+  const main = document.querySelector('main')
+  const options = [...document.querySelectorAll('.options button.option')]
+  const field = document.querySelector('.field')
+  const input = document.querySelector('.field__input')
+  const count = document.querySelector('.field__count')
+  const error = document.getElementById('error')
+  const send = document.getElementById('send')
+  const hint = document.getElementById('hint')
+  const sent = document.getElementById('sent')
+  const nudge = document.getElementById('nudge')
+  const speech = document.getElementById('speech')
+  const hosts = [...document.querySelectorAll('[data-host]')]
+  const timer = document.getElementById('timer')
+  const seconds = document.getElementById('seconds')
+  const total = Number(timer.dataset.total)
+  let left = Number(timer.dataset.start)
+  let sentValue = null
+
+  const picked = () => {
+    if (options.length) {
+      const i = options.findIndex((o) => o.getAttribute('aria-pressed') === 'true')
+      return i === -1 ? null : i
+    }
+    return input.value.trim() || null
+  }
+
+  function render() {
+    const pick = picked()
+    const isSent = pick !== null && pick === sentValue
+    const live = left > 0
+    const nudging = live && !isSent && pick !== null && left <= 5
+    options.forEach((o, i) => {
+      o.querySelector('.option__note')?.remove()
+      if (i === sentValue) o.insertAdjacentHTML('beforeend', '<span class="option__note">sent!</span>')
+    })
+    field?.classList.toggle('field--submitted', isSent)
+    send.hidden = isSent
+    send.disabled = !live || pick === null
+    send.textContent = sentValue === null ? send.dataset.first : send.dataset.again
+    hint.hidden = isSent || nudging
+    hint.textContent = pick === null ? hint.dataset.empty : hint.dataset.picked
+    sent.hidden = !isSent
+    nudge.hidden = !nudging
+    const mood = isSent || !live ? 'waiting' : 'asking'
+    hosts.forEach((h) => (h.hidden = h.dataset.host !== mood))
+    speech.textContent = speech.dataset[!live ? 'locked' : isSent ? 'waiting' : nudging ? 'nudge' : 'asking']
+    if (count) count.textContent = `${input.value.length} / 200`
+  }
+
+  options.forEach((o) =>
+    o.addEventListener('click', () => {
+      options.forEach((x) => x.setAttribute('aria-pressed', String(x === o)))
+      render()
+    }),
+  )
+  input?.addEventListener('input', () => {
+    if (error) error.hidden = true
+    render()
+  })
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !send.disabled && !send.hidden) send.click()
+  })
+  send.addEventListener('click', () => {
+    if (field?.classList.contains('field--number') && !/^-?[\d,]+(\.\d+)?$/.test(input.value.trim())) {
+      error.hidden = false
+      return
+    }
+    sentValue = picked()
+    render()
+  })
+  if ((new URLSearchParams(location.search).get('state') ?? main.dataset.state) === 'submitted') sentValue = picked()
+  render()
+
+  // The countdown. The number always ticks (it's information); the ring only glides when motion is allowed.
+  if (!('frozen' in timer.dataset)) {
+    const tick = setInterval(() => {
+      left = Math.max(0, left - 1)
+      seconds.textContent = left
+      timer.style.setProperty('--left', left / total)
+      timer.classList.toggle('is-urgent', left <= 5)
+      if (left === 0) {
+        clearInterval(tick)
+        document.getElementById('phase').innerHTML =
+          '<span class="pill pill--locked"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Answers locked</span>'
+        options.forEach((o) => (o.disabled = true))
+        if (input) input.disabled = true
+      }
+      render()
+    }, 1000)
+  }
+</script>
+</body>
+</html>

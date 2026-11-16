@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Final wager</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/paper.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--waiting"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c0 5 10 6 10 9s-10 4-10 9M17 3c0 5-10 6-10 9"/></svg>Waiting for the host</span>
+    </div>
+    <p class="hand hand--sm">Final round</p>
+  </div>
+  <section class="stage" aria-label="Your host">
+    <span class="char char--96" role="img" aria-label="Rocco the raccoon, asking" data-character="hosts/rocco/asking" data-host="asking"></span>
+    <span class="char char--96" role="img" aria-label="Rocco the raccoon, waiting" data-character="hosts/rocco/waiting" data-host="waiting" hidden></span>
+    <p class="bubble" id="speech" data-asking="I'm back! Feeling bold?" data-waiting="Bold move! Good luck…">I'm back! Feeling bold?</p>
+  </section>
+
+  <div class="paper-shadow">
+    <article class="paper paper--torn" aria-labelledby="prompt">
+      <header class="paper__head">
+        <div class="paper__meta">
+          <p class="hand">Final wager</p>
+          <p class="small">One last question, any topic</p>
+        </div>
+      </header>
+      <div class="paper__body">
+        <h1 class="question" id="prompt" data-role="question">How many points will you bet?</h1>
+        <p class="body">Bet some or all of your points on the last question. Get it right to win them, wrong to lose them.</p>
+        <p class="tally"><span class="tally__num">180</span><span class="tally__label">points to play with</span></p>
+        <div class="field field--number">
+          <label class="field__label" for="wager">Our wager</label>
+          <input class="field__input" id="wager" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="send" placeholder="0" value="100" aria-describedby="wager-foot">
+          <div class="field__foot" id="wager-foot"><span>Anything from 0 to 180</span></div>
+          <p class="small" id="error" role="alert" hidden><strong>Pick a whole number from 0 to 180.</strong></p>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="screen__actions">
+    <button type="button" class="btn btn--primary btn--block" id="send">Lock in our wager</button>
+    <p class="small muted center" id="hint">You can change it until the question opens.</p>
+    <div role="status" aria-live="polite"><p class="note" id="sent" hidden>
+      <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>
+      <span id="sent-text">Wager locked in! Change it any time before the question opens.</span>
+    </p></div>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="paused.html">Back: Paused</a>
+  <a href="wager.html?state=submitted">Locked in</a>
+</nav>
+
+<script>
+  // Mockup behavior: type a wager from 0 to the team's score, then lock it in. It can change until the question opens.
+  const score = 180
+  const input = document.getElementById('wager')
+  const field = document.querySelector('.field')
+  const error = document.getElementById('error')
+  const send = document.getElementById('send')
+  const hint = document.getElementById('hint')
+  const sent = document.getElementById('sent')
+  const sentText = document.getElementById('sent-text')
+  const speech = document.getElementById('speech')
+  const hosts = [...document.querySelectorAll('[data-host]')]
+  let locked = null
+  const value = () => (/^\d+$/.test(input.value.trim()) ? Number(input.value.trim()) : null)
+  function render() {
+    const isLocked = locked !== null && value() === locked
+    field.classList.toggle('field--submitted', isLocked)
+    send.hidden = isLocked
+    hint.hidden = isLocked
+    sent.hidden = !isLocked
+    send.disabled = input.value.trim() === ''
+    send.textContent = locked === null ? 'Lock in our wager' : 'Lock in this one instead'
+    sentText.textContent = `Wager locked in: ${locked} points. Change it any time before the question opens.`
+    hosts.forEach((h) => (h.hidden = h.dataset.host !== (isLocked ? 'waiting' : 'asking')))
+    speech.textContent = speech.dataset[isLocked ? 'waiting' : 'asking']
+  }
+  input.addEventListener('input', () => {
+    error.hidden = true
+    render()
+  })
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !send.hidden) send.click()
+  })
+  send.addEventListener('click', () => {
+    const v = value()
+    if (v === null || v > score) {
+      error.hidden = false
+      return
+    }
+    locked = v
+    render()
+  })
+  if (new URLSearchParams(location.search).get('state') === 'submitted') locked = value()
+  render()
+</script>
+</body>
+</html>

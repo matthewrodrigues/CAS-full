@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Answers locked</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/paper.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--locked"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Answers locked</span>
+    </div>
+    <p class="hand hand--sm">Round 1 of 4</p>
+  </div>
+  <section class="stage stage--butter stage--hero" aria-label="Your host">
+    <p class="bubble bubble--down">Got it! Fingers crossed…</p>
+    <span class="char char--160 char--idle" role="img" aria-label="Rocco the raccoon, waiting" data-character="hosts/rocco/waiting"></span>
+  </section>
+
+  <div class="paper-shadow">
+    <article class="paper paper--torn" aria-labelledby="prompt">
+      <header class="paper__head">
+        <div class="paper__meta">
+          <p class="hand">Question 1 of 10</p>
+          <p class="small">Into the Abyss · 10&nbsp;points</p>
+        </div>
+        
+      </header>
+      <div class="paper__body">
+        <h1 class="question" id="prompt" data-role="question">What is the deepest known point in Earth&#x27;s oceans?</h1>
+        <p class="hand">Our answer</p>
+        <ul class="options" aria-label="Your team's answer">
+          <li><button type="button" class="option" aria-pressed="true" disabled><span class="option__letter" aria-hidden="true">A</span><span class="option__label">Challenger Deep</span><span class="option__note">sent!</span></button></li>
+        </ul>
+        <p class="note">
+          <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <span>Pencils down! The host will reveal the answer in a moment.</span>
+        </p>
+      </div>
+    </article>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="question-mc-submitted.html">Back: Sent</a>
+  <a href="reveal-correct.html">Next: Reveal: correct</a>
+</nav>
+</body>
+</html>
