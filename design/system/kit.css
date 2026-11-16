@@ -1,0 +1,1081 @@
+/*
+ * NightLife Trivia design kit: warm, cozy, cute and character-led.
+ * Spec: design/system/kit.md. Colors come only from design/system/tokens.css.
+ * Motion lives only inside @media (prefers-reduced-motion: no-preference), at the end of this file.
+ */
+@import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/fredoka@5.3.0/index.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/nunito@5.3.0/index.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/shantell-sans@5.3.0/index.css');
+
+/* ---------------------------------------------------------------- scales */
+:root {
+  /* Spacing: a 4px base. Use these steps only. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-14: 56px;
+
+  /* Type scale (phone). The question is never below 20px; it starts at 24px. */
+  --text-sm: 16px; /* the smallest text in the app: captions, hints */
+  --text-md: 18px; /* body, list names */
+  --text-lg: 20px; /* answers, buttons, the hand font */
+  --text-question: 24px; /* the question; long prompts may drop to --text-question-min */
+  --text-question-min: 20px;
+  --text-h2: 24px;
+  --text-h1: 30px;
+  --text-display: 38px;
+
+  /* Corners: round = happy. Paper is the one exception: a real card has small corners. */
+  --radius-paper: 10px;
+  --radius-control: 18px; /* buttons, answer options, inputs */
+  --radius-card: 22px; /* stages, list cards, bubbles */
+  --radius-pill: 999px;
+
+  /* Sizes */
+  --tap: 44px; /* the minimum tap target */
+  --button-h: 58px;
+  --option-h: 60px;
+  --letter: 38px;
+  --screen-w: 390px;
+
+  --dur-fast: 120ms;
+  --dur: 260ms;
+  --dur-slow: 420ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+/* Big screen (1920x1080, read across a room): put .big on <body>. Every component scales with it. */
+.big {
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 40px;
+  --space-8: 56px;
+  --space-10: 72px;
+  --text-sm: 26px;
+  --text-md: 30px;
+  --text-lg: 38px;
+  --text-question: 64px;
+  --text-question-min: 52px;
+  --text-h2: 44px;
+  --text-h1: 64px;
+  --text-display: 88px;
+  --radius-paper: 18px;
+  --radius-control: 28px;
+  --radius-card: 40px;
+  --button-h: 96px;
+  --option-h: 104px;
+  --letter: 64px;
+}
+
+/* ---------------------------------------------------------------- base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+a {
+  color: var(--color-brand);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+}
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+[hidden] {
+  display: none !important;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- layout */
+/* One phone screen. Designed at 390x844; content scrolls if it must, the action stays in reach. */
+.screen {
+  width: 100%;
+  max-width: var(--screen-w);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.screen__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--tap);
+}
+.screen__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+/* The one primary button sits here, at the bottom, full width. */
+.screen__actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+/* A dark screen (big screen, or a rare phone moment): Midnight with paper-colored text. */
+.screen--night {
+  background: var(--color-brand-deep);
+  color: var(--color-paper);
+}
+/* Big screen: 1920x1080, a stage column and a paper column. */
+.screen--big {
+  max-width: none;
+  width: 1920px;
+  height: 1080px;
+  min-height: 0;
+  padding: var(--space-8) var(--space-10);
+  display: grid;
+  grid-template-columns: 640px 1fr;
+  grid-template-rows: auto 1fr;
+  gap: var(--space-6) var(--space-8);
+  overflow: hidden;
+}
+.screen--big .screen__top {
+  grid-column: 1 / -1;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.stack--tight {
+  gap: var(--space-2);
+}
+.stack--loose {
+  gap: var(--space-6);
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.row--between {
+  justify-content: space-between;
+}
+.center {
+  text-align: center;
+  align-items: center;
+}
+
+/* ---------------------------------------------------------------- type */
+.display {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-display);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.h1 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-h1);
+  line-height: 1.15;
+}
+.h2 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-h2);
+  line-height: 1.2;
+}
+/* The question prompt. Mark it data-role="question". */
+.question {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-question);
+  line-height: 1.25;
+  color: var(--color-ink);
+  text-wrap: pretty;
+}
+.question--long {
+  font-size: var(--text-question-min);
+}
+.body {
+  font-size: var(--text-md);
+}
+.muted {
+  color: var(--color-ink-muted);
+}
+.small {
+  font-size: var(--text-sm);
+}
+/* The hand font: short accents only (question number, timer, points, the host's speech). */
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 500;
+  font-size: var(--text-lg);
+  line-height: 1.25;
+  color: var(--color-pencil);
+}
+.hand--ink {
+  color: var(--color-ink);
+}
+.hand--sm {
+  font-size: var(--text-md);
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- paper card */
+/*
+ * The index card: washi tape on top, a small folded corner at top right, one honey header rule.
+ * Use for the live question, wager, locked and reveal. Not for lists, forms or chrome.
+ * <article class="paper"> <header class="paper__head">…</header> <div class="paper__body">…</div> </article>
+ */
+.paper {
+  --fold: 22px;
+  position: relative;
+  background:
+    linear-gradient(225deg, transparent calc(var(--fold) * 0.7071), var(--color-paper) calc(var(--fold) * 0.7071 + 0.5px));
+  border-radius: var(--radius-paper) 0 var(--radius-paper) var(--radius-paper);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5) var(--space-5) var(--space-5);
+  color: var(--color-ink);
+}
+/* Washi tape. */
+.paper::before {
+  content: '';
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 104px;
+  height: 26px;
+  transform: translateX(-50%) rotate(-3deg);
+  background: repeating-linear-gradient(-45deg, var(--color-tape) 0 9px, var(--color-tape-stripe) 9px 18px);
+  clip-path: polygon(0 0, 100% 0, 97% 25%, 100% 50%, 97% 75%, 100% 100%, 0 100%, 3% 75%, 0 50%, 3% 25%);
+  pointer-events: none;
+}
+/* Folded corner. */
+.paper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--fold);
+  height: var(--fold);
+  background: linear-gradient(to bottom left, transparent 50%, var(--color-paper-edge) 50%);
+  border-bottom-left-radius: 5px;
+  box-shadow: -2px 2px 3px var(--color-shadow-soft);
+  pointer-events: none;
+}
+.paper--no-tape::before {
+  content: none;
+}
+/* The ruled header: question number and points on the left, the countdown on the right. */
+.paper__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0 calc(var(--space-5) * -1) var(--space-4);
+  padding: 0 var(--space-5) var(--space-3);
+  border-bottom: 3px solid var(--color-rule);
+  min-height: 52px;
+}
+.paper__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+.paper__meta .hand {
+  font-size: var(--text-lg);
+}
+.paper__meta .small {
+  color: var(--color-ink-muted);
+}
+.paper__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+/*
+ * Torn from the pad: the wager and locked states. No tape (the top is torn off) and no fold.
+ * Wrap it in .paper-shadow, because a mask clips box-shadow.
+ */
+.paper-shadow {
+  filter: drop-shadow(0 3px 0 var(--color-paper-edge)) drop-shadow(0 10px 14px var(--color-shadow-soft));
+}
+.paper--torn {
+  border-radius: 0 0 var(--radius-paper) var(--radius-paper);
+  background: var(--color-paper);
+  box-shadow: none;
+  padding-top: calc(var(--space-5) + 8px);
+  -webkit-mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 12' preserveAspectRatio='none'%3E%3Cpath d='M0 12V7l3-3 4 4 5-6 4 5 5-4 3 3 6-5 4 6 4-3 5 4 5-5v13z'/%3E%3C/svg%3E") top left / 48px 12px repeat-x,
+    linear-gradient(var(--color-ink), var(--color-ink)) bottom / 100% calc(100% - 11px) no-repeat;
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 12' preserveAspectRatio='none'%3E%3Cpath d='M0 12V7l3-3 4 4 5-6 4 5 5-4 3 3 6-5 4 6 4-3 5 4 5-5v13z'/%3E%3C/svg%3E") top left / 48px 12px repeat-x,
+    linear-gradient(var(--color-ink), var(--color-ink)) bottom / 100% calc(100% - 11px) no-repeat;
+}
+.paper--torn::before,
+.paper--torn::after {
+  content: none;
+}
+
+/* A hand-written note on the page or the card ("Sent!", hints). Pen ink, never green. */
+.note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  border: 2px dashed var(--color-line);
+  font-size: var(--text-md);
+}
+.note__icon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  color: var(--color-pen);
+}
+
+/* ---------------------------------------------------------------- buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--button-h);
+  min-width: var(--tap);
+  padding: 0 var(--space-6);
+  border-radius: var(--radius-control);
+  border: 0;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn--block {
+  width: 100%;
+}
+/* One per screen. First-person, warm copy: "That's our answer!", "We're in!". */
+.btn--primary {
+  background: var(--color-brand);
+  color: var(--color-paper);
+  box-shadow: var(--shadow-pop), var(--shadow-soft);
+}
+.btn--primary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-pop-sm);
+}
+.btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: inset 0 0 0 2px var(--color-border), 0 3px 0 var(--color-line);
+}
+.btn--secondary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: inset 0 0 0 2px var(--color-border);
+}
+/* A quiet text action ("Skip", "Not now"). Still 44px tall. */
+.btn--quiet {
+  background: transparent;
+  color: var(--color-brand);
+  min-height: var(--tap);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  background: var(--color-paper-edge);
+  color: var(--color-ink-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.btn__icon {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+
+/* ---------------------------------------------------------------- answer options */
+/*
+ * MC and true/false. Each option is a <button aria-pressed> inside .options (a <ul>).
+ * The pick gets a pen circle around its letter (a shape, not just color) and a blue wash.
+ */
+.options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.options--tf {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.big .options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--option-h);
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-option);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+}
+.option:hover:not(:disabled) {
+  border-color: var(--color-border);
+}
+.option:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+/* The answer-sheet bubble: a faint ring with the letter in the hand font. */
+.option__letter {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--letter);
+  height: var(--letter);
+  border-radius: 50%;
+  border: 2px solid var(--color-line);
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--color-pencil);
+}
+.option__label {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+/* A small hand-written tag at the end of the row ("sent!"). */
+.option__note {
+  flex: none;
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: var(--text-md);
+  color: var(--color-pen);
+}
+/* Picked. Works with aria-pressed="true" or .is-picked. */
+.option[aria-pressed='true'],
+.option.is-picked {
+  border-color: var(--color-pen);
+  background: var(--color-brand-soft);
+  box-shadow: 0 3px 0 var(--color-pen);
+}
+.option[aria-pressed='true'] .option__letter,
+.option.is-picked .option__letter {
+  border-color: transparent;
+  color: var(--color-pen);
+}
+/* The pen circle: a hand-drawn loop, a little off-center, overshooting its start. */
+.option[aria-pressed='true'] .option__letter::after,
+.option.is-picked .option__letter::after {
+  content: '';
+  position: absolute;
+  inset: -7px -9px -6px -6px;
+  background: var(--color-pen);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 54'%3E%3Cpath d='M34 6C17 3 5 13 5 27c0 13 11 22 25 21 15-1 26-11 25-24C54 11 42 4 27 8' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 54'%3E%3Cpath d='M34 6C17 3 5 13 5 27c0 13 11 22 25 21 15-1 26-11 25-24C54 11 42 4 27 8' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+/* Disabled (paused, captain-only, locked): readable, clearly not tappable. Don't fade the text. */
+.option:disabled {
+  cursor: not-allowed;
+  background: var(--color-paper);
+  border-style: dashed;
+  box-shadow: none;
+}
+/* True / false: two tall tiles side by side, the word centered under its bubble. */
+.option--tf {
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(var(--option-h) * 1.8);
+  padding: var(--space-3);
+  text-align: center;
+  font-size: var(--text-h2);
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+.option--tf .option__label {
+  flex: none;
+}
+.option--tf .option__note {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-3);
+}
+
+/* Typed and closest-number answers: writing on a line. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.field__label {
+  font-weight: 700;
+  font-size: var(--text-md);
+}
+.field__input {
+  width: 100%;
+  min-height: var(--option-h);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--color-ink);
+}
+.field__input::placeholder {
+  color: var(--color-ink-muted);
+  font-weight: 600;
+}
+.field__input:focus-visible {
+  border-color: var(--color-pen);
+  outline-offset: 2px;
+}
+.field__input:disabled {
+  background: var(--color-paper);
+  border-style: dashed;
+}
+.field__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+.field__count {
+  font-family: var(--font-hand);
+  color: var(--color-pencil);
+  font-variant-numeric: tabular-nums;
+}
+.field--number .field__input {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-h1);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.field--submitted .field__input {
+  border-color: var(--color-pen);
+  background: var(--color-brand-soft);
+}
+
+/* ---------------------------------------------------------------- status pill */
+/* Every play screen shows exactly one. Icon + words, never color alone. Wrap it in role="status". */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: var(--space-1) var(--space-4) var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.pill__icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+.pill__dot {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.pill--waiting {
+  background: var(--color-stage-butter);
+  color: var(--color-ink);
+}
+.pill--live {
+  background: var(--color-info-soft);
+  color: var(--color-ink);
+}
+.pill--live .pill__dot {
+  background: var(--color-brand);
+}
+.pill--locked {
+  background: var(--color-brand-deep);
+  color: var(--color-paper);
+}
+.pill--results {
+  background: var(--color-stage-sky);
+  color: var(--color-ink);
+}
+.big .pill {
+  min-height: 64px;
+  padding: var(--space-2) var(--space-6) var(--space-2) var(--space-4);
+}
+.big .pill__icon {
+  width: 36px;
+  height: 36px;
+}
+
+/* ---------------------------------------------------------------- countdown */
+/*
+ * A drawn stopwatch ring with the seconds in the hand font. role="timer" on the root.
+ * Set --left (0..1) for the ring; JS updates it once a second. Add .is-urgent at 5 seconds or less.
+ */
+.countdown {
+  --left: 1;
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+}
+.countdown__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.countdown__track {
+  fill: var(--color-surface);
+  stroke: var(--color-line);
+  stroke-width: 4;
+}
+.countdown__fill {
+  fill: none;
+  stroke: var(--color-pencil);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: calc(100 - var(--left) * 100);
+}
+.countdown__num {
+  position: relative;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  line-height: 1;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.countdown.is-urgent .countdown__track {
+  fill: var(--color-urgent);
+  stroke: var(--color-urgent);
+}
+.countdown.is-urgent .countdown__fill {
+  stroke: var(--color-ink);
+}
+.big .countdown {
+  width: 112px;
+  height: 112px;
+}
+
+/* ---------------------------------------------------------------- characters */
+/*
+ * A character is an inline SVG (viewBox 0 0 400 400) with its own paper-tone backing disc drawn in.
+ * <span class="char char--96" data-character="host/asking"></span>
+ */
+.char {
+  display: inline-block;
+  flex: none;
+  width: var(--char, 96px);
+  height: var(--char, 96px);
+  line-height: 0;
+}
+.char > svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.char--48 {
+  --char: 48px;
+}
+.char--64 {
+  --char: 64px;
+}
+.char--96 {
+  --char: 96px;
+}
+.char--128 {
+  --char: 128px;
+}
+.char--160 {
+  --char: 160px;
+}
+.char--240 {
+  --char: 240px;
+}
+.char--400 {
+  --char: 400px;
+}
+
+/* The stage: a pastel field the character stands on. One per screen, behind the host or the prize. */
+.stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-stage);
+  color: var(--color-ink);
+  overflow: hidden;
+  isolation: isolate;
+}
+/* Tiny stars and a crescent: night, but cozy. Decorative, sits behind everything. */
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 88% 22%, var(--color-stage-deco) 0 4px, transparent 4.5px),
+    radial-gradient(circle at 72% 80%, var(--color-stage-deco) 0 3px, transparent 3.5px),
+    radial-gradient(circle at 95% 62%, var(--color-stage-deco) 0 2.5px, transparent 3px),
+    radial-gradient(circle at 60% 14%, var(--color-stage-deco) 0 2.5px, transparent 3px);
+  pointer-events: none;
+}
+.stage--butter {
+  background: var(--color-stage-butter);
+}
+.stage--sky {
+  background: var(--color-stage-sky);
+}
+/* The tall hero version: character centered, words below (lobby, reveal, the end). */
+.stage--hero {
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-6) var(--space-4) var(--space-5);
+  gap: var(--space-4);
+}
+.big .stage--hero {
+  height: 100%;
+}
+
+/* The host's speech bubble, in the hand font. Its tail points at the speaker. */
+.bubble {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  font-family: var(--font-hand);
+  font-weight: 500;
+  font-size: var(--text-lg);
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+.bubble::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  background: inherit;
+  border-radius: 0 0 0 6px;
+  transform: translateY(-50%) rotate(45deg) skew(8deg, 8deg);
+  z-index: -1;
+}
+.bubble {
+  isolation: auto;
+}
+/* Bubble above a centered character: tail points down. */
+.bubble--down::before {
+  left: 50%;
+  top: auto;
+  bottom: -10px;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 0 0 6px 0;
+}
+
+/* ---------------------------------------------------------------- result badges */
+/* Correct / incorrect: color + icon + word, always all three. */
+.result {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-1) var(--space-5) var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-h2);
+  line-height: 1.1;
+}
+.result__icon {
+  width: 32px;
+  height: 32px;
+  flex: none;
+}
+.result--correct {
+  background: var(--color-correct);
+  color: var(--color-ink);
+}
+.result--incorrect {
+  background: var(--color-incorrect);
+  color: var(--color-paper);
+}
+.big .result {
+  min-height: 88px;
+  padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
+}
+.big .result__icon {
+  width: 60px;
+  height: 60px;
+}
+/* An option after the reveal. The correct one gets the badge treatment too: never color alone. */
+.option.is-correct {
+  border-color: var(--color-correct);
+  box-shadow: 0 3px 0 var(--color-correct);
+}
+.option.is-incorrect {
+  border-color: var(--color-incorrect);
+  box-shadow: 0 3px 0 var(--color-incorrect);
+}
+
+/* ---------------------------------------------------------------- list rows */
+/* Leaderboards, prizes and animals. <ol class="list"><li class="list-row">…</li></ol> */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 64px;
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: 0 2px 0 var(--color-paper-edge);
+}
+.list-row__rank {
+  flex: none;
+  min-width: 32px;
+  text-align: center;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--color-pencil);
+  font-variant-numeric: tabular-nums;
+}
+.list-row__name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+  font-size: var(--text-md);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.list-row__sub {
+  display: block;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+.list-row__score {
+  flex: none;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+/* Top three: a lamplight rank bubble. */
+.list-row.is-top .list-row__rank {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-win);
+  color: var(--color-ink);
+}
+/* Your team: pen-blue edge and a "You" tag, so it's findable in a long list. */
+.list-row.is-you {
+  background: var(--color-brand-soft);
+  box-shadow: inset 0 0 0 2px var(--color-pen), 0 2px 0 var(--color-pen);
+}
+a.list-row {
+  color: inherit;
+  text-decoration: none;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-pen);
+  color: var(--color-paper);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  line-height: 1;
+  vertical-align: middle;
+}
+.big .list-row {
+  min-height: 96px;
+}
+.big .list-row.is-top .list-row__rank {
+  width: 60px;
+  height: 60px;
+}
+
+/* ---------------------------------------------------------------- mockup-only chrome */
+/* Controls that let a reviewer flip a mockup's state. Not part of the product. */
+.mock-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-top: 2px dashed var(--color-line);
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+.mock-controls a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+}
+
+/* ---------------------------------------------------------------- motion */
+/* Subtle, brief, never flashing. Nothing here runs under prefers-reduced-motion: reduce. */
+@media (prefers-reduced-motion: no-preference) {
+  .btn,
+  .option {
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) linear,
+      border-color var(--dur-fast) linear;
+  }
+  .countdown__fill {
+    transition: stroke-dashoffset 1s linear;
+  }
+  /* The pen circle is drawn on when an option is picked. */
+  .option[aria-pressed='true'] .option__letter::after,
+  .option.is-picked .option__letter::after {
+    animation: kit-circle-in var(--dur) var(--ease-bounce) both;
+  }
+  /* A card arrives by sliding up a little. */
+  .paper,
+  .paper-shadow,
+  .enter {
+    animation: kit-rise var(--dur-slow) var(--ease-out) both;
+  }
+  .bubble {
+    animation: kit-pop var(--dur) var(--ease-bounce) 120ms both;
+  }
+  .result {
+    animation: kit-pop var(--dur) var(--ease-bounce) both;
+  }
+  /* The live dot breathes slowly (2.4s, opacity only between 55% and 100%: not a flash). */
+  .pill--live .pill__dot {
+    animation: kit-breathe-dot 2.4s ease-in-out infinite;
+  }
+  /* Idle: the character breathes. Use on one character per screen at most, never on a timed question's options. */
+  .char--idle > svg {
+    animation: kit-idle 3.6s ease-in-out infinite;
+    transform-origin: 50% 90%;
+  }
+}
+@keyframes kit-circle-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-30deg);
+  }
+}
+@keyframes kit-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes kit-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+@keyframes kit-breathe-dot {
+  50% {
+    opacity: 0.55;
+  }
+}
+@keyframes kit-idle {
+  50% {
+    transform: translateY(-1.5%) scale(1.01, 0.995);
+  }
+}

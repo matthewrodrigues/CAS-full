@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question: multiple choice</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<!-- Host art (Rocco, option C). In the build this comes from design/characters/host/<expression>.svg. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="s-disc" viewBox="0 0 400 400">
+      <circle cx="200" cy="206" r="186" fill="var(--color-char-disc-rim)"/>
+      <circle cx="200" cy="200" r="184" fill="var(--color-char-disc)"/>
+      <ellipse cx="200" cy="350" rx="104" ry="14" fill="var(--color-char-disc-rim)"/>
+    </symbol>
+    <symbol id="s-card" viewBox="-50 -40 100 80">
+      <rect x="-40" y="-30" width="80" height="60" rx="7" fill="var(--color-char-cream)"/>
+      <path d="M-40 -23 a7 7 0 0 1 7 -7 h66 a7 7 0 0 1 7 7 v3 h-80z" fill="var(--color-char-cream-shade)"/>
+      <path d="M-30 -12 h60" stroke="var(--color-char-honey)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M-8 1 q0 -9 8 -9 q8 0 8 8 q0 6 -8 8 v4" fill="none" stroke="var(--color-char-ink)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="0" cy="21" r="3.6" fill="var(--color-char-ink)"/>
+    </symbol>
+    <symbol id="rc-body" viewBox="0 0 400 400">
+      <path d="M262 318C318 318 352 280 348 226C346 196 330 178 312 172" fill="none" stroke="var(--color-char-fur)" stroke-width="54" stroke-linecap="round"/>
+      <path d="M262 318C318 318 352 280 348 226C346 196 330 178 312 172" fill="none" stroke="var(--color-char-mask)" stroke-width="54" stroke-dasharray="0 34 22 34 22 34 22 200"/>
+      <ellipse cx="166" cy="348" rx="28" ry="13" fill="var(--color-char-mask)"/>
+      <ellipse cx="234" cy="348" rx="28" ry="13" fill="var(--color-char-mask)"/>
+      <ellipse cx="200" cy="296" rx="86" ry="60" fill="var(--color-char-fur-shade)"/>
+      <ellipse cx="200" cy="306" rx="52" ry="42" fill="var(--color-char-cream)"/>
+      <ellipse cx="116" cy="92" rx="36" ry="40" transform="rotate(-22 116 92)" fill="var(--color-char-fur-shade)"/>
+      <ellipse cx="284" cy="92" rx="36" ry="40" transform="rotate(22 284 92)" fill="var(--color-char-fur-shade)"/>
+      <ellipse cx="120" cy="98" rx="18" ry="22" transform="rotate(-22 120 98)" fill="var(--color-char-cream)"/>
+      <ellipse cx="280" cy="98" rx="18" ry="22" transform="rotate(22 280 98)" fill="var(--color-char-cream)"/>
+      <path d="M200 70C282 70 324 116 330 172L352 196L326 206C314 252 264 272 200 272C136 272 86 252 74 206L48 196L70 172C76 116 118 70 200 70Z" fill="var(--color-char-fur)"/>
+      <path d="M106 186C112 146 162 140 200 166C238 140 288 146 294 186Z" fill="var(--color-char-cream)"/>
+      <path d="M86 200C96 168 150 162 200 190C250 162 304 168 314 200C304 238 250 244 222 224C210 216 190 216 178 224C150 244 96 238 86 200Z" fill="var(--color-char-mask)"/>
+      <ellipse cx="200" cy="236" rx="48" ry="32" fill="var(--color-char-cream)"/>
+      <ellipse cx="200" cy="216" rx="14" ry="10" fill="var(--color-char-ink)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--live"><span class="pill__dot" aria-hidden="true"></span>Question live</span>
+    </div>
+    <p class="hand hand--sm">Round 1 of 4</p>
+  </div>
+
+  <section class="stage" aria-label="Your host">
+    <span class="char char--96">
+      <svg viewBox="0 0 400 400" role="img" aria-label="Rocco the raccoon, asking" id="host-asking">
+        <use href="#s-disc"/><use href="#rc-body"/>
+        <circle cx="148" cy="202" r="13" fill="var(--color-char-cream)"/>
+        <circle cx="252" cy="202" r="13" fill="var(--color-char-cream)"/>
+        <circle cx="148" cy="203" r="10.5" fill="var(--color-char-ink)"/>
+        <circle cx="252" cy="203" r="10.5" fill="var(--color-char-ink)"/>
+        <ellipse cx="164" cy="248" rx="11" ry="7" fill="var(--color-char-blush)"/>
+        <ellipse cx="236" cy="248" rx="11" ry="7" fill="var(--color-char-blush)"/>
+        <path d="M186 236q7 8 14 0q7 8 14 0" fill="none" stroke="var(--color-char-ink)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M130 160q16 -10 32 -2" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M238 158q16 -8 32 2" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+        <ellipse cx="158" cy="300" rx="20" ry="16" fill="var(--color-char-mask)"/>
+        <path d="M262 286Q298 262 312 214" fill="none" stroke="var(--color-char-fur-shade)" stroke-width="30" stroke-linecap="round"/>
+        <circle cx="314" cy="204" r="18" fill="var(--color-char-mask)"/>
+        <use href="#s-card" x="280" y="102" width="110" height="88" transform="rotate(10 335 146)"/>
+      </svg>
+      <svg viewBox="0 0 400 400" role="img" aria-label="Rocco the raccoon, waiting" id="host-waiting" hidden>
+        <use href="#s-disc"/><use href="#rc-body"/>
+        <circle cx="148" cy="202" r="13" fill="var(--color-char-cream)"/>
+        <circle cx="252" cy="202" r="13" fill="var(--color-char-cream)"/>
+        <circle cx="151" cy="198" r="10.5" fill="var(--color-char-ink)"/>
+        <circle cx="255" cy="198" r="10.5" fill="var(--color-char-ink)"/>
+        <ellipse cx="164" cy="248" rx="11" ry="7" fill="var(--color-char-blush)"/>
+        <ellipse cx="236" cy="248" rx="11" ry="7" fill="var(--color-char-blush)"/>
+        <path d="M190 238q10 9 20 0" fill="none" stroke="var(--color-char-ink)" stroke-width="5.5" stroke-linecap="round"/>
+        <path d="M132 164q15 -4 30 0" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M238 164q15 -4 30 0" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+        <ellipse cx="180" cy="294" rx="20" ry="16" fill="var(--color-char-mask)"/>
+        <ellipse cx="220" cy="294" rx="20" ry="16" fill="var(--color-char-mask)"/>
+      </svg>
+    </span>
+    <p class="bubble" id="speech">Let's start in the deep end!</p>
+  </section>
+
+  <article class="paper" aria-labelledby="prompt">
+    <header class="paper__head">
+      <div class="paper__meta">
+        <p class="hand">Question 1 of 10</p>
+        <p class="small">Into the Abyss · 10 points</p>
+      </div>
+      <div class="countdown" role="timer" aria-label="Seconds left" id="timer" style="--left: 0.8">
+        <svg class="countdown__ring" viewBox="0 0 54 54" aria-hidden="true">
+          <circle class="countdown__track" cx="27" cy="27" r="23"/>
+          <circle class="countdown__fill" cx="27" cy="27" r="23" pathLength="100"/>
+        </svg>
+        <span class="countdown__num" id="seconds">24</span>
+      </div>
+    </header>
+    <div class="paper__body">
+      <h1 class="question" id="prompt" data-role="question">What is the deepest known point in Earth's oceans?</h1>
+      <ul class="options" aria-label="Answers">
+        <li><button type="button" class="option" aria-pressed="true"><span class="option__letter" aria-hidden="true">A</span><span class="option__label">Challenger Deep</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false"><span class="option__letter" aria-hidden="true">B</span><span class="option__label">Puerto Rico Trench</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false"><span class="option__letter" aria-hidden="true">C</span><span class="option__label">Tonga Trench</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false"><span class="option__letter" aria-hidden="true">D</span><span class="option__label">Java Trench</span></button></li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="screen__actions">
+    <button type="button" class="btn btn--primary btn--block" id="send">That's our answer!</button>
+    <p class="small muted center" id="hint">You can change it until time's up.</p>
+    <div role="status" aria-live="polite"><p class="note" id="sent" hidden>
+      <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>
+      <span>Sent! Tap another answer to change it before time's up.</span>
+    </p></div>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="question-mc.html">Picking</a>
+  <a href="question-mc.html?state=submitted">Submitted</a>
+</nav>
+
+<script>
+  // Mockup behavior: pick an option, send it, and a countdown. Real logic lives in the app.
+  const options = [...document.querySelectorAll('.option')]
+  const send = document.getElementById('send')
+  const hint = document.getElementById('hint')
+  const sent = document.getElementById('sent')
+  const speech = document.getElementById('speech')
+  const asking = document.getElementById('host-asking')
+  const waiting = document.getElementById('host-waiting')
+  let sentIndex = null
+
+  function render() {
+    const picked = options.findIndex((o) => o.getAttribute('aria-pressed') === 'true')
+    const isSent = picked !== -1 && picked === sentIndex
+    options.forEach((o, i) => {
+      o.querySelector('.option__note')?.remove()
+      if (i === sentIndex) o.insertAdjacentHTML('beforeend', '<span class="option__note">sent!</span>')
+    })
+    send.hidden = isSent
+    hint.hidden = isSent
+    sent.hidden = !isSent
+    send.disabled = picked === -1
+    send.textContent = sentIndex === null ? "That's our answer!" : 'Send this one instead'
+    asking.toggleAttribute('hidden', isSent) // SVG elements have no .hidden property
+    waiting.toggleAttribute('hidden', !isSent)
+    speech.textContent = isSent ? 'Got it! Fingers crossed…' : "Let's start in the deep end!"
+  }
+  options.forEach((o) =>
+    o.addEventListener('click', () => {
+      options.forEach((x) => x.setAttribute('aria-pressed', String(x === o)))
+      render()
+    }),
+  )
+  send.addEventListener('click', () => {
+    sentIndex = options.findIndex((o) => o.getAttribute('aria-pressed') === 'true')
+    render()
+  })
+  if (new URLSearchParams(location.search).get('state') === 'submitted') sentIndex = 0
+  render()
+
+  // Countdown: 30 seconds a question, starting at 24 for the mockup. The number always ticks (it's
+  // information); the ring only glides when motion is allowed (kit.css).
+  const timer = document.getElementById('timer')
+  const seconds = document.getElementById('seconds')
+  const total = 30
+  let left = 24
+  const tick = setInterval(() => {
+    left = Math.max(0, left - 1)
+    seconds.textContent = left
+    timer.style.setProperty('--left', left / total)
+    timer.classList.toggle('is-urgent', left <= 5)
+    if (left === 0) {
+      clearInterval(tick)
+      document.getElementById('phase').innerHTML =
+        '<span class="pill pill--locked"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Answers locked</span>'
+      options.forEach((o) => (o.disabled = true))
+      send.disabled = true
+    }
+  }, 1000)
+</script>
+</body>
+</html>
