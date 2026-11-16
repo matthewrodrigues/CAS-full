@@ -11,6 +11,9 @@ export default defineConfig({
       {
         test: { name: 'server', include: ['server/**/*.test.ts'], environment: 'node', testTimeout: 15_000 }, // real sockets and the simulator share the CPU
       },
+      {
+        test: { name: 'scripts', include: ['scripts/**/*.test.ts'], environment: 'node' },
+      },
     ],
   },
 })

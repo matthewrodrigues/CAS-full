@@ -26,3 +26,10 @@ dist-ssr/
 !.vscode/extensions.json
 .idea/
 .DS_Store
+
+# design: third-party research screenshots stay local (findings.md is committed); generated review output
+design/research/**/*.png
+design/research/**/*.jpg
+design/research/**/*.webp
+design/review/shots/
+design/index.html

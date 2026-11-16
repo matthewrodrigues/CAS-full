@@ -21,7 +21,9 @@
     "e2e:server": "tsx scripts/e2e-prepare.ts && concurrently -k -n web,api \"vite --port 5174 --strictPort\" \"tsx server/index.ts\"",
     "simulate": "tsx scripts/simulate-players.ts",
     "import-questions": "tsx scripts/import-questions.ts",
-    "record-walkthrough": "tsx scripts/record-walkthrough.ts"
+    "record-walkthrough": "tsx scripts/record-walkthrough.ts",
+    "design:serve": "vite design --port 5180 --strictPort",
+    "design:check": "tsx scripts/check-mockups.ts"
   },
   "dependencies": {
     "@fontsource-variable/figtree": "^5.3.0",
