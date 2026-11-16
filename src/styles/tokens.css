@@ -1,36 +1,142 @@
 /*
- * Design tokens: the ONLY place colors, fonts and radii are defined (docs/SPEC.md section 7).
- * Values come from the NightLife Trivia design system, "nature after dark":
- * https://claude.ai/artifact/LVyE3gKBWYPB7F7hPtwCc8
+ * Design tokens: the ONLY place colors, fonts, shadows and radii are defined (docs/SPEC.md section 7).
+ * "Lamplight at the Academy": cream index cards under a honey lamp, a midnight-blue sky, cocoa ink and
+ * soft pastel stages. Source of truth: design/system/tokens.css. Tailwind emits the @theme variables as
+ * plain custom properties itself, so there is no separate :root value block.
+ *
+ * Color meaning: green (--color-correct) means correct, red (--color-incorrect) means incorrect, and
+ * neither is ever decoration. Correct/incorrect always pairs color with an icon and a word.
+ *
+ * incorrect, and neither is ever decoration. Correct/incorrect always pairs color with an icon and a word.
+ *
+ * ---------------------------------------------------------------------------------------------
+ * CONTRAST: every text/background pair the kit intends (WCAG 2 relative luminance).
+ * Body text needs 4.5:1; text 24px and up needs 3:1. Non-text UI (borders, focus) needs 3:1.
+ *
+ *   ink        #3B2A23 on paper      #FFF8EC  12.90  question, answers, body on the card
+ *   ink        #3B2A23 on bg         #F7EBDA  11.58  body on the page
+ *   ink        #3B2A23 on surface    #FFFDF8  13.40  list rows, inputs
+ *   ink-muted  #6B5648 on paper      #FFF8EC   6.52  secondary text on the card
+ *   ink-muted  #6B5648 on bg         #F7EBDA   5.85  secondary text on the page
+ *   ink-muted  #6B5648 on stage      #FFDCC2   5.33  captions over the character stage
+ *   pencil     #7A4B1F on paper      #FFF8EC   6.97  hand-font meta: question number, points, timer
+ *   pencil     #7A4B1F on bg         #F7EBDA   6.26  hand-font notes on the page
+ *   pencil     #7A4B1F on stage      #FFDCC2   5.70  hand-font notes over the stage
+ *   paper      #FFF8EC on brand      #3554B0   6.53  primary button label
+ *   brand      #3554B0 on paper      #FFF8EC   6.53  pen marks, "sent!", links on the card
+ *   brand      #3554B0 on bg         #F7EBDA   5.86  links on the page
+ *   brand      #3554B0 on brand-soft #DFE7F7   5.55  "sent!" note inside a picked option
+ *   ink        #3B2A23 on brand-soft #DFE7F7  10.97  picked option label, "you" list row
+ *   paper      #FFF8EC on brand-deep #1E2640  14.14  big screen text, locked pill
+ *   info-soft  #CBDDF0 on brand-deep #1E2640  10.76  secondary text on the big screen
+ *   win        #FFC94A on brand-deep #1E2640   9.74  winner highlight on the big screen
+ *   paper      #FFF8EC on depth      #2B3654  11.31  secondary dark surfaces
+ *   ink        #3B2A23 on correct    #4DBE7C   5.82  "Correct!" badge (dark text only)
+ *   paper      #FFF8EC on incorrect  #C0392F   5.14  "Not quite" badge
+ *   incorrect  #C0392F on paper      #FFF8EC   5.14  error text
+ *   ink        #3B2A23 on win        #FFC94A   8.89  winner chips (dark text only)
+ *   ink        #3B2A23 on urgent     #FF8A3D   5.81  timer at 5 seconds or less (dark text only)
+ *   info       #2B66A0 on paper      #FFF8EC   5.67  info text, links
+ *   info       #2B66A0 on bg         #F7EBDA   5.08  info text, links
+ *   ink        #3B2A23 on stage      #FFDCC2  10.55  speech and headings over the peach stage
+ *   ink        #3B2A23 on butter     #FDEBB5  11.50  "Waiting for host" pill, butter stage
+ *   ink        #3B2A23 on sky        #D5E4F6  10.55  "Results are in" pill, sky stage
+ *   ink        #3B2A23 on info-soft  #CBDDF0   9.82  "Question live" pill
+ *   brand-deep #1E2640 on sky        #D5E4F6  11.56  big-screen labels on the sky stage
+ *   border     #8E7765 on paper      #FFF8EC   4.00  input and option borders (non-text, 3:1)
+ *   border     #8E7765 on bg         #F7EBDA   3.59  input borders on the page (non-text, 3:1)
+ *   focus      #E04E93 on paper      #FFF8EC   3.50  focus ring (non-text, 3:1)
+ *   focus      #E04E93 on brand-deep #1E2640   4.04  focus ring on the big screen
+ * Decorative only (never text): line #C9B396 (1.92 on paper), rule, tape, stage-deco, char-disc.
+ * ---------------------------------------------------------------------------------------------
  */
 
 @theme {
   /* Drop Tailwind's built-in palette so only these tokens exist as utilities (no bg-green-500). */
   --color-*: initial;
 
-  --color-bg: #f6f2e6; /* Sand: app background */
-  --color-surface: #ffffff; /* cards */
-  --color-brand: #2456d6; /* Morpho: primary buttons, selection (never green: green means correct) */
-  --color-brand-deep: #0f3b2c; /* Canopy: headers, nav, big screen, dark live-question background, pop edges */
-  --color-correct: #4fcf7f; /* Fern: correct answers, success (dark text only) */
-  --color-incorrect: #b5153a; /* Hibiscus: incorrect answers, errors, destructive actions */
-  --color-depth: #12324f; /* Abyss: depth, secondary dark surfaces */
-  --color-info: #0b6c80; /* Lagoon: info, links */
-  --color-info-soft: #b4e6dc; /* Lagoon mist: soft backgrounds, secondary text on Canopy */
-  --color-win: #ffc53d; /* Sunflower: winners, streaks (dark text only) */
-  --color-urgent: #ff8a3c; /* California poppy: timer, urgent actions (dark text only) */
-  --color-ink: #13221b; /* body text */
-  --color-ink-muted: #4d5a53; /* Moss: secondary text */
-  --color-border: #7e8a83; /* Stone: input borders, dividers */
-  --color-focus: #ea4c9c; /* Orchid: focus ring only, drawn with an offset; 3:1 on Sand, white and Canopy */
+  /* Existing names keep their jobs. */
+  --color-bg: #f7ebda; /* Oat: app background */
+  --color-surface: #fffdf8; /* Milk: cards, inputs, list rows */
+  --color-brand: #3554b0; /* Night sky: primary buttons, selection, pen marks (never green: green means correct) */
+  --color-brand-deep: #1e2640; /* Midnight: the darkest surface. Big screen, button edges, locked pill */
+  --color-correct: #4dbe7c; /* Fern: correct answers, success (dark text only) */
+  --color-incorrect: #c0392f; /* Tomato: incorrect answers, errors, destructive actions */
+  --color-depth: #2b3654; /* Dusk: secondary dark surfaces */
+  --color-info: #2b66a0; /* Harbor: info, links */
+  --color-info-soft: #cbddf0; /* Mist: soft backgrounds, "Question live" pill, secondary text on Midnight */
+  --color-win: #ffc94a; /* Lamplight: winners, top three (dark text only) */
+  --color-urgent: #ff8a3d; /* Poppy: timer at 5 seconds or less (dark text only) */
+  --color-ink: #3b2a23; /* Cocoa: body text */
+  --color-ink-muted: #6b5648; /* Walnut: secondary text */
+  --color-border: #8e7765; /* Bark: input borders, dividers */
+  --color-focus: #e04e93; /* Orchid: focus ring only, drawn with an offset */
 
-  /* The pop: solid Canopy drop edges, never blur (shadow-pop, shadow-pop-sm). */
+  /* New: paper, pen and stage. */
+  --color-paper: #fff8ec; /* Index card */
+  --color-paper-edge: #ebd9bf; /* folded corner underside, page edge under a card */
+  --color-line: #c9b396; /* soft rules and option edges (decorative, never text) */
+  --color-rule: #e3a541; /* Honey: the card's one header rule. Never red: red means incorrect */
+  --color-pencil: #7a4b1f; /* Sepia: the hand-font accent ink (question number, timer, points) */
+  --color-pen: #3554b0; /* the pen circle on the picked answer (same hue as brand: brand means "your pick") */
+  --color-brand-soft: #dfe7f7; /* picked option fill, "you" row in lists */
+  --color-tape: #f2c46de6; /* washi tape, slightly see-through */
+  --color-tape-stripe: #f8dda4e6; /* the tape's stripes */
+  --color-stage: #ffdcc2; /* Peach dusk: the default character stage */
+  --color-stage-butter: #fdebb5; /* butter stage: waiting, lobby, round break */
+  --color-stage-sky: #d5e4f6; /* sky stage: results, the end */
+  --color-stage-deco: #f6c49e; /* tiny stars and moons on the stage (decorative) */
+  --color-shadow: #3b2a2333; /* Cocoa at 20%: soft card shadows */
+  --color-shadow-soft: #3b2a231a; /* Cocoa at 10% */
+  --color-scrim: #1e2640b3; /* Midnight at 70%: behind sheets and dialogs */
+
+  /* Character art: flat fills, one shade step each, one shared face ink. Never black, never a gradient. */
+  --color-char-ink: #3b2620; /* face ink: eyes, mouths, brows (warm, not black) */
+  --color-char-blush: #f59c8b; /* blush dots */
+  --color-char-mouth: #e57367; /* inside an open mouth */
+  --color-char-cream: #fffaf1; /* bellies, face masks, lab coat, suckers */
+  --color-char-cream-shade: #ecdcc4;
+  --color-char-disc: #fae5c9; /* the paper-tone backing disc every character sits on */
+  --color-char-disc-rim: #f0d3ad; /* the disc's soft rim */
+  --color-char-honey: #f5b544; /* beaks, feet, bow ties, the asking card's mark */
+  --color-char-honey-shade: #dc9330;
+  --color-char-penguin: #3e4560; /* adult penguin hood and back */
+  --color-char-penguin-shade: #2f3449;
+  --color-char-pink: #f4a3a0; /* penguin eye patch */
+  --color-char-fluff: #b3aba6; /* penguin chick down */
+  --color-char-fluff-shade: #968d88;
+  --color-char-octopus: #f0875a; /* giant Pacific octopus */
+  --color-char-octopus-shade: #d56b42;
+  --color-char-seahorse: #f2a649;
+  --color-char-seahorse-shade: #d98a2f;
+  --color-char-eel: #c39363;
+  --color-char-eel-shade: #a07248;
+  --color-char-rock: #8f98ae;
+  --color-char-rock-shade: #747d95;
+  --color-char-mystery: #b7c3de;
+  --color-char-mystery-shade: #98a7c7;
+  --color-char-skin: #d99a6c; /* the scientist */
+  --color-char-skin-shade: #bf7f52;
+  --color-char-hair: #4b3027;
+  --color-char-hair-shade: #3a241d;
+  --color-char-sky: #8db7e8; /* small cool accents: scarf, glasses glint, bubbles */
+  --color-char-sky-shade: #6f9dd6;
+  --color-char-fur: #b8afae; /* the raccoon */
+  --color-char-fur-shade: #978c8b;
+  --color-char-mask: #615659;
+  --color-char-placeholder: #cbddf0;
+
+  /* Shadows: soft and warm, never black. The "page edge" is a flat 3px under every card. */
+  --shadow-card: 0 3px 0 var(--color-paper-edge), 0 14px 28px -12px var(--color-shadow);
+  --shadow-soft: 0 8px 20px -10px var(--color-shadow);
   --shadow-pop: 0 4px 0 var(--color-brand-deep);
   --shadow-pop-sm: 0 2px 0 var(--color-brand-deep);
+  --shadow-option: 0 3px 0 var(--color-line);
 
-  /* Self-hosted variable fonts from @fontsource-variable, imported in src/main.tsx. */
-  --font-sans: 'Figtree Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-heading: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  /* Self-hosted variable fonts from @fontsource-variable (fredoka, nunito, shantell-sans). */
+  --font-sans: 'Nunito Variable', 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Fredoka Variable', 'Fredoka', 'Nunito Variable', system-ui, sans-serif;
+  --font-hand: 'Shantell Sans Variable', 'Shantell Sans', 'Comic Sans MS', 'Nunito Variable', cursive;
 }
 
 /*
@@ -38,7 +144,7 @@
  * components like Button render in our palette. Dark mode is out of scope.
  */
 :root {
-  --radius: 12px;
+  --radius: 16px;
 
   --background: var(--color-bg);
   --foreground: var(--color-ink);
@@ -47,12 +153,12 @@
   --popover: var(--color-surface);
   --popover-foreground: var(--color-ink);
   --primary: var(--color-brand);
-  --primary-foreground: var(--color-surface);
+  --primary-foreground: var(--color-paper);
   --secondary: var(--color-surface);
   --secondary-foreground: var(--color-ink);
   --muted: var(--color-bg);
   --muted-foreground: var(--color-ink-muted);
-  --accent: var(--color-info-soft);
+  --accent: var(--color-brand-soft);
   --accent-foreground: var(--color-ink);
   --destructive: var(--color-incorrect);
   --border: var(--color-border);
@@ -80,9 +186,9 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
 }
