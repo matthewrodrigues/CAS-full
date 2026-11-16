@@ -29,6 +29,8 @@ const EVENTS = [
   { joinCode: 'E2ES1' },
   { joinCode: 'E2ET1' },
   { joinCode: 'E2EU1', settings: { max_team_size: 8 } },
+  // Task 9: a full night with 20 teams and a tie for third (results.spec.ts).
+  { joinCode: 'E2E9A' },
 ]
 
 const db = openDb(DB_FILE)
