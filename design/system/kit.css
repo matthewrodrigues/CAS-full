@@ -48,6 +48,10 @@
   --dur-slow: 420ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
   --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* The hand-drawn pen loop, as a mask: a little off-center, overshooting its start.
+     Shared by a picked answer (.option) and a picked choice (.choice). */
+  --mask-pen-circle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 54'%3E%3Cpath d='M34 6C17 3 5 13 5 27c0 13 11 22 25 21 15-1 26-11 25-24C54 11 42 4 27 8' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 /* Big screen (1920x1080, read across a room): put .big on <body>. Every component scales with it. */
@@ -196,12 +200,152 @@ a {
 .row--between {
   justify-content: space-between;
 }
+/* A row with room-scale air between its parts (the big-screen QR and the join words; a host and its bubble). */
+.row--wide {
+  gap: var(--space-8);
+}
 .center {
   text-align: center;
   align-items: center;
 }
 
+/* A row of footer links (landing): each one a full 44px tap target. */
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 var(--space-2);
+}
+.link-row a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+  font-weight: 700;
+  font-size: var(--text-md);
+}
+
+/*
+ * The player app's four tabs (src/routes/play/play-layout.tsx): Play, Leaderboard, Rewards, Animals.
+ * Shown on the lobby, the round break and every after-game screen; hidden on landing, join, staff and
+ * every timed or in-flow sheet (question, wager, locked, reveal, paused). See kit.md §6.
+ * The last child of .screen, full bleed past the gutters. In the build it's fixed to the bottom of the
+ * viewport; in the mockups it sits in the flow so full-page screenshots don't show it over the list.
+ * <nav class="tabbar" aria-label="Game sections"><ul class="tabbar__list"><li><a class="tabbar__link" aria-current="page">…
+ */
+.tabbar {
+  position: relative;
+  margin: auto calc(var(--space-4) * -1) calc(var(--space-5) * -1);
+  background: var(--color-surface);
+  box-shadow: 0 -2px 0 var(--color-paper-edge);
+}
+.screen__actions + .tabbar {
+  margin-top: 0;
+}
+.tabbar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--space-2);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.tabbar__link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 60px;
+  padding: var(--space-2) var(--space-1);
+  color: var(--color-ink-muted);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  line-height: 1.1;
+  text-decoration: none;
+}
+.tabbar__icon {
+  width: 24px;
+  height: 24px;
+}
+.tabbar__link[aria-current='page'] {
+  color: var(--color-ink);
+  font-weight: 800;
+}
+.tabbar__link[aria-current='page'] .tabbar__icon {
+  color: var(--color-brand);
+}
+/* The active tab's marker: a short rounded bar, a shape as well as a color. */
+.tabbar__link[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 36px;
+  height: 4px;
+  border-radius: 0 0 4px 4px;
+  background: var(--color-brand);
+  transform: translateX(-50%);
+}
+.tabbar__link:focus-visible {
+  outline-offset: -3px;
+}
+
+/* Two views of one list: Tonight / Season. Links with aria-current, so each view is its own URL. */
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  background: var(--color-paper-edge);
+}
+.seg__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink);
+  font-weight: 700;
+  font-size: var(--text-md);
+  text-decoration: none;
+}
+.seg__link[aria-current='page'] {
+  background: var(--color-surface);
+  font-weight: 800;
+  box-shadow: 0 2px 0 var(--color-line);
+}
+
+/* ---------------------------------------------------------------- big-screen layout */
+/* A column of the big-screen grid that centers its content vertically (the paper column). */
+.big-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-6);
+  min-width: 0;
+}
+/* Multi-column lists: teams in the big-screen lobby. */
+.list--cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+/* A centered row of animal avatars under a caption (tonight's prizes, on the big-screen or phone lobby). */
+.avatar-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
 /* ---------------------------------------------------------------- type */
+/* Headings wrap anywhere, so a 30-character team name with no spaces never overflows. */
+.display,
+.h1,
+.h2 {
+  overflow-wrap: anywhere;
+}
 .display {
   font-family: var(--font-heading);
   font-weight: 600;
@@ -256,8 +400,23 @@ a {
 .hand--sm {
   font-size: var(--text-md);
 }
+/* The hand note on Midnight (the big screen's top-right "Round 1 of 4"). Pencil is too dark there. */
+.hand--night {
+  color: var(--color-info-soft);
+}
+/* Secondary text on Midnight: the night pair of .muted (info-soft on brand-deep, 10.76:1). */
+.muted--night {
+  color: var(--color-info-soft);
+}
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+/* A small inline icon next to words ("Captain", players count). 18px, drawn with currentColor. */
+.icon-inline {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  vertical-align: -3px;
 }
 
 /* ---------------------------------------------------------------- paper card */
@@ -304,6 +463,15 @@ a {
 }
 .paper--no-tape::before {
   content: none;
+}
+/* The tape and fold at room scale: the tape sits 20px above the card on the big screen. */
+.big .paper {
+  --fold: 40px;
+}
+.big .paper::before {
+  top: -20px;
+  width: 176px;
+  height: 40px;
 }
 /* The ruled header: question number and points on the left, the countdown on the right. */
 .paper__head {
@@ -375,6 +543,194 @@ a {
   color: var(--color-pen);
 }
 
+/* The fun fact at the foot of a reveal card: a dashed rule, a lightbulb and a hand-font label. */
+.fact {
+  display: flex;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 2px dashed var(--color-line);
+}
+.fact__icon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  color: var(--color-pencil);
+}
+.fact__label {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: var(--text-lg);
+  line-height: 1.25;
+  color: var(--color-pencil);
+}
+.big .fact p {
+  font-size: var(--text-lg);
+}
+
+/* A big number with its label (round break, wager). */
+.tally {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.tally__num {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-display);
+  line-height: 1;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.tally__label {
+  font-size: var(--text-md);
+  font-weight: 700;
+}
+
+/* A question's picture, framed on the card. */
+.media {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.media__frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  border-radius: var(--radius-control);
+  background: var(--color-depth);
+  box-shadow: 0 3px 0 var(--color-paper-edge);
+  overflow: hidden;
+}
+.media__frame > svg,
+.media__frame > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.media figcaption,
+.media__caption {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+/* A sound question's player, with captions shown by default (.clip__cc toggles them, aria-pressed). */
+.clip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  border: 2px solid var(--color-line);
+}
+.clip__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.clip__play {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-brand-deep);
+  color: var(--color-paper);
+  box-shadow: 0 3px 0 var(--color-line);
+  cursor: pointer;
+}
+.clip__play:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+.clip__play:disabled {
+  background: var(--color-paper-edge);
+  color: var(--color-ink-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.clip__play svg {
+  width: 24px;
+  height: 24px;
+}
+.clip__track {
+  flex: 1;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-paper-edge);
+  overflow: hidden;
+}
+.clip__fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--played, 0) * 100%);
+  border-radius: inherit;
+  background: var(--color-pencil);
+}
+.clip__time {
+  flex: none;
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-pencil);
+  font-variant-numeric: tabular-nums;
+}
+.clip__caption {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 2px dashed var(--color-line);
+  font-size: var(--text-md);
+  line-height: 1.35;
+}
+.clip__caption-label {
+  flex: none;
+  font-weight: 800;
+}
+.clip__cc {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: var(--radius-control);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+  cursor: pointer;
+}
+.clip__cc[aria-pressed='true'] {
+  border-color: var(--color-pen);
+  background: var(--color-brand-soft);
+  color: var(--color-pen);
+}
+
+/* A static caption on paper (the big screen's spoken caption for a sound question): an icon plus words.
+   The player's live captions stay .clip__caption. */
+.caption-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--color-ink-muted);
+}
+.caption-line__icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  color: var(--color-pencil);
+}
+
 /* ---------------------------------------------------------------- buttons */
 .btn {
   display: inline-flex;
@@ -436,6 +792,12 @@ a {
   width: 24px;
   height: 24px;
   flex: none;
+}
+/* "< All animals" in .screen__top: a quiet button (.btn.btn--quiet.back-link) that never wraps. */
+.back-link {
+  padding: 0 var(--space-2) 0 0;
+  gap: var(--space-1);
+  white-space: nowrap;
 }
 
 /* ---------------------------------------------------------------- answer options */
@@ -534,15 +896,37 @@ a {
   position: absolute;
   inset: -7px -9px -6px -6px;
   background: var(--color-pen);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 54'%3E%3Cpath d='M34 6C17 3 5 13 5 27c0 13 11 22 25 21 15-1 26-11 25-24C54 11 42 4 27 8' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 54'%3E%3Cpath d='M34 6C17 3 5 13 5 27c0 13 11 22 25 21 15-1 26-11 25-24C54 11 42 4 27 8' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  -webkit-mask: var(--mask-pen-circle) center / 100% 100% no-repeat;
+  mask: var(--mask-pen-circle) center / 100% 100% no-repeat;
 }
-/* Disabled (paused, captain-only, locked): readable, clearly not tappable. Don't fade the text. */
-.option:disabled {
+/* Disabled (paused, captain-only, locked): readable, clearly not tappable. Don't fade the text.
+   Big-screen options aren't buttons (nobody taps the TV), so they use aria-disabled for the same look. */
+.option:disabled,
+.option[aria-disabled='true'] {
   cursor: not-allowed;
   background: var(--color-paper);
   border-style: dashed;
   box-shadow: none;
+}
+/* A non-interactive row (reveal, big screen): an option drawn on a <div>, not a button. */
+.option--static {
+  cursor: default;
+}
+/* A second line inside an answer-style option (team rows on join-team: "3 players · Sam is captain"). */
+.option__sub {
+  display: block;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+/* A quiet row tag ("our pick") on a reveal, where brand is dropped. */
+.option__note--muted {
+  color: var(--color-ink-muted);
+}
+/* The revealed answer on the big screen: one full-width option, one type step up, so it's the payoff. */
+.option.option--answer {
+  min-height: calc(var(--option-h) * 1.2);
+  font-size: var(--text-h2);
 }
 /* True / false: two tall tiles side by side, the word centered under its bubble. */
 .option--tf {
@@ -558,10 +942,9 @@ a {
 .option--tf .option__label {
   flex: none;
 }
+/* The note sits under the word, so it never covers the pen circle. */
 .option--tf .option__note {
-  position: absolute;
-  top: var(--space-2);
-  right: var(--space-3);
+  position: static;
 }
 
 /* Typed and closest-number answers: writing on a line. */
@@ -605,10 +988,70 @@ a {
   font-size: var(--text-sm);
   color: var(--color-ink-muted);
 }
+/* "7 / 200" never wraps next to a long hint. */
 .field__count {
+  flex: none;
+  white-space: nowrap;
   font-family: var(--font-hand);
   color: var(--color-pencil);
   font-variant-numeric: tabular-nums;
+}
+/* A form error under a field: Tomato text with an icon, never color alone. Wrap it in role="alert". */
+.field__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-weight: 700;
+  font-size: var(--text-md);
+  color: var(--color-incorrect);
+}
+.field__error svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+}
+.field__input[aria-invalid='true'] {
+  border-color: var(--color-incorrect);
+}
+/* A multi-line typed field: the kit's input at comment height, in body weight. */
+.field__input--area {
+  min-height: 120px;
+  resize: vertical;
+  font-weight: 600;
+  font-size: var(--text-md);
+  line-height: 1.45;
+}
+/* A labeled select for staff pages (the event picker). Wrap the <select> in .select for the chevron. */
+.select {
+  position: relative;
+  display: block;
+}
+.select::after {
+  content: '';
+  position: absolute;
+  right: var(--space-4);
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translateY(-50%);
+  background: var(--color-ink);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+.field__select {
+  appearance: none;
+  width: 100%;
+  min-height: var(--option-h);
+  padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--color-ink);
 }
 .field--number .field__input {
   font-family: var(--font-heading);
@@ -620,6 +1063,206 @@ a {
 .field--submitted .field__input {
   border-color: var(--color-pen);
   background: var(--color-brand-soft);
+}
+
+/*
+ * A radio group of picture choices (staff round hosts: four choices with a 48px avatar each).
+ * <fieldset class="choices"><legend>…</legend><label class="choice"><input type="radio">…</label></fieldset>
+ * The picked choice gets the same pen circle as a picked answer (a shape, not just color).
+ */
+.choices {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+}
+.choices > legend {
+  grid-column: 1 / -1;
+  padding: 0;
+  margin-bottom: var(--space-2);
+  font-weight: 700;
+  font-size: var(--text-md);
+}
+.choices > legend .hand {
+  display: block;
+}
+.choice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 96px;
+  padding: var(--space-2) var(--space-1);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-option);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+/* The radio covers the whole choice, so the full card is the tap target. */
+.choice > input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.choice__avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+}
+/* Random has no character: a shuffle mark in a bubble. */
+.choice__random {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px dashed var(--color-border);
+  color: var(--color-pencil);
+}
+.choice__random svg {
+  width: 24px;
+  height: 24px;
+}
+.choice:has(input:checked) {
+  border-color: var(--color-pen);
+  background: var(--color-brand-soft);
+  box-shadow: 0 3px 0 var(--color-pen);
+}
+.choice:has(input:checked) .choice__avatar::after {
+  content: '';
+  position: absolute;
+  inset: -8px -10px -7px -7px;
+  background: var(--color-pen);
+  -webkit-mask: var(--mask-pen-circle) center / 100% 100% no-repeat;
+  mask: var(--mask-pen-circle) center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+.choice:has(input:focus-visible) {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* 1–5 stars. Each star is a label around a real radio, 52px, so it's tappable and keyboard-friendly. */
+.rating {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.rating__legend {
+  padding: 0;
+  font-weight: 700;
+  font-size: var(--text-md);
+}
+.rating__stars {
+  display: flex;
+  gap: var(--space-1);
+}
+.rating__star {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-control);
+  color: var(--color-border);
+  cursor: pointer;
+}
+.rating__star > input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.rating__star > svg {
+  width: 40px;
+  height: 40px;
+  fill: var(--color-surface);
+  stroke: currentColor;
+}
+.rating__star.is-on {
+  color: var(--color-ink);
+}
+.rating__star.is-on > svg {
+  fill: var(--color-win);
+}
+.rating__star:has(input:focus-visible) {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 0;
+}
+
+/* Consent: an unticked box by default. The real checkbox covers the 44px box, so the target is big. */
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+.check__control {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+}
+.check__control > input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.check__box {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-paper);
+}
+.check__box > svg {
+  width: 22px;
+  height: 22px;
+  visibility: hidden;
+}
+.check__control > input:checked + .check__box {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+}
+.check__control > input:checked + .check__box > svg {
+  visibility: visible;
+}
+.check__control > input:focus-visible + .check__box {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+.check__text {
+  padding-top: 9px;
 }
 
 /* ---------------------------------------------------------------- status pill */
@@ -669,6 +1312,23 @@ a {
   background: var(--color-stage-sky);
   color: var(--color-ink);
 }
+/* "Paused by the host": butter like waiting (nothing to do), but with a pause icon, not the hourglass. */
+.pill--paused {
+  background: var(--color-stage-butter);
+  color: var(--color-ink);
+}
+/* "Place your wager": a live input like "Question live", so mist with the breathing brand dot. */
+.pill--wager {
+  background: var(--color-info-soft);
+  color: var(--color-ink);
+}
+.pill--wager .pill__dot {
+  background: var(--color-brand);
+}
+/* The locked pill is Midnight, so on a Midnight screen it gets a Mist outline to keep its shape. */
+.screen--night .pill--locked {
+  box-shadow: inset 0 0 0 3px var(--color-info-soft);
+}
 .big .pill {
   min-height: 64px;
   padding: var(--space-2) var(--space-6) var(--space-2) var(--space-4);
@@ -676,6 +1336,12 @@ a {
 .big .pill__icon {
   width: 36px;
   height: 36px;
+}
+/* The live dot at room scale, so "Question live" keeps its breathing dot from across the room. */
+.big .pill__dot {
+  width: 18px;
+  height: 18px;
+  margin: 0 9px;
 }
 
 /* ---------------------------------------------------------------- countdown */
@@ -731,6 +1397,14 @@ a {
 .big .countdown {
   width: 112px;
   height: 112px;
+}
+/* The countdown at room scale: a 200px ring with the seconds at display size, readable from the back. */
+.big .countdown.countdown--xl {
+  width: 200px;
+  height: 200px;
+}
+.countdown--xl .countdown__num {
+  font-size: var(--text-display);
 }
 
 /* ---------------------------------------------------------------- characters */
@@ -816,6 +1490,33 @@ a {
   height: 100%;
 }
 
+/* A teammate's initial in a 48px answer-sheet bubble, where a list row would hold an avatar.
+   Players have no character of their own, so the lobby uses their initial instead.
+   .initial--sm (38px) is for team rows on join-team, where a letter bubble would read as an answer. */
+.initial {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--color-line);
+  background: var(--color-paper);
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  line-height: 1;
+  color: var(--color-pencil);
+}
+.initial--sm {
+  width: var(--letter);
+  height: var(--letter);
+}
+.list-row.is-you .initial {
+  border-color: var(--color-pen);
+  color: var(--color-pen);
+}
+
 /* The host's speech bubble, in the hand font. Its tail points at the speaker. */
 .bubble {
   position: relative;
@@ -853,6 +1554,14 @@ a {
   bottom: -10px;
   transform: translateX(-50%) rotate(45deg);
   border-radius: 0 0 6px 0;
+}
+/* A bubble that keeps its own size: above a hero character (the column would stretch it), or beside a
+   host in a row where it shouldn't grow to fill the width (add .bubble--fit). */
+.stage--hero > .bubble,
+.row > .bubble--fit {
+  flex: none;
+  align-self: center;
+  max-width: 100%;
 }
 
 /* ---------------------------------------------------------------- result badges */
@@ -899,6 +1608,28 @@ a {
   border-color: var(--color-incorrect);
   box-shadow: 0 3px 0 var(--color-incorrect);
 }
+/* On a revealed row the letter bubble becomes a filled check or cross (.option__mark in place of
+   .option__letter), so the row never relies on its border color alone. */
+.option__mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--letter);
+  height: var(--letter);
+  border-radius: 50%;
+}
+.option__mark svg {
+  width: 24px;
+  height: 24px;
+}
+.option__mark--correct {
+  background: var(--color-correct);
+  color: var(--color-ink);
+}
+.option__mark--incorrect {
+  background: var(--color-incorrect);
+  color: var(--color-paper);
+}
 
 /* ---------------------------------------------------------------- list rows */
 /* Leaderboards, prizes and animals. <ol class="list"><li class="list-row">…</li></ol> */
@@ -919,6 +1650,8 @@ a {
   border-radius: var(--radius-card);
   background: var(--color-surface);
   box-shadow: 0 2px 0 var(--color-paper-edge);
+  /* A Milk row always needs Cocoa ink, on any background (Midnight would otherwise give it paper text). */
+  color: var(--color-ink);
 }
 .list-row__rank {
   flex: none;
@@ -991,6 +1724,193 @@ a.list-row {
   width: 60px;
   height: 60px;
 }
+/* Every big-screen rank takes the width of the 60px top-three bubble, so names line up down the list. */
+.big .list-row__rank {
+  min-width: 60px;
+}
+/* The big leaderboard and prize list: names and scores one step up, so they read across the room. */
+.list--board .list-row__name {
+  font-size: var(--text-lg);
+}
+.list--board .list-row__score {
+  font-size: var(--text-h2);
+}
+.list--board .list-row__sub {
+  font-size: var(--text-sm);
+}
+
+/* A small item status (icon + words): a prize ready, a name approved. Not game status (that's .pill)
+   and not "You" (that's .tag). .chip--win is for prizes ready or a name approved; plain for the rest. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  min-height: 32px;
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  line-height: 1.2;
+}
+.chip__icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+.chip--win {
+  background: var(--color-win);
+}
+
+/* ---------------------------------------------------------------- cards */
+/*
+ * The one Milk card, for things that aren't the game sheet: a form section, a team list, a won prize,
+ * an animal's facts. Kit §7: forms and lists use surface cards with --radius-card, never paper.
+ * .card__head is an icon or avatar plus a title; .card__head--split puts a title left and a note right.
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: 0 2px 0 var(--color-paper-edge);
+}
+.card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.card__head > :last-child {
+  flex: 1;
+  min-width: 0;
+}
+.card__head--split {
+  align-items: baseline;
+  justify-content: space-between;
+}
+.card__head--split > :last-child {
+  flex: none;
+}
+
+/* A code to read aloud or type: big, spaced and unambiguous (the prize code; the big-screen join code).
+   Its color inherits, so it works on paper, Milk or Midnight. */
+.code-display {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-h1);
+  line-height: 1.1;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+/* Room scale: "DEMO1" read from the back of the room. */
+.code-display--xl {
+  font-size: calc(var(--text-display) * 1.6);
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+/* A QR's quiet zone: plain Milk, square, with no art near it so it scans in a dim bar or across a room. */
+.qr {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 232px;
+  height: 232px;
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 2px var(--color-line);
+}
+.qr > svg {
+  width: 100%;
+  height: 100%;
+}
+.big .qr {
+  width: 440px;
+  height: 440px;
+  padding: var(--space-5);
+}
+
+/* "Meet the real one": the animal's real photo (image_url). An empty paper frame until staff add one. */
+.photo-slot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+}
+.photo-slot__frame {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-card);
+  background: var(--color-paper);
+  color: var(--color-ink-muted);
+  border: 2px dashed var(--color-border);
+}
+.photo-slot__frame > svg {
+  width: 56px;
+  height: 56px;
+}
+.photo-slot__caption {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+/* Keeper updates, newest first, as a timeline. Up to 500 characters each; they wrap. */
+.feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.feed__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-left: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: 0 2px 0 var(--color-paper-edge);
+  overflow-wrap: anywhere;
+}
+/* A dot and a thread on the left, so the feed reads as a timeline. */
+.feed__item::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-5) * -1 + 3px);
+  top: 20px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-rule);
+}
+.feed__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-5) * -1 + 8px);
+  top: 36px;
+  bottom: calc(var(--space-3) * -1 - 20px);
+  width: 2px;
+  background: var(--color-line);
+}
+.feed__date {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-pencil);
+}
+.feed__who {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
 
 /* ---------------------------------------------------------------- mockup-only chrome */
 /* Controls that let a reviewer flip a mockup's state. Not part of the product. */
@@ -1021,6 +1941,19 @@ a.list-row {
       background-color var(--dur-fast) linear,
       border-color var(--dur-fast) linear;
   }
+  .clip__play {
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+  }
+  .choice {
+    transition:
+      border-color var(--dur-fast) linear,
+      background-color var(--dur-fast) linear;
+  }
+  .choice:has(input:checked) .choice__avatar::after {
+    animation: kit-circle-in var(--dur) var(--ease-bounce) both;
+  }
   .countdown__fill {
     transition: stroke-dashoffset 1s linear;
   }
@@ -1042,7 +1975,8 @@ a.list-row {
     animation: kit-pop var(--dur) var(--ease-bounce) both;
   }
   /* The live dot breathes slowly (2.4s, opacity only between 55% and 100%: not a flash). */
-  .pill--live .pill__dot {
+  .pill--live .pill__dot,
+  .pill--wager .pill__dot {
     animation: kit-breathe-dot 2.4s ease-in-out infinite;
   }
   /* Idle: the character breathes. Use on one character per screen at most, never on a timed question's options. */

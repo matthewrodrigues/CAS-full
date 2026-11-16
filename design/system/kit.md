@@ -45,6 +45,7 @@ Use tokens by name. Each one has a job, so don't use it for anything else.
 - **Two or three bright colors per screen at most.** The calm base doesn't count: Oat, Milk, paper, Cocoa and the line tones. "Bright" means brand, a stage pastel, win, urgent, correct or incorrect.
   - The question screen uses brand, peach stage and honey (the rule and tape).
   - A reveal uses peach or sky stage plus correct or incorrect, and drops brand if it can.
+  - **On a reveal, correct and incorrect count as one pair.** "Wrong, and here's the right one" needs both, so it isn't a fourth color.
 - **Contrast:** every text pair is listed with its ratio at the top of `tokens.css`. Don't invent new pairs. If you must, check 4.5:1, or 3:1 for text 24px and up.
 - **No violet anywhere.** The night is midnight blue and the warmth is honey and peach.
 
@@ -112,7 +113,14 @@ Edges are flat and warm, never black and never blurred hard:
 | `.screen--big` | The big-screen grid, 1920×1080: a 640px stage column and a paper column. Put `.big` on `<body>` as well |
 | `.stack` / `--tight` / `--loose` | Vertical groups with 12, 8 or 24px gaps |
 | `.row` / `.row--between` | Horizontal groups |
+| `.row--wide` | A row with room-scale air (32px phone, 56px big): the big-screen QR and join words, or a host and its bubble |
 | `.center` | Centered text |
+| `.link-row` | A centered, wrapping row of footer links (landing). Each link is a full 44px target |
+| `nav.tabbar` > `ul.tabbar__list` > `a.tabbar__link` (+ `.tabbar__icon`) | The player app's four tabs: Play, Leaderboard, Rewards, Animals. The current tab has `aria-current="page"`, a brand icon and a short bar on top (a shape, not just color). It's the last child of `.screen`, after `.screen__actions`, full bleed. See "Where the tab bar shows" below |
+| `.seg` > `a.seg__link` | A two-way switch between views of one list (Tonight / Season). Links with `aria-current="page"`, so each view is its own URL |
+| `.big-col` | Big screen: a grid column that centers its content vertically (the paper column) |
+| `.list--cols-3` | Big screen: a list in three columns (teams in the lobby) |
+| `.avatar-row` | A centered row of animal avatars under a caption ("Tonight's prizes" on the big-screen or phone lobby) |
 | `.sr-only` | Text for screen readers only |
 | `.mock-controls` | **Mockups only:** a row of links that flips a mockup's state. Put it after `</main>` |
 
@@ -123,6 +131,10 @@ Edges are flat and warm, never black and never blurred hard:
 4. `.screen__actions` with the one primary button
 
 The question screen is exactly this.
+
+**Where the tab bar shows**
+- **Shown** on `lobby`, `lobby-stress`, `round-break` and every after-game screen (ended, leaderboard, rewards, redeem, feedback, animals). Play is the current tab on the lobby, round break, ended and feedback.
+- **Hidden** on `landing` and `join-*` (no session yet), `staff-round-hosts` (staff), and every timed or in-flow sheet: `question-*`, `wager`, `locked`, `reveal-*`, `paused`. The sheet is one idea per screen, the button must stay in thumb reach, and nobody opens the leaderboard mid-question.
 
 ## 7. The paper card
 
@@ -148,6 +160,11 @@ The question screen is exactly this.
 | `.paper--no-tape` | Drops the tape when something sits right above the card and the tape would collide with it |
 | `.paper--torn` inside `.paper-shadow` | "Torn off the pad": a jagged top edge, with no tape and no fold. Use it for **wager** and **locked**. The wrapper carries the shadow, because a mask clips box-shadow |
 | `.note` (+ `.note__icon`) | A dashed paper slip for hand-written notes: "Sent!", or "Only your captain can answer". The icon is in pen blue, never green |
+| `.fact` > `.fact__icon` + `.fact__label` + `<p>` | The fun fact at the foot of a reveal card: a dashed rule, a pencil lightbulb and a hand-font label ("Fun fact"), then the sentence in Nunito. On the big screen the sentence is `--text-lg` (use a `<p>`, never `.h2`) |
+| `.tally` > `.tally__num` + `.tally__label` | A big Fredoka number with its label on one baseline: the round-break score, the wager's points |
+| `figure.media` > `.media__frame` + `figcaption` | A picture question's image, framed 2:1 on the card, with a small caption |
+| `.clip` > `.clip__bar` (`.clip__play`, `.clip__track` > `.clip__fill`, `.clip__time`, `.clip__cc`) + `.clip__caption` (`.clip__caption-label`) | A sound question's player. Set `--played` (0–1) on the fill. Captions show by default; `.clip__cc` (`aria-pressed`) toggles them |
+| `.caption-line` (+ `.caption-line__icon`) | A static caption on paper: an icon plus words (the big screen's spoken caption for a sound question). The player's live captions stay `.clip__caption` |
 
 **Paper rules**
 - **Where paper is used:** the question in every type, the wager, locked, the reveal with its fun fact, and the round-break summary card.
@@ -157,7 +174,7 @@ The question screen is exactly this.
   - Paper means "this is the game sheet". Keep that meaning.
 - Never put grain, notepad lines, holes or rotation on the card. Its cues are shapes (tape, fold, rule and torn edge), because shapes survive a dimmed phone.
 - The question is always in the darkest ink (`--color-ink`) on plain paper.
-- The tape sits 13px above the card. Leave at least 16px of gap above a `.paper`.
+- The tape sits 13px above the card on the phone and 20px above it on the big screen (where it's 176×40 and the fold is 40px). Leave at least 16px of gap above a `.paper` on the phone, and 24px on the big screen.
 
 ## 8. Buttons
 
@@ -168,8 +185,11 @@ The question screen is exactly this.
 | `.btn.btn--quiet` | A text action like "Skip" or "Change team". It's still 44px tall |
 | `:disabled` | Nothing to do yet (no answer picked). It turns paper-edge tan with Walnut text and loses its edge. Say why nearby in a `.small.muted` line |
 | `.btn__icon` | An optional 24px icon before the label |
+| `.btn.btn--quiet.back-link` | "< All animals" in `.screen__top`: a quiet button with a chevron that never wraps. It sits on the left of the top row |
 
 Buttons are 58px tall on the phone and 96px on the big screen.
+
+**Where the primary goes.** On a play screen it's in `.screen__actions` at the bottom. On a scrolling tab page (rewards, feedback, my animal), the one primary sits directly under the form or card it acts on.
 
 ## 9. Answer options
 
@@ -180,9 +200,21 @@ Buttons are 58px tall on the phone and 96px on the big screen.
 | **picked:** `aria-pressed="true"` (or `.is-picked`) | Gets a pen-blue border and edge, a pale blue fill, and **a hand-drawn pen circle around the letter**. The circle is the non-color cue |
 | **submitted:** picked + `<span class="option__note">sent!</span>` | The server has the answer. Add a `.note` under the card ("Sent! Tap another answer to change it before time's up."), and the host switches to `waiting` |
 | **disabled:** `disabled` | For paused, captain-only and locked. It turns paper with a dashed border and no edge. **The text stays full ink**, so players can still read their answer |
-| `.options.options--tf` + `.option.option--tf` | True/false: two tall tiles side by side, with the word in Fredoka 24 under its bubble |
+| `.options.options--tf` + `.option.option--tf` | True/false: two tall tiles side by side, with the word in Fredoka 24 under its bubble. A `.option__note` sits under the word, never over the pen circle |
+| `.option__sub` | A second, muted line inside an option-style row (join-team: "3 players · Sam is captain") |
+| `div.option.option--static` | A non-interactive option row (reveal, big screen). Same look, default cursor |
+| `[aria-disabled="true"]` | The disabled look on a static option (big-screen locked), where `disabled` isn't available |
 | `.is-correct` / `.is-incorrect` | Reveal only. Puts a colored border on the option, **always** with a `.result` badge on the screen |
-| `.field` > `.field__label`, `.field__input`, `.field__foot` > `.field__count` | Typed answers: a 60px input with a hand-font counter ("12 / 200") |
+| `.option__mark.option__mark--correct` / `--incorrect` | Reveal only: **replaces `.option__letter`** on a revealed row with a filled Fern check or Tomato cross, so the row never relies on its border alone. Same on the big screen |
+| `.option__note--muted` | A quiet Walnut row tag ("our pick") on a reveal, where brand is dropped |
+| `.option.option--answer` | Big screen: the one revealed answer, full width and one type step up |
+| `.field` > `.field__label`, `.field__input`, `.field__foot` > `.field__count` | Typed answers: a 60px input with a hand-font counter ("12 / 200"). The counter never wraps |
+| `.field__error` (+ an icon `svg`) and `.field__input[aria-invalid="true"]` | A form error: Tomato text with an icon (never color alone), inside `role="alert"`, and a Tomato input border |
+| `.field__input.field__input--area` | A multi-line `<textarea>` (feedback), 120px tall, in body weight |
+| `.select` > `select.field__select` | A labeled select with a drawn chevron (the staff event picker) |
+| `fieldset.choices` > `label.choice` (`input[type=radio]`, `.choice__avatar` or `.choice__random`) | A picture radio group: four 96px choices with a 48px avatar (staff round hosts). The picked one gets the same pen circle as a picked answer |
+| `fieldset.rating` > `.rating__legend` + `.rating__stars` > `label.rating__star` (+ `.is-on`) | 1–5 stars, each a 52px label around a real radio |
+| `label.check` > `.check__control` (`input` + `.check__box`) + `.check__text` | A consent checkbox, unticked by default, with a 44px target |
 | `.field--number` | Closest number: a big centered Fredoka number, with `inputmode="decimal"` |
 | `.field--submitted` | A typed or number answer that's been sent, in pen blue with the same `.note` |
 
@@ -198,13 +230,21 @@ One tap picks, and the primary button ("That's our answer!") sends. Picking anot
 | `.pill.pill--live` | Question live | mist, with a slow-breathing brand dot (`.pill__dot`) |
 | `.pill.pill--locked` | Answers locked | Midnight, with a lock icon |
 | `.pill.pill--results` | Results are in | sky, with a star icon |
+| `.pill.pill--paused` | Paused by the host | butter, with a pause icon (two bars) |
+| `.pill.pill--wager` | Place your wager | mist, with the slow-breathing brand dot, because it's a live input like "Question live" |
 
-Use `.pill__icon` for a 20px inline SVG drawn with `stroke="currentColor"`.
+Use `.pill__icon` for a 20px inline SVG drawn with `stroke="currentColor"`. On the big screen the icon is 36px and the dot is 18px. On a Midnight screen `.pill--locked` gets a Mist outline so it keeps its shape.
+
+**Pill, tag or chip?**
+- `.pill`: the game's status. One per play screen.
+- `.tag`: "You", after your name in a list.
+- `.chip` (+ `.chip__icon`): an item's status, icon plus words, such as a prize ready or a name approved. `.chip--win` (Lamplight) for that good news; plain (Oat) for the rest.
 
 **Countdown** (`.countdown`, `role="timer"`):
 - a drawn ring (`.countdown__ring` > `.countdown__track` + `.countdown__fill` with `pathLength="100"`) and the seconds (`.countdown__num`) in the hand font
 - set `--left` (0–1) once a second
 - add `.is-urgent` at 5 seconds or less: the ring fills Poppy and the number stays Cocoa
+- `.countdown--xl` on the big screen: a 200px ring with the seconds at display size
 
 The number always ticks, because it's information. Only the ring's glide is motion, so it stops under reduced motion.
 
@@ -226,6 +266,8 @@ Use `.result__icon` for a 32px SVG with `stroke="currentColor"`.
 | `.stage--hero` | Tall and centered: the character, then the heading under it. For lobby, reveal, round break, the end and prizes |
 | `.bubble` | The host's speech in the hand font, with its tail pointing left at the speaker |
 | `.bubble--down` | The tail points down, for a bubble above a centered character |
+| `.bubble--fit` | A bubble that keeps its own size. In a `.stage--hero` every bubble does this automatically, centered. In a `.row`, add `.bubble--fit` so it doesn't stretch to fill the width (the big-screen outgoing host) |
+| `.initial` / `.initial--sm` | A player's or team's initial in a hand-font bubble, where a list row would hold an avatar (players and teams have no character). 48px in the lobby; `--sm` (38px) in join-team rows. Never use `.option__letter` for this, because it reads as an answer choice |
 
 **Character sizes**
 
@@ -233,7 +275,10 @@ Use `.result__icon` for a 32px SVG with `stroke="currentColor"`.
 |---|---|---|
 | Timed screens (question, wager) | 96px host, side by side with a bubble | 400px |
 | Hero screens | 160–240px | 400px |
-| List avatars (leaderboard, animals, prizes) | 48px | 96px |
+| List avatars (leaderboard, animals, prizes) | 48px | 96px, including the big-screen prize list |
+| A group of prize avatars under a caption (`.avatar-row`, lobby) | 48px | 128px |
+
+Teams don't own animals. On a leaderboard only the top 3 show their **prize** animal; ranks 4 and below have no avatar.
 
 ## 12. List rows
 
@@ -249,7 +294,19 @@ Use `.result__icon` for a 32px SVG with `stroke="currentColor"`.
 | `.is-you` | Your team. Pen-blue ring and pale blue fill, plus `<span class="tag">You</span>` after the name, so you can find your team in a 20-team list |
 | `a.list-row` | A tappable row (Animals tab). It's already over 44px tall |
 
-Names wrap; they're never cut off. Names go up to 30 characters for a team and 24 for a nickname.
+A row's text is always Cocoa, on any background (including Midnight).
+
+| Class | What |
+|---|---|
+| `.list--board` | The big leaderboard and prize list: names and scores one type step up |
+| `.chip` | An item's status inside a row or card (see §10) |
+| `.card` (+ `.card__head`, `.card__head--split`) | **The one Milk card** for things that aren't the game sheet: a form section, a team list, a won prize, an animal's facts. `.card__head` is an icon or avatar plus a title; `--split` puts a title on the left and a note on the right |
+| `.code-display` / `.code-display--xl` | A code to read aloud or type: Fredoka, spaced, tabular. The prize code on the phone; `--xl` for the big-screen join code. Its color inherits, so it works on Milk or Midnight |
+| `.qr` | A QR's quiet zone: a plain Milk square, 232px on the phone and 440px on the big screen. Keep characters away from it |
+| `figure.photo-slot` > `.photo-slot__frame` + `.photo-slot__caption` | "Meet the real one": the animal's photo. Until staff add one, an empty paper frame with a dashed border and a Walnut icon |
+| `ol.feed` > `li.feed__item` (`.feed__date`, `.feed__who`) | Keeper updates, newest first, as a timeline with honey dots |
+
+Names wrap; they're never cut off. Names go up to 30 characters for a team and 24 for a nickname. Headings (`.display`, `.h1`, `.h2`) wrap anywhere too, so a long team name needs no utility class.
 
 ## 13. Big screen
 
@@ -261,7 +318,14 @@ Put `.big` on `<body>` and use `.screen.screen--big.screen--night`. Every size v
 | options | a 104px-tall 2×2 grid |
 | host | 400px, on a `.stage.stage--hero` in the left column |
 
-The paper card sits in the right column on Midnight.
+The paper card sits in the right column on Midnight, inside `.big-col`.
+
+| Class | What |
+|---|---|
+| `.hand.hand--night` | The hand-font note on Midnight (top right, "Round 1 of 4"), in Mist. Pencil is too dark there |
+| `.muted--night` | Secondary text on Midnight, in Mist: the night pair of `.muted` |
+
+Every big-screen rank takes the 60px width of the top-three bubble, so names line up down the list.
 
 Read it from across the room. Show no more than the top 8 rows of a leaderboard at once, and page through the rest.
 
@@ -378,7 +442,8 @@ Animals never get the host's index card. The octopus in `host-options.html` is t
 | Answer sent, locked, waiting for the reveal, waiting for the host | `waiting` |
 | Reveal: your team was right, the end with a win, prize won | `cheering` |
 | Reveal: your team was wrong, a team that won nothing at the end | `consoling` |
-| Round break, paused, feedback and newsletter | `relaxing` |
+| Round break | incoming host `greeting`; outgoing host `relaxing` (small) |
+| Paused, feedback and newsletter | `relaxing` |
 | Leaderboard | `cheering` for the top, otherwise `waiting`. The animals appear as avatars |
 
 **Screens where the character steps back** (the reason is required): the join and team **forms** use a 64px host next to the heading, not a stage, so the keyboard has room. The redeem QR screen shows no character near the code, so it scans cleanly.
@@ -404,7 +469,7 @@ Avoid "Submit", "OK" and "Continue".
 - in the hand font, ending with "!" or "…"
 - e.g. "Let's start in the deep end!", "Got it! Fingers crossed…", "Ooh, so close!"
 
-**Status words** are fixed: "Waiting for the host", "Question live", "Answers locked", "Results are in".
+**Status words** are fixed: "Waiting for the host", "Question live", "Answers locked", "Results are in", "Paused by the host" and "Place your wager". The last two are provisional defaults until review 2 (`decisions.md`).
 
 **Correct/incorrect** words are fixed: "Correct!" and "Not quite". Never write "Wrong!" or "Fail".
 

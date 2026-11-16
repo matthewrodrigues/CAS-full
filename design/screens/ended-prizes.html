@@ -6,7 +6,6 @@
 <title>Ended: final result and prizes</title>
 <link rel="stylesheet" href="../system/tokens.css">
 <link rel="stylesheet" href="../system/kit.css">
-<link rel="stylesheet" href="../system/kit-additions/after.css">
 <script src="../system/include.js"></script>
 </head>
 <body>
@@ -20,8 +19,6 @@
   </div>
 
   <section class="stage stage--sky stage--hero" aria-labelledby="place">
-    <span class="sparkle" style="top: 64px; left: 84px" aria-hidden="true"></span>
-    <span class="sparkle sparkle--sm" style="top: 120px; right: 78px" aria-hidden="true"></span>
     <p class="bubble bubble--down" id="speech">Woo! Look at you go!</p>
     <span id="host-cheer"><span class="char char--160" data-character="hosts/rocco/cheering" role="img" aria-label="Rocco the raccoon, cheering"></span></span>
     <span id="host-console" hidden><span class="char char--160" data-character="hosts/rocco/consoling" role="img" aria-label="Rocco the raccoon, consoling"></span></span>
@@ -84,7 +81,6 @@
   if (new URLSearchParams(location.search).get('state') === 'none') {
     document.getElementById('host-cheer').hidden = true
     document.getElementById('host-console').hidden = false
-    document.querySelectorAll('.sparkle').forEach((s) => s.remove())
     document.getElementById('speech').textContent = 'So close! See you Thursday?'
     document.getElementById('place').textContent = '7th place'
     document.getElementById('summary').textContent = 'Thanks for playing! Your team finished #7 with 139 points.'

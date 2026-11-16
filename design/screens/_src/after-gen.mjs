@@ -36,7 +36,6 @@ const head = (title) => `<!doctype html>
 <title>${title}</title>
 <link rel="stylesheet" href="../system/tokens.css">
 <link rel="stylesheet" href="../system/kit.css">
-<link rel="stylesheet" href="../system/kit-additions/after.css">
 <script src="../system/include.js"></script>
 </head>
 <body>
@@ -163,8 +162,6 @@ function endedScreen({ title, stress }) {
 ${top()}
 
   <section class="stage stage--sky stage--hero" aria-labelledby="place">
-    <span class="sparkle" style="top: 64px; left: 84px" aria-hidden="true"></span>
-    <span class="sparkle sparkle--sm" style="top: 120px; right: 78px" aria-hidden="true"></span>
     <p class="bubble bubble--down" id="speech">${winner.bubble}</p>
     <span id="host-cheer">${char('hosts/rocco/cheering', 160, 'Rocco the raccoon, cheering')}</span>
     <span id="host-console" hidden>${char('hosts/rocco/consoling', 160, 'Rocco the raccoon, consoling')}</span>
@@ -212,7 +209,6 @@ ${foot(
   if (new URLSearchParams(location.search).get('state') === 'none') {
     document.getElementById('host-cheer').hidden = true
     document.getElementById('host-console').hidden = false
-    document.querySelectorAll('.sparkle').forEach((s) => s.remove())
     document.getElementById('speech').textContent = 'So close! See you Thursday?'
     document.getElementById('place').textContent = '7th place'
     document.getElementById('summary').textContent = 'Thanks for playing! Your team finished #7 with 139 points.'

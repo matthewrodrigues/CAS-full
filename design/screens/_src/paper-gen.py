@@ -11,7 +11,6 @@ HEAD = """<!doctype html>
 <title>{title}</title>
 <link rel="stylesheet" href="../system/tokens.css">
 <link rel="stylesheet" href="../system/kit.css">
-<link rel="stylesheet" href="../system/kit-additions/paper.css">
 <script src="../system/include.js"></script>
 </head>
 <body>
@@ -565,7 +564,7 @@ def row(label, ok, note=None, tf=False):
     mark = (f'<span class="option__mark option__mark--correct">{svg(I_CHECK, "", "3")}</span><span class="sr-only">Right answer: </span>' if ok
             else f'<span class="option__mark option__mark--incorrect">{svg(I_CROSS, "", "3")}</span><span class="sr-only">Not this one: </span>')
     n = f'<span class="option__note option__note--muted">{note}</span>' if note else ""
-    cls = "option option--tf" if tf else "option"
+    cls = "option option--static option--tf" if tf else "option option--static"
     state = "is-correct" if ok else "is-incorrect"
     return f'<li><div class="{cls} {state}">{mark}<span class="option__label">{label}</span>{n}</div></li>'
 
