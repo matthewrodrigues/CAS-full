@@ -19,7 +19,7 @@
 | 4 User review 1 | ✅ done | bfa5d22, 0db24cc. Rocco is the main host; 3 hosts rotate by round (Random default, no repeats); tap then send with a 5 s nudge; look approved |
 | 5a Joining | ✅ done | see log; 7 screens + `kit-additions/joining.css` |
 | 5b Paper sheet | ⏳ dispatched 2026-11-15 | brief `design/briefs/5b-paper.md` |
-| 5c After the game | ⏳ dispatched 2026-11-15 | brief `design/briefs/5c-after.md` |
+| 5c After the game | ✅ done | 11 screens + `kit-additions/after.css` (adds the 4-tab bar) |
 | 5d Big screen | ⏳ dispatched 2026-11-15 | brief `design/briefs/5d-big-screen.md` |
 | 5e Characters | ⏳ dispatched 2026-11-15 | brief `design/briefs/5e-characters.md` |
 | 5 wrap-up | ☐ | after 5e: rerun check with the real art; merge reviewed `design/system/kit-additions/*.css` into kit.css |
@@ -48,3 +48,4 @@ Background agents die with the session. Rebuild from what's on disk:
 
 - 2026-11-15: Tasks 1–4 done. Swarm 5a–5e dispatched in parallel.
 - 2026-11-15: 5a done and committed. README fixed: labeled character spans need `role="img"` (axe).
+- 2026-11-15: 5c done and committed. For Task 6: the tab bar (Play/Leaderboard/Rewards/Animals) exists only in 5c screens, so check whether 5a/5b screens need it. Made-up copy to confirm at review 2: prize "NightLife tote bag", code format, keeper update author line.

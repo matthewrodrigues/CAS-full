@@ -1,0 +1,418 @@
+/*
+ * Kit additions for 5c, after the game (ended, leaderboard, rewards, redeem, feedback, animals).
+ * Tokens only. Link it after kit.css. Each block says what it's for, so the orchestrator can merge
+ * or drop it when the reviewed additions go into kit.css.
+ */
+
+/* ---------------------------------------------------------------- tab bar */
+/*
+ * The player app's four tabs (src/routes/play/play-layout.tsx): Play, Leaderboard, Rewards, Animals.
+ * The last child of .screen, full bleed past the gutters. In the build it's fixed to the bottom of the
+ * viewport; in the mockups it sits in the flow so full-page screenshots don't show it over the list.
+ * <nav class="tabbar" aria-label="Game sections"><ul class="tabbar__list"><li><a class="tabbar__link" aria-current="page">…
+ */
+.tabbar {
+  position: relative;
+  margin: auto calc(var(--space-4) * -1) calc(var(--space-5) * -1);
+  background: var(--color-surface);
+  box-shadow: 0 -2px 0 var(--color-paper-edge);
+}
+.screen__actions + .tabbar {
+  margin-top: 0;
+}
+.tabbar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--space-2);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.tabbar__link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 60px;
+  padding: var(--space-2) var(--space-1);
+  color: var(--color-ink-muted);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  line-height: 1.1;
+  text-decoration: none;
+}
+.tabbar__icon {
+  width: 24px;
+  height: 24px;
+}
+.tabbar__link[aria-current='page'] {
+  color: var(--color-ink);
+  font-weight: 800;
+}
+.tabbar__link[aria-current='page'] .tabbar__icon {
+  color: var(--color-brand);
+}
+/* The active tab's marker: a short rounded bar, a shape as well as a color. */
+.tabbar__link[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 36px;
+  height: 4px;
+  border-radius: 0 0 4px 4px;
+  background: var(--color-brand);
+  transform: translateX(-50%);
+}
+.tabbar__link:focus-visible {
+  outline-offset: -3px;
+}
+
+/* ---------------------------------------------------------------- segmented switch */
+/* Two views of one list: Tonight / Season. Links with aria-current, so each view is its own URL. */
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  background: var(--color-paper-edge);
+}
+.seg__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink);
+  font-weight: 700;
+  font-size: var(--text-md);
+  text-decoration: none;
+}
+.seg__link[aria-current='page'] {
+  background: var(--color-surface);
+  font-weight: 800;
+  box-shadow: 0 2px 0 var(--color-line);
+}
+
+/* ---------------------------------------------------------------- card */
+/* A Milk card for things that aren't the game sheet: a won prize, a form section, an animal's facts. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: 0 2px 0 var(--color-paper-edge);
+}
+.card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.card__head > :last-child {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* A small status chip (icon + words). Win is for prizes ready or a name approved; quiet for the rest. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  min-height: 32px;
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  line-height: 1.2;
+}
+.chip__icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+.chip--win {
+  background: var(--color-win);
+}
+
+/* ---------------------------------------------------------------- celebration */
+/* Two honey sparkles beside a cheering host. They pop once and stay still (motion block below). */
+.sparkle {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: var(--color-win);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  pointer-events: none;
+}
+.sparkle--sm {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---------------------------------------------------------------- redeem code */
+/* The prize code: big, spaced and unambiguous, read aloud or typed by staff. */
+.code-display {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-h1);
+  line-height: 1.1;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+/* The QR's quiet zone: plain Milk, square, with no art near it so it scans in a dim bar. */
+.qr {
+  display: grid;
+  place-items: center;
+  width: 232px;
+  height: 232px;
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 2px var(--color-line);
+}
+.qr > svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------- photo slot */
+/* "Meet the real one": the animal's real photo (image_url). A placeholder box until staff add one. */
+.photo-slot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+}
+.photo-slot__frame {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-card);
+  background: var(--color-info-soft);
+  color: var(--color-depth);
+  border: 2px dashed var(--color-border);
+}
+.photo-slot__frame > svg {
+  width: 56px;
+  height: 56px;
+}
+.photo-slot__caption {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+/* ---------------------------------------------------------------- star rating */
+/* 1–5 stars. Each star is a label around a real radio, 48px, so it's tappable and keyboard-friendly. */
+.rating {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.rating__legend {
+  padding: 0;
+  font-weight: 700;
+  font-size: var(--text-md);
+}
+.rating__stars {
+  display: flex;
+  gap: var(--space-1);
+}
+.rating__star {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-control);
+  color: var(--color-border);
+  cursor: pointer;
+}
+.rating__star > input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.rating__star > svg {
+  width: 40px;
+  height: 40px;
+  fill: var(--color-surface);
+  stroke: currentColor;
+}
+.rating__star.is-on {
+  color: var(--color-ink);
+}
+.rating__star.is-on > svg {
+  fill: var(--color-win);
+}
+.rating__star:has(input:focus-visible) {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 0;
+}
+
+/* ---------------------------------------------------------------- checkbox */
+/* Consent: an unticked box by default. The real checkbox covers the 44px box, so the target is big. */
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+.check__control {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+}
+.check__control > input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.check__box {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-paper);
+}
+.check__box > svg {
+  width: 22px;
+  height: 22px;
+  visibility: hidden;
+}
+.check__control > input:checked + .check__box {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+}
+.check__control > input:checked + .check__box > svg {
+  visibility: visible;
+}
+.check__control > input:focus-visible + .check__box {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+.check__text {
+  padding-top: 9px;
+}
+
+/* A multi-line typed field: the kit's input at comment height, in body weight. */
+.field__input--area {
+  min-height: 120px;
+  resize: vertical;
+  font-weight: 600;
+  font-size: var(--text-md);
+  line-height: 1.45;
+}
+.field__error {
+  font-weight: 700;
+  font-size: var(--text-md);
+  color: var(--color-incorrect);
+}
+
+/* ---------------------------------------------------------------- updates feed */
+/* Keeper updates, newest first. Up to 500 characters each; they wrap. */
+.feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.feed__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-left: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: 0 2px 0 var(--color-paper-edge);
+  overflow-wrap: anywhere;
+}
+/* A dot and a thread on the left, so the feed reads as a timeline. */
+.feed__item::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-5) * -1 + 3px);
+  top: 20px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-rule);
+}
+.feed__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-5) * -1 + 8px);
+  top: 36px;
+  bottom: calc(var(--space-3) * -1 - 20px);
+  width: 2px;
+  background: var(--color-line);
+}
+.feed__date {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-pencil);
+}
+.feed__who {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+/* ---------------------------------------------------------------- motion */
+@media (prefers-reduced-motion: no-preference) {
+  .sparkle {
+    animation: after-sparkle 700ms var(--ease-bounce) 200ms both;
+  }
+  .sparkle--sm {
+    animation-delay: 360ms;
+  }
+}
+@keyframes after-sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-40deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.2) rotate(10deg);
+  }
+}
+
+/* ---------------------------------------------------------------- back link */
+/* "< All animals" in .screen__top: a quiet button that never wraps next to the status pill. */
+.back-link {
+  padding: 0 var(--space-2) 0 0;
+  gap: var(--space-1);
+  white-space: nowrap;
+}
