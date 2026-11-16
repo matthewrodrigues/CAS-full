@@ -2,7 +2,7 @@
 // display runs in another browser, with a player on a phone.
 import { expect, test, type Browser } from '@playwright/test'
 import { E2E_HOST_PASSCODE, JOIN_CODES } from './constants'
-import { createTeam, expectNoAxeViolations, joinAsPlayer, signInViaApi } from './support'
+import { createTeam, tapAndSend, expectNoAxeViolations, joinAsPlayer, signInViaApi } from './support'
 
 const tablet = (browser: Browser) => browser.newContext({ viewport: { width: 1024, height: 768 } }).then((c) => c.newPage())
 
@@ -51,7 +51,7 @@ test('a full night hosted from the console while the big screen follows', async 
   // Question 1: multiple choice, counted, locked and revealed from the console.
   await primary('Start the game')
   await expect(display.getByRole('heading', { name: "What is the deepest known point in Earth's oceans?" })).toBeVisible()
-  await phone.getByRole('button', { name: 'Challenger Deep' }).click()
+  await tapAndSend(phone, 'Challenger Deep')
   await expect(console_.getByText('1 of 1 teams answered')).toBeVisible()
   await primary('Lock answers')
   await primary('Reveal the answer')
@@ -61,7 +61,7 @@ test('a full night hosted from the console while the big screen follows', async 
   // Question 2: a borderline typed answer, accepted from the review queue before the reveal.
   await primary('Next')
   await phone.getByLabel('Your answer').fill('octopuss')
-  await phone.getByRole('button', { name: 'Submit answer' }).click()
+  await phone.getByRole('button', { name: "That's our answer!" }).click()
   await expect(phone.getByText('Submitted', { exact: true })).toBeVisible()
   await primary('Lock answers')
   await expect(console_.getByText('Console Crew: “octopuss” (70% match)')).toBeVisible()

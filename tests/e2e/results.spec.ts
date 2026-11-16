@@ -1,7 +1,7 @@
 // Results (docs/SPEC.md sections 5 and 7): reveal, round break, final wager, end, leaderboard, rewards.
 import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 import { JOIN_CODES } from './constants'
-import { createTeam, expectNoAxeViolations, hostApi, joinAsPlayer, type HostApi } from './support'
+import { createTeam, tapAndSend, expectNoAxeViolations, hostApi, joinAsPlayer, type HostApi } from './support'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -37,7 +37,7 @@ const lockAndReveal = async () => {
 
 test('a reveal shows the answer, the result in words, the points and the fun fact', async () => {
   await host.act('host_next', eventId) // question 1, mc
-  await page.getByRole('button', { name: 'Challenger Deep' }).click()
+  await tapAndSend(page, 'Challenger Deep')
   await expect(page.getByText('Your answer: Challenger Deep')).toBeVisible()
   await lockAndReveal()
   await expect(page.getByRole('heading', { name: 'Correct' })).toBeVisible()
@@ -48,7 +48,7 @@ test('a reveal shows the answer, the result in words, the points and the fun fac
 
   await host.act('host_next', eventId) // question 2, typed
   await page.getByLabel('Your answer').fill('octopuss')
-  await page.getByRole('button', { name: 'Submit answer' }).click()
+  await page.getByRole('button', { name: "That's our answer!" }).click()
   await expect(page.getByText('Submitted', { exact: true })).toBeVisible()
   await lockAndReveal()
   await expect(page.getByRole('heading', { name: 'Being checked by the host' })).toBeVisible()
@@ -62,7 +62,7 @@ test('a reveal shows the answer, the result in words, the points and the fun fac
   await expect(page.getByRole('heading', { name: 'No answer from your team' })).toBeVisible()
 
   await host.act('host_next', eventId) // question 5, mc
-  await page.getByRole('button', { name: 'Incandescence' }).click()
+  await tapAndSend(page, 'Incandescence')
   await expect(page.getByText('Your answer: Incandescence')).toBeVisible()
   await lockAndReveal()
   await expect(page.getByRole('heading', { name: 'Not this time' })).toBeVisible()
@@ -95,7 +95,7 @@ test('the final wager takes a bet up to the score and shows it during the final 
   await host.act('host_next', eventId) // final_live
   await expect(page.getByText('Your wager: 20')).toBeVisible()
   await page.getByLabel('Your answer').fill('bathypelagic')
-  await page.getByRole('button', { name: 'Submit answer' }).click()
+  await page.getByRole('button', { name: "That's our answer!" }).click()
   await expect(page.getByText('Submitted', { exact: true })).toBeVisible()
   await lockAndReveal()
   await expect(page.getByRole('heading', { name: 'Correct' })).toBeVisible()

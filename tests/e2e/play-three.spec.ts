@@ -2,7 +2,7 @@
 // play three questions end to end; and a dropped connection catches up without a reload.
 import { expect, test } from '@playwright/test'
 import { JOIN_CODES } from './constants'
-import { createTeam, hostApi, joinAsPlayer } from './support'
+import { createTeam, tapAndSend, hostApi, joinAsPlayer } from './support'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -19,7 +19,7 @@ test('a host over the API and a player in the browser play three questions', asy
 
   // Question 1, multiple choice: locked by the host.
   await host.act('host_next', eventId)
-  await page.getByRole('button', { name: 'Challenger Deep' }).click()
+  await tapAndSend(page, 'Challenger Deep')
   await expect(page.getByText('Your answer: Challenger Deep')).toBeVisible()
   await host.act('host_lock', eventId)
   await host.act('host_reveal', eventId)
@@ -28,7 +28,7 @@ test('a host over the API and a player in the browser play three questions', asy
   // Question 2, typed: the clock locks it (30 s + 1.2 s grace).
   await host.act('host_next', eventId)
   await page.getByLabel('Your answer').fill('octopus')
-  await page.getByRole('button', { name: 'Submit answer' }).click()
+  await page.getByRole('button', { name: "That's our answer!" }).click()
   await expect(page.getByText('Submitted', { exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Answers are locked' })).toBeVisible({ timeout: 40_000 })
   await host.act('host_reveal', eventId)
@@ -36,7 +36,7 @@ test('a host over the API and a player in the browser play three questions', asy
 
   // Question 3, true/false (False is right).
   await host.act('host_next', eventId)
-  await page.getByRole('button', { name: 'False' }).click()
+  await tapAndSend(page, 'False')
   await expect(page.getByText('Your answer: False')).toBeVisible()
   await host.act('host_lock', eventId)
   await host.act('host_reveal', eventId)
