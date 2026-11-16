@@ -29,7 +29,7 @@ What `design:check` enforces:
 - **Hosts:** `rocco` (main host), `pebble`, `june`. Each round has one; see `system/decisions.md`.
 - **Host expressions:** `greeting`, `asking`, `waiting`, `cheering`, `consoling`, `relaxing`.
 - **Animal keys:** `penguin-chick`, `giant-pacific-octopus`, `pacific-seahorse`, `moray-eel`, `mystery`.
-- **To place a character,** use `<span data-character="hosts/rocco/asking"></span>` or `<span data-character="animals/moray-eel-happy"></span>`. `include.js` inlines the SVG, or shows the placeholder until it's drawn. Give the span `aria-label` if the character carries meaning, or leave it decorative.
+- **To place a character,** use `<span data-character="hosts/rocco/asking"></span>` or `<span data-character="animals/moray-eel-happy"></span>`. `include.js` inlines the SVG, or shows the placeholder until it's drawn. If the character carries meaning, give the span `role="img"` and `aria-label` (axe rejects `aria-label` on a bare span); otherwise leave it decorative.
 - **Character SVGs:**
   - `viewBox="0 0 400 400"`
   - fills and strokes only `var(--color-char-*)` or kit tokens

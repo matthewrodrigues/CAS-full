@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staff: round hosts</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/joining.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<!-- Staff event settings: who hosts each round (decisions.md §2). A calm tool page: no stage and no
+     bubble. The characters appear only as 48px avatars on each choice, so staff pick by face as well
+     as name. Bright colors: brand only (the button and the picked choice). -->
+<main class="screen">
+  <div class="screen__top">
+    <p class="hand hand--sm">Staff · Settings</p>
+    <a class="btn btn--quiet" href="landing.html">Done</a>
+  </div>
+
+  <header class="stack stack--tight">
+    <h1 class="h1">Round hosts</h1>
+    <p class="muted">Pick who hosts each round. Random never picks the same host twice in a row.</p>
+  </header>
+
+  <div class="field">
+    <label class="field__label" for="event">Event</label>
+    <span class="select"><select class="field__select" id="event">
+      <option>Deep Sea Night · DEMO1</option>
+    </select></span>
+  </div>
+
+  <form class="stack" id="form" novalidate>
+    <section class="panel">
+      <fieldset class="choices">
+        <legend><span class="hand hand--sm">Round 1</span>Into the Abyss</legend>
+        <label class="choice"><input type="radio" name="round-1" value="rocco"><span class="choice__avatar"><span class="char char--48" data-character="hosts/rocco/greeting"></span></span>Rocco</label>
+        <label class="choice"><input type="radio" name="round-1" value="pebble"><span class="choice__avatar"><span class="char char--48" data-character="hosts/pebble/greeting"></span></span>Pebble</label>
+        <label class="choice"><input type="radio" name="round-1" value="june"><span class="choice__avatar"><span class="char char--48" data-character="hosts/june/greeting"></span></span>Dr. June</label>
+        <label class="choice"><input type="radio" name="round-1" value="random" checked><span class="choice__avatar"><span class="choice__random"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span></span>Random</label>
+      </fieldset>
+    </section>
+    <section class="panel">
+      <fieldset class="choices">
+        <legend><span class="hand hand--sm">Round 2</span>Who Lives Down There?</legend>
+        <label class="choice"><input type="radio" name="round-2" value="rocco"><span class="choice__avatar"><span class="char char--48" data-character="hosts/rocco/greeting"></span></span>Rocco</label>
+        <label class="choice"><input type="radio" name="round-2" value="pebble"><span class="choice__avatar"><span class="char char--48" data-character="hosts/pebble/greeting"></span></span>Pebble</label>
+        <label class="choice"><input type="radio" name="round-2" value="june"><span class="choice__avatar"><span class="char char--48" data-character="hosts/june/greeting"></span></span>Dr. June</label>
+        <label class="choice"><input type="radio" name="round-2" value="random" checked><span class="choice__avatar"><span class="choice__random"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span></span>Random</label>
+      </fieldset>
+    </section>
+    <section class="panel">
+      <fieldset class="choices">
+        <legend><span class="hand hand--sm">Round 3</span>Ocean Sounds</legend>
+        <label class="choice"><input type="radio" name="round-3" value="rocco"><span class="choice__avatar"><span class="char char--48" data-character="hosts/rocco/greeting"></span></span>Rocco</label>
+        <label class="choice"><input type="radio" name="round-3" value="pebble"><span class="choice__avatar"><span class="char char--48" data-character="hosts/pebble/greeting"></span></span>Pebble</label>
+        <label class="choice"><input type="radio" name="round-3" value="june"><span class="choice__avatar"><span class="char char--48" data-character="hosts/june/greeting"></span></span>Dr. June</label>
+        <label class="choice"><input type="radio" name="round-3" value="random" checked><span class="choice__avatar"><span class="choice__random"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span></span>Random</label>
+      </fieldset>
+    </section>
+    <section class="panel">
+      <fieldset class="choices">
+        <legend><span class="hand hand--sm">Round 4</span>Final Wager</legend>
+        <label class="choice"><input type="radio" name="round-4" value="rocco"><span class="choice__avatar"><span class="char char--48" data-character="hosts/rocco/greeting"></span></span>Rocco</label>
+        <label class="choice"><input type="radio" name="round-4" value="pebble"><span class="choice__avatar"><span class="char char--48" data-character="hosts/pebble/greeting"></span></span>Pebble</label>
+        <label class="choice"><input type="radio" name="round-4" value="june"><span class="choice__avatar"><span class="char char--48" data-character="hosts/june/greeting"></span></span>Dr. June</label>
+        <label class="choice"><input type="radio" name="round-4" value="random" checked><span class="choice__avatar"><span class="choice__random"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span></span>Random</label>
+      </fieldset>
+    </section>
+  </form>
+
+  <div class="screen__actions">
+    <button type="submit" form="form" class="btn btn--primary btn--block">Save round hosts</button>
+    <div role="status" aria-live="polite"><p class="note" id="saved" hidden>
+      <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      <span>Saved! Round hosts are set for Deep Sea Night.</span>
+    </p></div>
+    <p class="small muted center" id="hint">The live host can still swap hosts before each round.</p>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="staff-round-hosts.html">All random (default)</a>
+  <a href="staff-round-hosts.html?state=custom">Changed</a>
+  <a href="staff-round-hosts.html?state=saved">Saved</a>
+</nav>
+
+<script>
+  // Mockup behavior: radios work natively; saving shows the note.
+  const state = new URLSearchParams(location.search).get('state')
+  const pick = (round, host) => (document.querySelector(`input[name="round-${round}"][value="${host}"]`).checked = true)
+  function showSaved() {
+    document.getElementById('saved').hidden = false
+    document.getElementById('hint').hidden = true
+  }
+  if (state === 'custom' || state === 'saved') {
+    pick(1, 'rocco')
+    pick(2, 'pebble')
+    pick(3, 'june')
+  }
+  if (state === 'saved') showSaved()
+  document.getElementById('form').addEventListener('submit', (e) => {
+    e.preventDefault()
+    showSaved()
+  })
+  document.getElementById('form').addEventListener('change', () => {
+    document.getElementById('saved').hidden = true
+    document.getElementById('hint').hidden = false
+  })
+</script>
+</body>
+</html>

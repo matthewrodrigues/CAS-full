@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lobby</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<link rel="stylesheet" href="../system/kit-additions/joining.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<!-- Waiting for the host to start. Rocco greets the team on a butter stage (waiting, lobby).
+     Bright colors: butter (stage and pill) and brand (your row). Nothing to do yet, so no primary
+     button: the only action is the quiet "Switch team". -->
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite">
+      <span class="pill pill--waiting"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12"/><path d="M6 21h12"/><path d="M7 3c0 5 10 5 10 9s-10 4-10 9"/><path d="M17 3c0 5-10 5-10 9s10 4 10 9"/></svg>Waiting for the host</span>
+    </div>
+  </div>
+
+  <section class="stage stage--butter stage--hero" aria-labelledby="team-name">
+    <p class="bubble bubble--down">Grab a seat, we start soon!</p>
+    <span class="char char--160 char--idle" role="img" data-character="hosts/rocco/greeting" aria-label="Rocco the raccoon, waving hello"></span>
+    <div class="stack stack--tight">
+      <p class="hand hand--sm">You're on team</p>
+      <h1 class="h1 wrap-anywhere" id="team-name">Kraken Up</h1>
+      <p class="small muted" id="name-note">Our host will check your team name soon.</p>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="members-title">
+    <div class="panel__head">
+      <h2 class="h2" id="members-title">Your team</h2>
+      <p class="hand hand--sm">3 players</p>
+    </div>
+    <ul class="list" id="members">
+      <li class="list-row">
+        <span class="initial" aria-hidden="true">J</span>
+        <span class="list-row__name">Jess<span class="list-row__sub"><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg> Captain</span></span>
+      </li>
+      <li class="list-row is-you">
+        <span class="initial" aria-hidden="true" id="you-initial">S</span>
+        <span class="list-row__name"><span id="you-name">Sam</span> <span class="tag">You</span></span>
+      </li>
+      <li class="list-row">
+        <span class="initial" aria-hidden="true">M</span>
+        <span class="list-row__name">Marco</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="panel" aria-labelledby="prizes-title">
+    <h2 class="body" id="prizes-title"><strong>Tonight's prizes</strong></h2>
+    <div class="row">
+      <span class="char char--48" data-character="animals/penguin-chick"></span>
+      <span class="char char--48" data-character="animals/giant-pacific-octopus"></span>
+      <span class="char char--48" data-character="animals/pacific-seahorse"></span>
+    </div>
+    <p class="small muted">The top 3 teams each get to name a real Academy animal: an African penguin chick, a giant Pacific octopus or a Pacific seahorse.</p>
+  </section>
+
+  <div class="screen__actions">
+    <a class="btn btn--quiet" href="join-team.html">Switch team</a>
+    <p class="small muted center">You can switch teams until the first question.</p>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Team name:</span>
+  <a href="lobby.html">Waiting for a check</a>
+  <a href="lobby.html?name=approved">Approved</a>
+  <a href="lobby.html?name=rejected">Not approved</a>
+  <a href="lobby-stress.html">Stress</a>
+</nav>
+
+<script>
+  // Mockup behavior: carry the nickname and team from the join screens, and flip the name check.
+  const params = new URLSearchParams(location.search)
+  const nickname = params.get('nickname')
+  const team = params.get('team')
+  if (nickname) {
+    document.getElementById('you-name').textContent = nickname
+    document.getElementById('you-initial').textContent = nickname.trim()[0].toUpperCase()
+  }
+  if (team) document.getElementById('team-name').textContent = team
+  const notes = {
+    approved: 'Team name approved. Looking good!',
+    rejected: "Our host couldn't approve this name, so other teams won't see it. You can still play.",
+  }
+  const name = params.get('name')
+  if (notes[name]) document.getElementById('name-note').textContent = notes[name]
+</script>
+</body>
+</html>
