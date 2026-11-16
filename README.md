@@ -53,4 +53,4 @@ Everything the game decides happens on the server, in `server/game/`; the browse
 
 ## Test databases
 
-Unit tests use in-memory SQLite. `npm run e2e` starts its own servers on ports 5174 (web) and 3101 (API) with `DATA_DIR=data/e2e`. `scripts/e2e-prepare.ts` deletes that folder, migrates and seeds DEMO1 plus one event per spec file, so every run starts fresh and `data/app.db` is never touched.
+Unit tests use in-memory SQLite. `npm run e2e` starts its own servers on ports 5174 (web) and 3101 (API), overridable with `E2E_WEB_PORT` and `E2E_API_PORT` with `DATA_DIR=data/e2e`. `scripts/e2e-prepare.ts` deletes that folder, migrates and seeds DEMO1 plus one event per spec file, so every run starts fresh and `data/app.db` is never touched.

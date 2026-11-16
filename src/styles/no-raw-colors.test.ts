@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs'
+﻿import { readdirSync, readFileSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -8,7 +8,7 @@ import { findRawColors } from '../../shared/raw-colors'
 
 const SRC_DIR = fileURLToPath(new URL('..', import.meta.url))
 const ALLOWED_FILES = new Set(['styles/tokens.css'])
-const SCANNED_EXTENSIONS = /\.(ts|tsx|css)$/
+const SCANNED_EXTENSIONS = /\.(ts|tsx|css|svg)$/
 const TEST_FILE = /\.test\.(ts|tsx)$/
 
 function sourceFiles(dir: string): string[] {
@@ -50,5 +50,10 @@ describe('raw color guard', () => {
     'outline: 2px solid var(--color-focus);',
   ])('allows %s', (sample) => {
     expect(findRawColors(sample)).toEqual([])
+  })
+
+  it('scans svg files too', () => {
+    expect(findRawColors('<rect fill="#000"/>')).not.toEqual([])
+    expect(SCANNED_EXTENSIONS.test('logo.svg')).toBe(true)
   })
 })

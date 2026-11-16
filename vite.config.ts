@@ -16,6 +16,8 @@ export default defineConfig({
     include: ['react', 'react-dom/client', 'react-router', 'react-router/dom', '@tanstack/react-query', 'zustand', 'i18next', 'react-i18next', 'lucide-react', 'radix-ui', 'class-variance-authority', 'cn'],
   },
   server: {
+    // The e2e run sets E2E_WEB_PORT (playwright.config.ts); plain dev keeps Vite's default.
+    port: process.env.E2E_WEB_PORT ? Number(process.env.E2E_WEB_PORT) : undefined,
     // The Hono server (server/index.ts) owns /api, /ws and /media; Vite only serves the SPA in dev.
     proxy: {
       '/api': apiOrigin,

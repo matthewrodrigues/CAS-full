@@ -1,9 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 import { E2E_HOST_PASSCODE, E2E_STAFF_PASSCODE } from './tests/e2e/constants.ts'
 
-/** Its own ports, so an e2e run never reuses (or collides with) a running `npm run dev`. */
-const WEB_PORT = 5174
-const API_PORT = 3101
+/** Its own ports, so an e2e run never reuses (or collides with) a running `npm run dev`. Override with E2E_WEB_PORT / E2E_API_PORT to run several worktrees side by side. */
+const WEB_PORT = Number(process.env.E2E_WEB_PORT ?? 5174)
+const API_PORT = Number(process.env.E2E_API_PORT ?? 3101)
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -29,6 +29,7 @@ export default defineConfig({
     env: {
       DATA_DIR: 'data/e2e',
       PORT: String(API_PORT),
+      E2E_WEB_PORT: String(WEB_PORT),
       HOST_PASSCODE: E2E_HOST_PASSCODE,
       STAFF_PASSCODE: E2E_STAFF_PASSCODE,
     },
