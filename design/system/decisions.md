@@ -1,0 +1,19 @@
+# Design decisions
+
+## Review 1 (2026-11-15)
+
+**1. Rocco the raccoon is the night's main host.** He greets everyone in the lobby and runs the final results and prizes. (Option C in `host-options.html`.)
+
+**2. All three hosts take turns, one per round (new feature).** The user's idea; they confirmed this proposal:
+- Each round has a host setting: **Rocco, Pebble, Dr. June or Random**. The default for every round is **Random**.
+- Random picks a host when the round starts and never repeats the previous round's host.
+- Staff set it in the event settings. The live host can override it from the console before a round starts.
+- When a new host takes over, the round-break screen introduces them ("Pebble's taking Round 2!"), on phones and the big screen.
+- **Pebble stays an adult African penguin in a bow tie**, clearly different from the fluffy grey penguin-chick prize avatar.
+- **Dr. June needs another drawing pass.** The lead called her the weakest of the three, with hair that reads like a helmet. She must reach the same quality bar as Rocco.
+
+**3. Tap, then send.** Tapping an answer circles it on your own sheet only. "That's our answer!" sends it for the team, and a team can change and resend until the question locks. The user chose this after trying both flows side by side.
+- Players can forget to send, so the host nudges near the end: at 5 seconds, if your circled answer isn't sent, the host says something like "Don't forget to send!"
+- This changes today's one-tap behavior (`src/routes/play/answer-choice.tsx`), so the build plan updates the answer flow and its tests.
+
+**4. The look: "Lamplight at the Academy"** (`tokens.css`, `kit.css`, `kit.md`), as reviewed. *(The user has seen the question screen and the hosts; their explicit sign-off on the palette and paper is pending. See the review 1 message.)*

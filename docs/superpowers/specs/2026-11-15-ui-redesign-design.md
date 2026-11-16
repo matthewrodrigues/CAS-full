@@ -16,10 +16,15 @@ The inspiration is the iOS app **Ahead** (anger and stress relief, "the Duolingo
 2. **A host character** who "asks" each question, on the phone and the big screen. The human host still runs the night from the host console; the character is the on-screen face of the game (lobby greeting, asking each question, reacting at the reveal, round breaks, the end).
 3. **A paper answer sheet.** The live question screen looks and feels like paper (a sheet, card or notepad: the design lead decides) for every question type: multiple choice, true/false, typed, closest number, with image or audio. The same treatment carries through the wager, locked and reveal screens.
 4. **Every player screen and the big screen restyled** to the new look (SPEC section 7's screen list).
+5. **Three hosts, one per round** (added at review 1, see `design/system/decisions.md`):
+   - Rocco the raccoon is the main host for the lobby, the end and prizes.
+   - Each round is hosted by Rocco, Pebble (penguin) or Dr. June (scientist), chosen per round in the event settings. Random is the default and never repeats the previous round's host. The live host can override before a round starts.
+   - The round break introduces the incoming host.
+6. **Tap, then send** (added at review 1): a tap circles an answer on your own sheet, and "That's our answer!" sends it for the team. Teams can change and resend until the lock, and the host nudges at 5 seconds if a circled answer isn't sent.
 
 ## Non-goals
 
-- No new game features or rule changes. Same phases, same data, same API, except the small additions needed to show avatars (below).
+- No new game features or rule changes beyond goals 5 and 6, which the user added at review 1. Otherwise: same phases, same data, same API, except the small additions needed to show avatars (below) and each round's host.
 - Host console and staff pages are **re-themed only** (new tokens and fonts apply automatically through the shared components), not redesigned.
 - No dark mode (still out of scope, SPEC section 7).
 - No native app.

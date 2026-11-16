@@ -6,7 +6,7 @@ Mockups for the warm, cozy, cute and character-led redesign. The spec is `docs/s
 |---|---|
 | `research/` | Research findings (`findings.md`, committed) and reference screenshots (gitignored, local only, third-party) |
 | `system/` | The kit: `tokens.css` (the **only** file with raw colors), `kit.css`, `kit.md`, `include.js`, `decisions.md` |
-| `characters/` | Character SVGs: `host/<expression>.svg`, `animals/<key>.svg` and `<key>-happy.svg`, and `placeholder.svg` |
+| `characters/` | Character SVGs: `hosts/<host>/<expression>.svg`, `animals/<key>.svg` and `<key>-happy.svg`, and `placeholder.svg` |
 | `screens/` | One HTML mockup per screen state. Phone screens are 390×844. Big-screen files are named `big-*.html` and are 1920×1080 |
 | `review/` | Generated screenshots (gitignored) and `consistency.md` |
 
@@ -26,9 +26,10 @@ What `design:check` enforces:
 
 ## Fixed names
 
+- **Hosts:** `rocco` (main host), `pebble`, `june`. Each round has one; see `system/decisions.md`.
 - **Host expressions:** `greeting`, `asking`, `waiting`, `cheering`, `consoling`, `relaxing`.
 - **Animal keys:** `penguin-chick`, `giant-pacific-octopus`, `pacific-seahorse`, `moray-eel`, `mystery`.
-- **To place a character,** use `<span data-character="host/asking"></span>` or `<span data-character="animals/moray-eel-happy"></span>`. `include.js` inlines the SVG, or shows the placeholder until it's drawn. Give the span `aria-label` if the character carries meaning, or leave it decorative.
+- **To place a character,** use `<span data-character="hosts/rocco/asking"></span>` or `<span data-character="animals/moray-eel-happy"></span>`. `include.js` inlines the SVG, or shows the placeholder until it's drawn. Give the span `aria-label` if the character carries meaning, or leave it decorative.
 - **Character SVGs:**
   - `viewBox="0 0 400 400"`
   - fills and strokes only `var(--color-char-*)` or kit tokens

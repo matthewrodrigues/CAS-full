@@ -38,10 +38,11 @@
 
 ## Fixed names (every task uses these)
 
-- **Host expressions:** `greeting`, `asking`, `waiting`, `cheering`, `consoling`, `relaxing`. The files are `design/characters/host/<expression>.svg`.
+- **Hosts** (review 1): `rocco` (main host), `pebble` and `june`.
+- **Host expressions:** `greeting`, `asking`, `waiting`, `cheering`, `consoling`, `relaxing`. The files are `design/characters/hosts/<host>/<expression>.svg`, e.g. `hosts/rocco/asking.svg`.
 - **Animal avatar keys:** `penguin-chick`, `giant-pacific-octopus`, `pacific-seahorse`, `moray-eel`, `mystery`. The files are `design/characters/animals/<key>.svg` and `<key>-happy.svg`.
 - **Placeholder** until the characters land: `design/characters/placeholder.svg`, a token-colored rounded blob labeled by its `data-character` attribute.
-- **Including a character in a mockup:** `<span data-character="host/asking"></span>`. The script `design/system/include.js` fetches `../characters/host/asking.svg`, falls back to the placeholder if that file is missing, and inlines it. It's inlined so the SVG's `var(--color-…)` fills resolve.
+- **Including a character in a mockup:** `<span data-character="hosts/rocco/asking"></span>`. The script `design/system/include.js` fetches `../characters/hosts/rocco/asking.svg`, falls back to the placeholder if that file is missing, and inlines it. It's inlined so the SVG's `var(--color-…)` fills resolve.
 - **Character colors** are tokens named `--color-char-*`, in `design/system/tokens.css`.
 - **Every mockup's `<head>`** links `../system/tokens.css` and `../system/kit.css` and loads `../system/include.js`. The question prompt element carries `data-role="question"`.
 
@@ -187,11 +188,11 @@ Screen agents use `data-character` keys. These render as placeholders until 5e l
 
 | Agent | Files in `design/screens/` |
 |---|---|
-| **5a Joining** | `landing`, `join-nickname`, `join-team`, `join-team-stress`, `lobby`, `lobby-stress` |
-| **5b Paper sheet** | refine `question-mc`; `question-mc-submitted`, `question-true-false`, `question-text`, `question-number`, `question-image`, `question-audio` (captions on), `question-captain-only`, `question-stress` (longest option and prompt), `wager`, `locked`, `reveal-correct`, `reveal-incorrect`, `round-break`, `paused` |
+| **5a Joining** | `landing`, `join-nickname`, `join-team`, `join-team-stress`, `lobby`, `lobby-stress`; plus `staff-round-hosts` (the event-settings control: each round's host, Rocco / Pebble / Dr. June / Random) |
+| **5b Paper sheet** | refine `question-mc` (tap, then send); `question-mc-submitted`, `question-mc-nudge` (5 s left, circled but not sent), `question-true-false`, `question-text`, `question-number`, `question-image`, `question-audio` (captions on), `question-captain-only`, `question-stress` (longest option and prompt), `wager`, `locked`, `reveal-correct`, `reveal-incorrect`, `round-break` (introduces the incoming host), `paused`. Use a different host per round across the set, so all three appear |
 | **5c After the game** | `ended-prizes`, `ended-prizes-stress`, `leaderboard-tonight`, `leaderboard-stress` (20 teams), `leaderboard-season`, `leaderboard-empty`, `rewards`, `redeem-code`, `feedback`, `animals`, `my-animal` (avatar, plus "meet the real one" photo slot, plus staff updates) |
-| **5d Big screen** | `big-lobby` (QR, host greeting), `big-question`, `big-locked`, `big-reveal`, `big-leaderboard` (20 teams), `big-prizes` |
-| **5e Characters** | `design/characters/host/<6 expressions>.svg`, `design/characters/animals/<5 keys>.svg` and `-happy.svg`, plus `design/system/characters.html`, which shows every character at 48px and 400px on the paper and on the darkest surface |
+| **5d Big screen** | `big-lobby` (QR, Rocco greeting), `big-round-intro` (the incoming host takes over), `big-question`, `big-locked`, `big-reveal`, `big-leaderboard` (20 teams), `big-prizes` |
+| **5e Characters** | `design/characters/hosts/<rocco\|pebble\|june>/<6 expressions>.svg` (18 files), `design/characters/animals/<5 keys>.svg` and `-happy.svg`, plus `design/system/characters.html`, which shows every character at 48px and 400px on the paper and on the darkest surface. Start from the lead's art in `host-options.html`. Redraw Dr. June to Rocco's quality, and keep Pebble an adult penguin clearly distinct from the penguin-chick avatar |
 
 All file names get `.html` (screens) or `.svg` (characters).
 
@@ -240,5 +241,7 @@ Commit each agent's set separately, e.g. `Design: joining screens`. After 5e lan
   - the `avatar` schema change, in plan mode
   - removing `live_background`
   - the staff avatar select
+  - per-round hosts (schema, random pick without repeats, settings and console control), in plan mode
+  - tap, then send (`answer-choice.tsx` and its tests), with the 5-second nudge
   - re-theming the host console and staff pages
   - rebuilding each screen against its `design/screens/` reference at 390px
