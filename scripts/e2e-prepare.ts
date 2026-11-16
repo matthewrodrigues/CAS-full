@@ -29,6 +29,9 @@ const EVENTS = [
   { joinCode: 'E2ES1' },
   { joinCode: 'E2ET1' },
   { joinCode: 'E2EU1', settings: { max_team_size: 8 } },
+  // The big screen at 1920x1080 (host.spec.ts, Task 10).
+  { joinCode: 'E2E10' },
+  { joinCode: 'E2E11' },
 ]
 
 const db = openDb(DB_FILE)
