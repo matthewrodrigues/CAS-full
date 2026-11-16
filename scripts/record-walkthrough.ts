@@ -174,6 +174,7 @@ await hold(4000)
 // 5. Answer -----------------------------------------------------------------------------------
 await caption(5, 'Teams answer before time runs out', 'Any teammate can answer. The host sees how many teams are in, then locks answers.')
 await phone.getByRole('button', { name: 'Challenger Deep' }).click()
+await phone.getByRole('button', { name: "That's our answer!" }).click()
 await visible(console_.getByText('1 of 1 teams answered'))
 await hold(2500)
 await primary('Lock answers')

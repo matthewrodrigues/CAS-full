@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { sendLabel, shouldNudge } from '@/game/answer-sheet'
 import { debounce } from '@/game/debounce'
 
 const DRAFT_MS = 500
@@ -14,12 +15,17 @@ const DRAFT_MS = 500
 export function AnswerText({
   numeric,
   initial,
+  sent,
+  msLeft,
   disabled,
   onDraft,
   onSubmit,
 }: {
   numeric: boolean
   initial: string
+  /** What the team has sent (not a draft), if anything. */
+  sent: string | number | null
+  msLeft: number
   disabled: boolean
   onDraft(value: string | number): void
   onSubmit(value: string | number): void
@@ -50,6 +56,11 @@ export function AnswerText({
     const parsed = parse(value)
     if (parsed !== null && parsed !== '') saveDraft(parsed)
   }
+
+  const current = parse(text)
+  const circled = current === '' ? null : current
+  const label = sendLabel(circled, sent)
+  const nudge = shouldNudge({ circled, sent, msLeft, locked: disabled })
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -85,9 +96,18 @@ export function AnswerText({
           {t('question.notNumber')}
         </p>
       ) : null}
-      <Button type="submit" size="lg" disabled={disabled}>
-        {t('question.submit')}
-      </Button>
+      {nudge ? (
+        <p role="status" className="text-base font-semibold text-ink">
+          {t('question.nudge')}
+        </p>
+      ) : null}
+      {label === null && circled !== null ? (
+        <p className="text-base font-semibold text-ink">{t('question.sent')}</p>
+      ) : (
+        <Button type="submit" size="lg" disabled={disabled}>
+          {label === 'send_instead' ? t('question.sendInstead') : t('question.send')}
+        </Button>
+      )}
     </form>
   )
 }

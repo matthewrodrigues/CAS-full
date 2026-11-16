@@ -2,7 +2,7 @@
 // One event (E2EB1) played in order, so the tests run serially and share the host and player.
 import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 import { JOIN_CODES } from './constants'
-import { createTeam, expectNoAxeViolations, expectNoHorizontalScroll, hostApi, joinAsPlayer, type HostApi } from './support'
+import { createTeam, tapAndSend, expectNoAxeViolations, expectNoHorizontalScroll, hostApi, joinAsPlayer, type HostApi } from './support'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -39,9 +39,9 @@ test('multiple choice submits on tap and can change until the lock', async () =>
   await expectNoAxeViolations(page)
   await expectNoHorizontalScroll(page)
 
-  await page.getByRole('button', { name: 'Tonga Trench' }).click()
+  await tapAndSend(page, 'Tonga Trench')
   await expect(page.getByText('Your answer: Tonga Trench')).toBeVisible()
-  await page.getByRole('button', { name: 'Puerto Rico Trench' }).click()
+  await tapAndSend(page, 'Puerto Rico Trench')
   await expect(page.getByText('Your answer: Puerto Rico Trench')).toBeVisible()
   await expect(page.getByRole('button', { name: 'Puerto Rico Trench' })).toHaveAttribute('aria-pressed', 'true')
 
@@ -60,22 +60,22 @@ test('a typed answer saves as a draft, survives a reload, and submits', async ()
   await expectNoAxeViolations(page)
 
   await page.getByLabel('Your answer').fill('octopus')
-  await page.getByRole('button', { name: 'Submit answer' }).click()
+  await page.getByRole('button', { name: "That's our answer!" }).click()
   await expect(page.getByText('Submitted', { exact: true })).toBeVisible()
   await expect(page.getByText("Your team's answer: octopus")).toBeVisible()
 })
 
 test('true/false and closest number submit', async () => {
   await nextQuestion() // question 3, true/false
-  await page.getByRole('button', { name: 'True' }).click()
+  await tapAndSend(page, 'True')
   await expect(page.getByText('Your answer: True')).toBeVisible()
 
   await nextQuestion() // question 4, closest number
   await page.getByLabel('Your guess').fill('nineteen')
-  await page.getByRole('button', { name: 'Submit answer' }).click()
+  await page.getByRole('button', { name: "That's our answer!" }).click()
   await expect(page.getByRole('alert')).toHaveText('Enter a number, like 1955.')
   await page.getByLabel('Your guess').fill('1955')
-  await page.getByRole('button', { name: 'Submit answer' }).click()
+  await page.getByRole('button', { name: "That's our answer!" }).click()
   await expect(page.getByText("Your team's answer: 1955")).toBeVisible()
 })
 
@@ -99,15 +99,16 @@ test('the countdown counts down, and freezes while paused', async () => {
 })
 
 test('a failed answer says why and keeps the last accepted one', async () => {
-  await page.getByRole('button', { name: 'Bioluminescence' }).click()
+  await tapAndSend(page, 'Bioluminescence')
   await expect(page.getByText('Your answer: Bioluminescence')).toBeVisible()
   await context.setOffline(true)
-  await page.getByRole('button', { name: 'Fluorescence' }).click()
+  await page.getByRole('button', { name: 'Fluorescence' }).click() // circles locally, no request
+  await page.getByRole('button', { name: 'Send this one instead' }).click()
   // An offline request may hang until the client's 8 s timeout gives up on it.
   await expect(page.getByRole('alert')).toHaveText("Can't reach the game. Check your connection and try again.", { timeout: 12_000 })
   await expect(page.getByText('Your answer: Bioluminescence')).toBeVisible()
   await context.setOffline(false)
-  await page.getByRole('button', { name: 'Fluorescence' }).click()
+  await page.getByRole('button', { name: 'Send this one instead' }).click()
   await expect(page.getByText('Your answer: Fluorescence')).toBeVisible()
 })
 
@@ -142,7 +143,7 @@ test('a captain-only event lets only the captain answer', async ({ browser }) =>
   await host.act('host_next', crewEvent)
   await expect(crew.getByText('Your captain answers for the team.')).toBeVisible()
   await expect(crew.getByRole('button', { name: 'Challenger Deep' })).toHaveCount(0)
-  await captain.getByRole('button', { name: 'Challenger Deep' }).click()
+  await tapAndSend(captain, 'Challenger Deep')
   await expect(crew.getByText("Your team's answer: Challenger Deep")).toBeVisible()
   await host.act('host_lock', crewEvent)
 })

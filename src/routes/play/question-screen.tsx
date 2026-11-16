@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Answer } from '../../../shared/api'
 import type { PublicSubmission } from '../../../shared/game'
 import { Countdown } from '@/components/countdown'
 import { StatusBanner } from '@/components/status-banner'
+import { circledFor, shouldNudge, tapOption, type Circle } from '@/game/answer-sheet'
 import { useGameStore } from '@/game/store'
+import { useMsLeft } from '@/game/use-ms-left'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { AnswerChoice } from './answer-choice'
@@ -53,8 +55,16 @@ export function QuestionScreen({ paused }: { paused: boolean }) {
   const { mutate: saveDraft } = draft
   const onDraft = useCallback((value: string | number) => saveDraft(asAnswer(value)), [saveDraft])
 
+  // My own circle: tapping never sends. The sent answer is the team's, in view.submission.
+  const [circle, setCircle] = useState<Circle>(null)
+  const msLeft = useMsLeft(view.state, live.offset)
+
   const choice = question.type === 'mc' || question.type === 'true_false'
-  const chosen = submission?.answer && 'option' in submission.answer ? submission.answer.option : null
+  const sentAnswer = submission && !submission.is_draft ? submission.answer : null
+  const sentOption = sentAnswer && 'option' in sentAnswer ? sentAnswer.option : null
+  const sentValue = sentAnswer && !('option' in sentAnswer) ? ('text' in sentAnswer ? sentAnswer.text : sentAnswer.number) : null
+  const circled = circledFor(circle, eventQuestionId)
+  const nudge = choice && !readOnly && shouldNudge({ circled, sent: sentOption, msLeft, locked: paused })
   const shown = submission?.answer ? answerText(submission.answer, question, t) : null
   const initial = submission?.answer && !('option' in submission.answer) ? answerText(submission.answer, question, t) : ''
 
@@ -71,17 +81,33 @@ export function QuestionScreen({ paused }: { paused: boolean }) {
       {readOnly ? (
         <p className="rounded-lg bg-surface p-4 text-lg text-ink">{t('question.captainOnly')}</p>
       ) : choice ? (
-        <AnswerChoice options={choiceOptions(question, t)} selected={chosen} disabled={paused} onPick={(option) => submit.mutate({ option })} />
+        <AnswerChoice
+          options={choiceOptions(question, t)}
+          circled={circled}
+          sent={sentOption}
+          disabled={paused}
+          text={{ send: t('question.send'), sendInstead: t('question.sendInstead'), sent: t('question.sent') }}
+          onCircle={(option) => setCircle(tapOption(eventQuestionId, option))}
+          onSend={() => circled !== null && submit.mutate({ option: circled })}
+        />
       ) : (
         <AnswerText
           key={eventQuestionId}
           numeric={question.type === 'closest_number'}
           initial={initial}
+          sent={sentValue}
+          msLeft={msLeft}
           disabled={paused}
           onDraft={onDraft}
           onSubmit={(value) => submit.mutate(asAnswer(value))}
         />
       )}
+
+      {nudge ? (
+        <p role="status" className="text-base font-semibold">
+          {t('question.nudge')}
+        </p>
+      ) : null}
 
       <div role="status" className="flex flex-col gap-1 text-lg">
         {submission?.wager != null ? <p className="font-semibold">{t('wager.current', { amount: submission.wager })}</p> : null}

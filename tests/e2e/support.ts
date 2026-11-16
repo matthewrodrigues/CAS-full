@@ -63,3 +63,9 @@ export async function expectNoAxeViolations(page: Page) {
 export async function expectNoHorizontalScroll(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
 }
+
+/** Taps an option on the answer sheet, then sends it for the team (a tap alone only circles it). */
+export async function tapAndSend(page: Page, option: string) {
+  await page.getByRole('button', { name: option }).click()
+  await page.getByRole('button', { name: /^(That's our answer!|Send this one instead)$/ }).click()
+}
