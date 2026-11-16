@@ -24,3 +24,13 @@ The Task 6 review raised these for the user. Each one is applied as below so the
 - **Status words:** two are added to the kit's four. "Paused by the host" (`.pill--paused`) and "Place your wager" (for the wager screen).
 - **The tab bar** shows on the lobby, the round break and every after-game screen. It's hidden on landing, join, staff, and every question, wager, locked, reveal and paused screen, so nobody opens the leaderboard mid-question.
 - **Made-up copy stays as clearly placeholder content:** the "NightLife tote bag" prize and its pickup/expiry, the animal locations, keeper updates and "Professor Wiggles".
+
+## Review 2 (2026-11-16)
+
+**The user approved the full design set** ("I like what I see"). The four provisional defaults above were not separately answered, so they stand as approved-by-default:
+- the two new status words
+- the tab bar hidden during play
+- the tote-bag prize kept as placeholder copy
+- the animal copy kept as placeholder copy
+
+The build plan lists the two copy items as open questions to confirm with the user before deploying.

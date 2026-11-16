@@ -24,7 +24,7 @@
 | 5e Characters | ✅ done | 8f4b934, 28 SVGs + `system/characters.html`; generators in `design/characters/_src/` |
 | 5 wrap-up | ◐ | full check passes on 43 pages with the real art. Kit-additions merge is folded into Task 6 (the reviewer writes the merge plan) |
 | 6 Consistency review | ✅ done | 7060586 review; d797c30 kit merge; 4ebe3bd and the next commit fixes. design:check 43/43 |
-| 7 User review 2 | ⏳ in review | gallery: `npm run design:serve` → http://localhost:5180/. Ask the 4 provisional defaults in decisions.md + the copy notes; then write the build plan (superpowers:writing-plans) |
+| 7 User review 2 | ✅ approved 2026-11-16 | defaults stand (decisions.md). Next: build plan via superpowers:writing-plans |
 
 ## How to resume after an interruption
 
@@ -55,3 +55,4 @@ Background agents die with the session. Rebuild from what's on disk:
 - 2026-11-16: Task 6 review done: 24 findings, 5e clean. The 4 user questions get provisional defaults (in decisions.md), to be asked at review 2. Phase 1 (kit merge) dispatched.
 - 2026-11-16: phase 1 (kit merge) done and committed; all kit-additions are now in kit.css. Phase 2 dispatched as 4 parallel fixers. Area lines appended to 6c-fixes.md: 5a = landing, join-*, lobby*, staff-round-hosts; 5b = question-*, wager, locked, reveal-*, round-break, paused; 5c = ended-*, leaderboard-*, rewards, redeem-code, feedback, animals, my-animal; 5d = big-*. Special: 5d must switch big-prizes to char--96 (kit call on finding 9).
 - 2026-11-16: Task 6 done; every finding fixed, plus 3 small kit tweaks (picked team initial in pen, big-screen check/lightbulb scale, lone top-row note on the right). Review 2 started with the user.
+- 2026-11-16: the user approved review 2. Writing the build plan.
