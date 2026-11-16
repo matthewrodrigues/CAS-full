@@ -2,7 +2,7 @@
 // play three questions end to end; and a dropped connection catches up without a reload.
 import { expect, test } from '@playwright/test'
 import { JOIN_CODES } from './constants'
-import { createTeam, tapAndSend, hostApi, joinAsPlayer } from './support'
+import { createTeam, tapAndSend, hostApi, joinAsPlayer, joinTeam } from './support'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -42,7 +42,8 @@ test('a host over the API and a player in the browser play three questions', asy
   await host.act('host_reveal', eventId)
   await expect(page.getByRole('heading', { name: 'Correct' })).toBeVisible()
 
-  await page.getByRole('link', { name: 'Leaderboard', exact: true }).click()
+  // The tab bar is hidden on a reveal (it's an in-flow sheet), so open the tab by its address.
+  await page.goto(`/play/${JOIN_CODES.playThree}/leaderboard`)
   await expect(page.locator('li[aria-current="true"]')).toContainText('E2E Divers')
   await expect(page.locator('li[aria-current="true"]')).toContainText('30 pts')
   await host.dispose()
@@ -53,7 +54,7 @@ test('the screen catches up after a dropped connection', async ({ browser, baseU
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } })
   const page = await context.newPage()
   const eventId = await joinAsPlayer(page, JOIN_CODES.playThree, 'Off Line')
-  await page.getByRole('button', { name: 'Join E2E Divers' }).click()
+  await joinTeam(page, 'E2E Divers')
   const host = await hostApi(baseURL!)
   await host.act('host_next', eventId) // question 4
   await expect(page.getByRole('timer')).toBeVisible()

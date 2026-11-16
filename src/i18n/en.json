@@ -4,14 +4,16 @@
     "placeholder": "Placeholder screen until the design is ready."
   },
   "landing": {
+    "kicker": "Thursday NightLife at the Academy",
+    "tagline": "Rocco and friends host a game of trivia every Thursday night.",
     "body": "Scan the QR code on the big screen to join tonight's game.",
-    "tryDemo": "Try the demo game",
+    "tryDemo": "Let me try the demo!",
+    "more": "More",
     "host": "Host a game",
     "staff": "Staff",
     "privacy": "Privacy"
   },
   "play": {
-    "header": "Game {{joinCode}}",
     "loading": "Loading the game…",
     "reconnecting": "Reconnecting…",
     "tabs": {
@@ -22,35 +24,51 @@
       "animals": "Animals"
     },
     "join": {
-      "title": "Join the game",
-      "intro": "Pick a nickname. Other players see it on the leaderboard.",
+      "tonight": "Thursday NightLife",
+      "step": "Step {{step}} of 2",
+      "title": "What should we call you?",
+      "intro": "Your teammates see your nickname, and so does the leaderboard if you win big.",
       "nickname": "Your nickname",
-      "submit": "Join the game",
-      "joining": "Joining…"
+      "placeholder": "e.g. Sam the Squid",
+      "hint": "Keep it friendly!",
+      "submit": "That's me!",
+      "joining": "Joining…",
+      "next": "Next up: pick your team."
     },
     "team": {
       "title": "Pick your team",
+      "hello": "Hi, {{nickname}}! Start a team or hop on one.",
       "started": "The game has started. You can still join a team.",
-      "createTitle": "Start a team",
+      "createTitle": "Start a new team",
       "name": "Team name",
-      "create": "Create team",
+      "namePlaceholder": "e.g. The Anglerfish Five",
+      "nameHint": "The host checks names first.",
       "joinTitle": "Or join a team",
-      "join": "Join {{name}}",
+      "listLabel": "Teams",
+      "fullSub": "{{count}} of {{max}} players · this team is full",
       "unnamed": "Unnamed team",
-      "full": "Full",
       "none": "No teams yet. Start the first one!",
-      "back": "Back to my team",
-      "joinShort": "Join"
+      "create": "Start our team!",
+      "join": "Count me in!",
+      "sending": "Saving…",
+      "hintChoose": "Name a new team or tap one above.",
+      "hintEmpty": "Name your team to get started.",
+      "hintCaptain": "You'll be the captain.",
+      "hintJoining": "You're joining {{name}}.",
+      "back": "Back to my team"
     },
     "members_one": "{{count}} player",
     "members_other": "{{count}} players",
     "lobby": {
-      "waiting": "Waiting for the host to start",
-      "pending": "The host will approve your team name soon.",
-      "approved": "Team name approved",
-      "rejected": "The host didn't approve this name, so other teams won't see it. You can still play.",
+      "onTeam": "You're on team",
+      "pending": "Our host will check your team name soon.",
+      "approved": "Team name approved. Looking good!",
+      "rejected": "Our host couldn't approve this name, so other teams won't see it. You can still play.",
       "members": "Your team",
       "captain": "Captain",
+      "you": "You",
+      "prizesTitle": "Tonight's prizes",
+      "prizesBody": "The top {{count}} teams each get to name a real Academy animal: {{animals}}.",
       "switch": "Switch team",
       "switchHint": "You can switch teams until the first question."
     },
@@ -58,9 +76,11 @@
       "waiting": "Waiting for the host",
       "live": "Question live",
       "locked": "Answers locked",
-      "results": "Results in",
-      "paused": "Paused"
-    }
+      "results": "Results are in",
+      "paused": "Paused by the host",
+      "wager": "Place your wager"
+    },
+    "count": "{{count}} / {{max}}"
   },
   "host": {
     "title": "Host console",
@@ -113,7 +133,26 @@
     "adjustPoints": "Points (+ or −)",
     "adjustNote": "Reason",
     "adjustApply": "Apply",
-    "adjustLabel": "Adjust {{team}}’s score"
+    "adjustLabel": "Adjust {{team}}’s score",
+    "stageLabel": "Your host",
+    "label": "{{name}}, {{expression}}",
+    "names": {
+      "rocco": "Rocco the raccoon",
+      "pebble": "Pebble the penguin",
+      "june": "Dr. June"
+    },
+    "expressions": {
+      "greeting": "waving hello",
+      "asking": "asking",
+      "waiting": "waiting",
+      "cheering": "cheering",
+      "consoling": "consoling",
+      "relaxing": "relaxing"
+    },
+    "lines": {
+      "landing": "Hi! Come on in!",
+      "lobby": "Grab a seat, we start soon!"
+    }
   },
   "display": {
     "join": "Join on your phone",
@@ -235,7 +274,7 @@
     "join_first": "Join the game first.",
     "already_started": "The game has started, so you can't switch teams now.",
     "team_full": "That team is full.",
-    "name_taken": "Another team already has that name.",
+    "name_taken": "Another team already has that name. Tap it below to join them instead?",
     "name_not_allowed": "Please pick a different team name.",
     "nickname_not_allowed": "Please pick a different nickname.",
     "wrong_answer_type": "That answer doesn't fit this question.",

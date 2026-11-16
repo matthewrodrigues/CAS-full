@@ -12,4 +12,7 @@ export const JOIN_CODES = {
   captainOnly: 'E2EF1',
   host: 'E2EG1',
   rewards: 'E2EH1',
+  screens: 'E2ES1',
+  screensStressTeams: 'E2ET1',
+  screensStressLobby: 'E2EU1',
 } as const

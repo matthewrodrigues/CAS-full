@@ -415,6 +415,7 @@ a {
 }
 /* A small inline icon next to words ("Captain", players count). 18px, drawn with currentColor. */
 .icon-inline {
+  display: inline-block; /* Tailwind's preflight makes every svg a block */
   width: 18px;
   height: 18px;
   flex: none;

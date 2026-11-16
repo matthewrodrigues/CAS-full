@@ -22,4 +22,8 @@
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
+  /* Preflight strips link underlines; the kit's plain links (e.g. .link-row) keep the browser's underline. */
+  a:not([class]) {
+    text-decoration-line: underline;
+  }
 }
