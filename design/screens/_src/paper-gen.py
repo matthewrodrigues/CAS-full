@@ -36,8 +36,20 @@ PILLS = {
     "locked": f'<span class="pill pill--locked">{svg(I_LOCK, "pill__icon")}Answers locked</span>',
     "waiting": f'<span class="pill pill--waiting">{svg(I_HOURGLASS, "pill__icon")}Waiting for the host</span>',
     "results": f'<span class="pill pill--results">{svg(I_STAR, "pill__icon")}Results are in</span>',
-    "paused": f'<span class="pill pill--waiting">{svg(I_PAUSE, "pill__icon")}Paused by the host</span>',
+    "paused": f'<span class="pill pill--paused">{svg(I_PAUSE, "pill__icon")}Paused by the host</span>',
+    "wager": '<span class="pill pill--wager"><span class="pill__dot" aria-hidden="true"></span>Place your wager</span>',
 }
+
+# The player app's tab bar, copied exactly from leaderboard-tonight.html (kit §6). Only the round break shows it here.
+TABBAR = """  <nav class="tabbar" aria-label="Game sections">
+    <ul class="tabbar__list">
+      <li><a class="tabbar__link" href="ended-prizes.html" aria-current="page"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1.9-1.1 1.6"/><path d="M12 17h.01"/></svg>Play</a></li>
+      <li><a class="tabbar__link" href="leaderboard-tonight.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4"/><path d="M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M8 20h8"/></svg>Leaderboard</a></li>
+      <li><a class="tabbar__link" href="rewards.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="5" rx="1.5"/><path d="M5.5 13v7h13v-7"/><path d="M12 8v12"/><path d="M12 8C10 4 6.5 4 6.5 6.3S12 8 12 8Zm0 0c2-4 5.5-4 5.5-1.7S12 8 12 8Z"/></svg>Rewards</a></li>
+      <li><a class="tabbar__link" href="animals.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6.5" cy="10.5" r="1.7"/><circle cx="10" cy="6.5" r="1.7"/><circle cx="14" cy="6.5" r="1.7"/><circle cx="17.5" cy="10.5" r="1.7"/><path d="M12 12.5c-3 0-5.5 3.4-5.5 5.3 0 1.4 1.1 2.2 2.5 2.2 1.3 0 1.9-.6 3-.6s1.7.6 3 .6c1.4 0 2.5-.8 2.5-2.2 0-1.9-2.5-5.3-5.5-5.3Z"/></svg>Animals</a></li>
+    </ul>
+  </nav>
+"""
 
 HOSTS = {"rocco": "Rocco the raccoon", "pebble": "Pebble the penguin", "june": "Dr. June"}
 
@@ -580,7 +592,7 @@ reveal("reveal-incorrect", "Reveal: not quite", "Round 2 of 4", "pebble", "conso
 
 # ---------------------------------------------------------------- Round break: Pebble takes Round 2
 out = HEAD.format(title="Round break")
-out += '\n<main class="screen">\n' + top("results", "Round 2 of 4")
+out += '\n<main class="screen">\n' + top("waiting", "Round 2 of 4")
 out += f"""  <section class="stage stage--butter stage--hero" aria-labelledby="new-host">
     <p class="bubble bubble--down">Hi, friends! Ready to dive in?</p>
     {host("pebble", "greeting", size=160, idle=True)}
@@ -600,12 +612,12 @@ out += f"""  <section class="stage stage--butter stage--hero" aria-labelledby="n
     </header>
     <div class="paper__body">
       <div class="stack stack--tight">
-        <p class="body"><strong>The Anglerfish Five</strong></p>
-        <p class="tally"><span class="tally__num">#3</span><span class="tally__label">of 18 teams, with 70 points</span></p>
+        <p class="body"><strong>The Blobfish Brigade</strong></p>
+        <p class="tally"><span class="tally__num">#3</span><span class="tally__label">of 20 teams, with 70 points</span></p>
       </div>
       <div class="row">
         {host("rocco", "relaxing", size=64)}
-        <p class="small muted">Rocco's taking a breather. He'll be back for the final!</p>
+        <p class="bubble bubble--fit">Over to you, Pebble!</p>
       </div>
     </div>
   </article>
@@ -614,7 +626,7 @@ out += f"""  <section class="stage stage--butter stage--hero" aria-labelledby="n
     <a class="btn btn--quiet" href="leaderboard-tonight.html">See the whole leaderboard</a>
     <p class="small muted center">The next round starts soon.</p>
   </div>
-</main>
+""" + TABBAR + """</main>
 
 """ + nav("round-break") + "</body>\n</html>\n"
 write("round-break", out)
@@ -643,7 +655,7 @@ write("paused", out)
 
 # ---------------------------------------------------------------- Final wager (Rocco), torn edge
 out = HEAD.format(title="Final wager")
-out += '\n<main class="screen">\n' + top("waiting", "Final round")
+out += '\n<main class="screen">\n' + top("wager", "Final round")
 waiting_hosts = host("rocco", "asking", state="asking") + "\n    " + host("rocco", "waiting", state="waiting", hidden=True)
 out += f"""  <section class="stage" aria-label="Your host">
     {waiting_hosts}

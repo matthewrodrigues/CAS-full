@@ -1619,8 +1619,9 @@ a {
   border-radius: 50%;
 }
 .option__mark svg {
-  width: 24px;
-  height: 24px;
+  /* 60% of the bubble: about 23px on the phone, and it scales up with the big screen's --letter. */
+  width: 60%;
+  height: 60%;
 }
 .option__mark--correct {
   background: var(--color-correct);
@@ -2016,3 +2017,9 @@ a.list-row {
 
 /* A picked team row (join-team) marks its initial in pen, like a picked answer's letter and the "you" row. */
 .option[aria-pressed='true'] .initial { border-color: var(--color-pen); color: var(--color-pen); }
+
+/* The fun-fact lightbulb at room scale. */
+.big .fact__icon { width: 36px; height: 36px; }
+
+/* A lone item in the top row (a hand note on tab pages with no status pill) sits on the right, as section 6 says. */
+.screen__top > :only-child { margin-left: auto; }

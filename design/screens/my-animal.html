@@ -13,9 +13,7 @@
 <main class="screen">
   <div class="screen__top">
     <a class="btn btn--quiet back-link" href="animals.html"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>All animals</a>
-    <div role="status" aria-live="polite" id="phase">
-      <span class="pill pill--results"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>Results are in</span>
-    </div>
+    <p class="hand hand--sm">Our octopus</p>
   </div>
 
   <section class="stage stage--hero" aria-labelledby="animal-name">
@@ -32,7 +30,7 @@
     <p class="body">Can change the color and texture of its skin in a fraction of a second, and loves puzzle feeders.</p>
   </section>
 
-  <button type="button" class="btn btn--primary btn--block" id="follow" aria-pressed="false"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 2.8C19.5 15.4 12 20 12 20Z"/></svg><span>Follow this animal</span></button>
+  <button type="button" class="btn btn--primary btn--block" id="follow" aria-pressed="false"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 2.8C19.5 15.4 12 20 12 20Z"/></svg><span>Follow our octopus</span></button>
 
   <section class="stack" aria-labelledby="real-title">
     <h2 class="h2" id="real-title">Meet the real one</h2>
@@ -81,7 +79,7 @@
     follow.setAttribute('aria-pressed', String(on))
     follow.classList.toggle('btn--primary', !on)
     follow.classList.toggle('btn--secondary', on)
-    follow.querySelector('span').textContent = on ? 'Following · tap to stop' : 'Follow this animal'
+    follow.querySelector('span').textContent = on ? 'Following · tap to stop' : 'Follow our octopus'
   }
   follow.addEventListener('click', () => set(follow.getAttribute('aria-pressed') !== 'true'))
   if (new URLSearchParams(location.search).get('state') === 'following') set(true)

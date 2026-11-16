@@ -26,7 +26,7 @@
     <span class="char char--400" data-character="hosts/pebble/cheering" role="img" aria-label="Pebble the penguin, cheering"></span>
     <div class="stack--tight stack">
       <h1 class="h1" id="board-title">Round 2 complete</h1>
-      <p class="body">Top teams after 20 questions</p>
+      <p class="body">Top teams after 19 questions</p>
     </div>
   </section>
 
@@ -53,29 +53,31 @@
 </nav>
 
 <script>
-  // Mockup data: 20 teams after Round 2 (10 points a question, 200 possible). Names up to 30 characters.
+  // Mockup data: 20 teams after Round 2 (10 + 9 questions, 10 points each, 190 possible). Names up to 30 characters.
+  // Teams don't own animals: only ranks 1–3 show the prize animal they'd win, as on the phone.
   // The big screen shows at most 8 rows at once (kit §13) and pages through the rest.
+  const prizes = ['penguin-chick', 'giant-pacific-octopus', 'pacific-seahorse']
   const teams = [
-    ['The Bioluminescent Bar Snacks!', 180, 'penguin-chick'],
-    ['Kelp Me If You Can', 170, 'giant-pacific-octopus'],
-    ['Hadal Zone Hooligans of SF Bay', 170, 'pacific-seahorse'],
-    ['The Anglerfish Five', 160, 'moray-eel'],
-    ['Octopus Garden Party Planners!', 150, 'mystery'],
-    ['Squid Game Night', 150, 'giant-pacific-octopus'],
-    ['The Barreleye Brigade', 140, 'pacific-seahorse'],
-    ['Mola Mola Mavericks', 140, 'penguin-chick'],
-    ['Pressure Drop', 130, 'moray-eel'],
-    ['Trench Coats', 130, 'mystery'],
-    ['Blobfish Appreciation Society', 120, 'penguin-chick'],
-    ['The Yeti Crabs', 120, 'giant-pacific-octopus'],
-    ['Sea Cucumber Sandwich', 110, 'pacific-seahorse'],
-    ['Whale Hello There', 110, 'moray-eel'],
-    ['Snapping Shrimp Ensemble', 100, 'mystery'],
-    ['Krill Seekers', 90, 'penguin-chick'],
-    ["Dumbo's Ear Club", 90, 'giant-pacific-octopus'],
-    ['The Midnight Zoners', 80, 'pacific-seahorse'],
-    ['Penguin Chick Fan Club', 70, 'moray-eel'],
-    ['Just Here for the Planetarium', 60, 'mystery'],
+    ['The Bioluminescent Bar Snacks!', 180],
+    ['Kelp Me If You Can', 170],
+    ['Hadal Zone Hooligans of SF Bay', 160],
+    ['The Anglerfish Five', 150],
+    ['Octopus Garden Party Planners!', 150],
+    ['Squid Game Night', 150],
+    ['The Barreleye Brigade', 140],
+    ['Mola Mola Mavericks', 140],
+    ['Pressure Drop', 130],
+    ['Trench Coats', 130],
+    ['Blobfish Appreciation Society', 120],
+    ['The Yeti Crabs', 120],
+    ['Sea Cucumber Sandwich', 110],
+    ['Whale Hello There', 110],
+    ['Snapping Shrimp Ensemble', 100],
+    ['Krill Seekers', 90],
+    ["Dumbo's Ear Club", 90],
+    ['The Midnight Zoners', 80],
+    ['Penguin Chick Fan Club', 70],
+    ['Just Here for the Planetarium', 60],
   ]
   const PER_PAGE = 8
   const pages = Math.ceil(teams.length / PER_PAGE)
@@ -83,15 +85,15 @@
   const start = (page - 1) * PER_PAGE
   const shown = teams.slice(start, start + PER_PAGE)
 
-  // Tied scores share a rank ("2", "2", then "4").
+  // Tied scores share a rank ("4", "4", "4", then "7"). The top 3 are untied, so each prize has one team.
   const rankOf = (i) => teams.findIndex((t) => t[1] === teams[i][1]) + 1
   const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
   document.getElementById('board').innerHTML = shown
-    .map(([name, score, animal], j) => {
+    .map(([name, score], j) => {
       const rank = rankOf(start + j)
       return `<li class="list-row${rank <= 3 ? ' is-top' : ''}">
         <span class="list-row__rank">${rank}</span>
-        <span class="char char--64" data-character="animals/${animal}"></span>
+        ${rank <= 3 ? `<span class="char char--96" data-character="animals/${prizes[rank - 1]}" aria-hidden="true"></span>` : ''}
         <span class="list-row__name">${esc(name)}</span>
         <span class="list-row__score">${score}<span class="sr-only"> points</span></span>
       </li>`

@@ -51,6 +51,13 @@ const top = (kind = 'results', right = '<p class="hand hand--sm">Game DEMO1</p>'
     ${status(kind)}
     ${right}
   </div>`
+// Tab pages that aren't about tonight (season, rewards, animals) carry no status pill: they're
+// visited days later, when "Results are in" would be false. The back link (if any) goes on the
+// left and the page's hand note on the right.
+const tabTop = (note, back = null) => `  <div class="screen__top">
+    ${back ? `<a class="btn btn--quiet back-link" href="${back.href}">${svg('btn__icon', I.back)}${back.label}</a>
+    ` : ''}<p class="hand hand--sm">${note}</p>
+  </div>`
 
 const TABS = [
   ['play', 'Play', 'ended-prizes.html', I.play],
@@ -93,7 +100,7 @@ const ANIMALS = {
 
 const youTag = ' <span class="tag">You</span>'
 const pts = (n) => `${n}<span class="sr-only"> points</span>`
-const ptsText = (n) => `${n} pts`
+const ptsText = (n) => `${n} points`
 
 /** A leaderboard row. prize = an ANIMALS entry for the top three. */
 function boardRow({ rank, name, points, you = false, prize = null, sub = null, id = null }) {
@@ -228,7 +235,7 @@ files['ended-prizes.html'] = endedScreen({ title: 'Ended: final result and prize
 files['ended-prizes-stress.html'] = endedScreen({ title: 'Ended: a tie and long team names', stress: true })
 
 // ================================================================== leaderboards
-function boardScreen({ title, rows, view = 'tonight', heading, intro, bubble, stress = false, jumpTo = null }) {
+function boardScreen({ title, rows, view = 'tonight', heading, intro, bubble, stress = false, jumpTo = null, note = null }) {
   const jump = jumpTo
     ? `
   <a class="list-row is-you" href="#you-row">
@@ -239,7 +246,7 @@ function boardScreen({ title, rows, view = 'tonight', heading, intro, bubble, st
     : ''
   return `${head(title)}
 <main class="screen">
-${top()}
+${note ? tabTop(note) : top()}
 
   <section class="stage stage--sky" aria-label="Your host">
     ${char('hosts/rocco/cheering', 96, 'Rocco the raccoon, cheering')}
@@ -325,8 +332,9 @@ files['leaderboard-season.html'] = boardScreen({
   rows: SEASON,
   view: 'season',
   heading: 'Fall 2026 season',
-  intro: 'Every player gets their team’s points each night. Scores run Oct 1 to Dec 31.',
+  intro: 'Every player gets their team’s points each night.',
   bubble: 'Look who keeps coming back!',
+  note: 'Oct 1 to Dec 31',
 })
 
 // ------------------------------------------------------------------ leaderboard-empty
@@ -373,7 +381,7 @@ ${foot()}`
 const oct = ANIMALS.octopus
 files['rewards.html'] = `${head('Rewards: name your animal')}
 <main class="screen">
-${top()}
+${tabTop('My rewards')}
 
   <div class="row">
     ${char('hosts/rocco/cheering', 64, 'Rocco the raccoon, cheering')}
@@ -400,7 +408,7 @@ ${top()}
         <input class="field__input" id="animal-name" maxlength="30" autocomplete="off" value="Professor Wiggles" aria-describedby="name-foot">
         <div class="field__foot" id="name-foot"><span>Academy staff check every name.</span><span class="field__count" id="name-count">17 / 30</span></div>
       </div>
-      <button type="submit" class="btn btn--primary btn--block" id="suggest">Suggest this name</button>
+      <button type="submit" class="btn btn--primary btn--block" id="suggest">That's our name!</button>
     </form>
     <a class="btn btn--primary btn--block" href="my-animal.html" id="show-animal" hidden>Show me my animal</a>
     <a class="btn btn--quiet" href="my-animal.html" id="follow-link">Follow its updates</a>
@@ -493,10 +501,7 @@ function qrPlaceholder() {
 files['redeem-code.html'] = `${head('Rewards: redeem code')}
 <!-- No character on this screen (kit.md section 15): the QR stays clear of art so it scans cleanly. -->
 <main class="screen">
-  <div class="screen__top">
-    <a class="btn btn--quiet back-link" href="rewards.html">${svg('btn__icon', I.back)}My rewards</a>
-    ${status()}
-  </div>
+${tabTop('Prize code', { href: 'rewards.html', label: 'My rewards' })}
 
   <section class="stack center" aria-labelledby="reward-title">
     <h1 class="h1" id="reward-title">NightLife tote bag</h1>
@@ -671,7 +676,7 @@ function animalRow({ animal, name, sub, latest, you = false, href = 'my-animal.h
 }
 files['animals.html'] = `${head('Animals tab')}
 <main class="screen">
-${top()}
+${tabTop('Keeper news')}
 
   <div class="stack stack--tight">
     <h1 class="h1">Academy animals</h1>
@@ -714,10 +719,7 @@ ${foot()}`
 // ------------------------------------------------------------------ my-animal
 files['my-animal.html'] = `${head('My animal')}
 <main class="screen">
-  <div class="screen__top">
-    <a class="btn btn--quiet back-link" href="animals.html">${svg('btn__icon', I.back)}All animals</a>
-    ${status()}
-  </div>
+${tabTop('Our octopus', { href: 'animals.html', label: 'All animals' })}
 
   <section class="stage stage--hero" aria-labelledby="animal-name">
     ${char(`animals/${oct.key}-happy`, 160, 'Professor Wiggles, a giant Pacific octopus, looking happy')}
@@ -733,7 +735,7 @@ files['my-animal.html'] = `${head('My animal')}
     <p class="body">Can change the color and texture of its skin in a fraction of a second, and loves puzzle feeders.</p>
   </section>
 
-  <button type="button" class="btn btn--primary btn--block" id="follow" aria-pressed="false">${svg('btn__icon', I.heart)}<span>Follow this animal</span></button>
+  <button type="button" class="btn btn--primary btn--block" id="follow" aria-pressed="false">${svg('btn__icon', I.heart)}<span>Follow our octopus</span></button>
 
   <section class="stack" aria-labelledby="real-title">
     <h2 class="h2" id="real-title">Meet the real one</h2>
@@ -773,7 +775,7 @@ ${foot(`
     follow.setAttribute('aria-pressed', String(on))
     follow.classList.toggle('btn--primary', !on)
     follow.classList.toggle('btn--secondary', on)
-    follow.querySelector('span').textContent = on ? 'Following · tap to stop' : 'Follow this animal'
+    follow.querySelector('span').textContent = on ? 'Following · tap to stop' : 'Follow our octopus'
   }
   follow.addEventListener('click', () => set(follow.getAttribute('aria-pressed') !== 'true'))
   if (new URLSearchParams(location.search).get('state') === 'following') set(true)
