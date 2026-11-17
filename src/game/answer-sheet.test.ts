@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { circledFor, parseWager, ringLeft, sheetButton, shouldNudge, sheetLine, tapOption } from './answer-sheet'
+import { circledFor, parseWager, ringLeft, ringSeconds, sheetButton, shouldNudge, sheetLine, tapOption } from './answer-sheet'
 
 describe('shouldNudge', () => {
   const base = { circled: 1, sent: null, msLeft: 5000, locked: false }
@@ -76,5 +76,17 @@ describe('ringLeft', () => {
     expect(ringLeft(-5, 20_000)).toBe(0)
     expect(ringLeft(30_000, 20_000)).toBe(1)
     expect(ringLeft(1000, 0)).toBe(0)
+  })
+})
+
+describe('ringSeconds', () => {
+  it('rounds the time left up to whole seconds', () => {
+    expect(ringSeconds(19_001, 20_000)).toBe(20)
+    expect(ringSeconds(5000, 20_000)).toBe(5)
+    expect(ringSeconds(1, 20_000)).toBe(1)
+  })
+  it('never shows more than the question allows, or less than zero', () => {
+    expect(ringSeconds(20_180, 20_000)).toBe(20)
+    expect(ringSeconds(-300, 20_000)).toBe(0)
   })
 })

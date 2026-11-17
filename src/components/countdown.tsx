@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PublicGameState } from '../../shared/game'
-import { ringLeft } from '@/game/answer-sheet'
+import { ringLeft, ringSeconds } from '@/game/answer-sheet'
 import { remainingMs } from '@/game/clock'
 
 /**
@@ -13,7 +13,7 @@ import { remainingMs } from '@/game/clock'
 export function CountdownRing({ state, msLeft, xl = false }: { state: PublicGameState; msLeft: number; xl?: boolean }) {
   const { t } = useTranslation()
   if (state.opens_at === null || state.closes_at === null) return null
-  const seconds = Math.ceil(msLeft / 1000)
+  const seconds = ringSeconds(msLeft, state.closes_at - state.opens_at)
   const className = ['countdown', xl ? 'countdown--xl' : null, seconds <= 5 ? 'is-urgent' : null].filter(Boolean).join(' ')
   return (
     <div

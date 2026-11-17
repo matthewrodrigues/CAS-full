@@ -68,3 +68,8 @@ export function ringLeft(msLeft: number, totalMs: number): number {
   if (totalMs <= 0) return 0
   return Math.min(1, Math.max(0, msLeft / totalMs))
 }
+
+/** The countdown's number: whole seconds left, rounded up, never more than the question allows (a clock a hair ahead mustn't show 21 on a 20 s question). */
+export function ringSeconds(msLeft: number, totalMs: number): number {
+  return Math.ceil(Math.min(Math.max(0, msLeft), Math.max(0, totalMs)) / 1000)
+}
