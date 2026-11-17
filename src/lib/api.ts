@@ -90,6 +90,9 @@ export const api = {
   hostAction: (operation: HostOperation, eventId: string) => request<PublicGameState>(`/api/${operation}`, { event_id: eventId }),
   override: (input: z.input<typeof HostOverrideInput>) => request<{ submission_id: string; adjustment: number }>('/api/host_override', input),
   adjustScore: (input: z.input<typeof HostAdjustScoreInput>) => request<{ team_id: string; score: number }>('/api/host_adjust_score', input),
+  /** The demo quickstart, DEMO1 only: back to a fresh lobby, and the autopilot switch. */
+  demoRestart: (eventId: string) => request<PublicGameState>('/api/host_demo_restart', { event_id: eventId }),
+  demoAutopilot: (eventId: string, on: boolean) => request<PublicGameState>('/api/host_demo_autopilot', { event_id: eventId, on }),
   roundHosts: (eventId: string) => request<{ rounds: RoundHost[] }>(query('/api/round_hosts', eventId)),
   setRoundHost: (input: z.input<typeof SetRoundHostInput>) => request<Pick<RoundHost, 'host_choice' | 'host'>>('/api/set_round_host', input),
   reviewTeamName: (input: z.input<typeof HostReviewTeamNameInput>) => request<TeamSummary>('/api/host_review_team_name', input),

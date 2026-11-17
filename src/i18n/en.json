@@ -358,6 +358,7 @@
   },
   "errors": {
     "not_found": "We can't find that game. Check the code on the big screen.",
+    "not_demo": "That only works on the demo game.",
     "event_ended": "This game has ended. Thanks for playing!",
     "wrong_phase": "That can't be done right now.",
     "not_live": "This question isn't open for answers.",

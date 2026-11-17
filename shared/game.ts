@@ -228,5 +228,6 @@ export const GAME_ERROR_CODES = [
   'animal_taken',
   'not_pending',
   'round_started',
+  'not_demo',
 ] as const
 export type GameErrorCode = (typeof GAME_ERROR_CODES)[number]

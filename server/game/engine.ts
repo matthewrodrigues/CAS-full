@@ -48,6 +48,7 @@ export function createGame({ db, realtime, autopilotDelayMs }: { db: Db; realtim
     resumeTimers: () => flow.resumeTimers(ctx),
     /** On shutdown (and after each test): cancel every pending auto-lock. */
     setAutopilot: (eventId: string, on: boolean) => demo.setAutopilot(ctx, eventId, on),
+    restartDemo: (eventId: string) => demo.restartDemo(ctx, eventId),
     stop: () => {
       ctx.timers.disarmAll()
       ctx.autopilot.stop()
