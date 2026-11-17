@@ -375,6 +375,8 @@
     "title": "Tonight's leaderboard",
     "rank": "Rank",
     "you": "You",
+    "points_one": "{{count}} pt",
+    "points_other": "{{count}} pts",
     "pointsSr": "points",
     "final": "Final scores.",
     "sofar": "Scores so far.",
