@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { circledFor, parseWager, ringLeft, sendLabel, shouldNudge, sheetLine, tapOption } from './answer-sheet'
+import { circledFor, parseWager, ringLeft, sheetButton, shouldNudge, sheetLine, tapOption } from './answer-sheet'
 
 describe('shouldNudge', () => {
   const base = { circled: 1, sent: null, msLeft: 5000, locked: false }
@@ -12,12 +12,14 @@ describe('shouldNudge', () => {
   it('not with nothing circled', () => expect(shouldNudge({ ...base, circled: null })).toBe(false))
 })
 
-describe('sendLabel', () => {
-  it('send when something is circled and nothing is sent', () => expect(sendLabel(1, null)).toBe('send'))
-  it('send_instead when the circle differs from the sent answer', () => expect(sendLabel(2, 1)).toBe('send_instead'))
-  it('null when they match', () => expect(sendLabel(1, 1)).toBe(null))
-  it('null with nothing circled', () => expect(sendLabel(null, null)).toBe(null))
-  it('works on typed values', () => expect(sendLabel('octopus', 'squid')).toBe('send_instead'))
+describe('sheetButton', () => {
+  it('send when something is picked and nothing is sent', () => expect(sheetButton({ picked: 1, sent: null, hasInput: true })).toEqual({ isSent: false, label: 'send' }))
+  it('a disabled send when nothing is picked and nothing is sent', () => expect(sheetButton({ picked: null, sent: null, hasInput: false })).toEqual({ isSent: false, label: 'send' }))
+  it('send_instead when the pick differs from the sent answer', () => expect(sheetButton({ picked: 2, sent: 1, hasInput: true })).toEqual({ isSent: false, label: 'send_instead' }))
+  it('no button once the pick is what the team sent', () => expect(sheetButton({ picked: 1, sent: 1, hasInput: true })).toEqual({ isSent: true, label: null }))
+  it('no button when a teammate sent and nothing is picked here', () => expect(sheetButton({ picked: null, sent: 1, hasInput: false })).toEqual({ isSent: false, label: null }))
+  it('typed text that does not parse still gets a button, so the error can say why', () => expect(sheetButton({ picked: null, sent: 1900, hasInput: true })).toEqual({ isSent: false, label: 'send_instead' }))
+  it('works on typed values', () => expect(sheetButton({ picked: 'octopus', sent: 'squid', hasInput: true }).label).toBe('send_instead'))
 })
 
 describe('the circle', () => {

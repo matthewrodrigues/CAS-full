@@ -5,7 +5,7 @@ import type { Answer } from '../../../shared/api'
 import type { PublicSubmission } from '../../../shared/game'
 import { Countdown } from '@/components/countdown'
 import { HostStage } from '@/components/host-stage'
-import { circledFor, sendLabel, shouldNudge, sheetLine, tapOption, type Circle } from '@/game/answer-sheet'
+import { circledFor, shouldNudge, sheetButton, sheetLine, tapOption, type Circle } from '@/game/answer-sheet'
 import { hostExpression } from '@/game/cast'
 import { debounce } from '@/game/debounce'
 import { useGameStore } from '@/game/store'
@@ -96,10 +96,9 @@ function QuestionSheet({ paused }: { paused: boolean }) {
   const circledOption = choice ? circledFor(circle, eventQuestionId) : null
   const picked: number | string | null = choice ? circledOption : parse(text)
   const sent = choice ? sentOption : sentValue
-  const isSent = picked !== null && picked === sent
   const empty = choice ? circledOption === null : text.trim() === ''
+  const { isSent, label } = sheetButton({ picked, sent, hasInput: !empty })
   const nudging = !readOnly && shouldNudge({ circled: picked, sent, msLeft, locked: paused })
-  const label = isSent ? null : (sendLabel(picked, sent) ?? (sent === null ? 'send' : 'send_instead'))
 
   const send = () => {
     if (readOnly || paused || isSent) return

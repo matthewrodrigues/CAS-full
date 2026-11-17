@@ -10,10 +10,16 @@ export function shouldNudge(input: { circled: number | string | null; sent: numb
   return !locked && msLeft > 0 && msLeft <= NUDGE_MS && circled !== null && circled !== sent
 }
 
-/** Which send button to show: none when nothing is circled, or the circle is already what the team sent. */
-export function sendLabel<T extends number | string>(circled: T | null, sent: T | null): 'send' | 'send_instead' | null {
-  if (circled === null || circled === sent) return null
-  return sent === null ? 'send' : 'send_instead'
+/**
+ * The sheet's one primary button. `isSent`: my pick is what the team sent. `label`: "send" (first
+ * time, disabled until something is picked), "send_instead" (a different pick, or text I've typed),
+ * or none (already sent, or a teammate sent and I've picked nothing, so there's nothing to send).
+ */
+export function sheetButton<T extends number | string>(input: { picked: T | null; sent: T | null; hasInput: boolean }): { isSent: boolean; label: 'send' | 'send_instead' | null } {
+  const { picked, sent, hasInput } = input
+  if (picked !== null && picked === sent) return { isSent: true, label: null }
+  if (sent === null) return { isSent: false, label: 'send' }
+  return { isSent: false, label: hasInput ? 'send_instead' : null }
 }
 
 /** A player's own circle, tied to the question it was made on so it never leaks into the next one. */

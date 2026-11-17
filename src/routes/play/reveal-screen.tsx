@@ -29,20 +29,18 @@ export function RevealScreen() {
   const skipped = reveal !== null && 'skipped' in reveal
   const submission = view.submission?.answer || view.submission?.wager != null ? view.submission : null
   const result = submission?.answer ? submission.result : null
-  // An answer with no result yet (a number guess that wasn't the closest) is received, not missing.
-  const received = submission?.answer != null && result === null
   const points = submission?.points ?? null
   const host = view.cast.host
   const expression = hostExpression(view)
   const headingId = 'result-heading'
 
-  const stageLine = skipped ? 'skipped' : result === 'correct' ? 'correct' : result === 'incorrect' ? 'incorrect' : result === 'review' ? 'review' : received ? 'received' : 'noAnswer'
-  const badge = skipped ? null : result === 'correct' ? 'correct' : result === 'incorrect' ? 'incorrect' : result === 'review' ? 'review' : received ? 'received' : 'none'
+  const stageLine = skipped ? 'skipped' : result === 'correct' ? 'correct' : result === 'incorrect' ? 'incorrect' : result === 'review' ? 'review' : 'noAnswer'
+  const badge = skipped ? null : result === 'correct' ? 'correct' : result === 'incorrect' ? 'incorrect' : result === 'review' ? 'review' : 'none'
   const pointsLine =
     result === 'review' ? t('result.reviewBody')
     : points && points > 0 ? t('result.gained', { count: points })
     : points && points < 0 ? t('result.lost', { count: Math.abs(points) })
-    : result === 'correct' || result === 'incorrect' || received ? t('result.noPoints')
+    : result === 'correct' || result === 'incorrect' ? t('result.noPoints')
     : null
 
   const rows = reveal && !skipped ? revealRows({ question, reveal, answer: submission?.answer ?? null, result, t }) : []
@@ -52,7 +50,7 @@ export function RevealScreen() {
   return (
     <>
       <ScreenTop status="results" note={roundNote(t, question.round)} />
-      <HostStage host={host} expression={expression} line={t(`host.lines.${stageLine}`)} tone="sky" hero labelledBy={headingId}>
+      <HostStage host={host} expression={expression} line={t(`host.lines.${stageLine}`)} tone={result === 'correct' ? 'sky' : 'peach'} hero labelledBy={headingId}>
         {badge === null ? (
           <div className="stack stack--tight">
             <h1 className="h1" id={headingId}>
@@ -63,7 +61,7 @@ export function RevealScreen() {
         ) : (
           <>
             <h1 className={badge === 'correct' ? 'result result--correct' : badge === 'incorrect' ? 'result result--incorrect' : 'result bg-surface text-ink'} id={headingId}>
-              {badge === 'correct' ? icon(CHECK, 'result__icon', 3) : badge === 'incorrect' ? icon(CROSS, 'result__icon', 3) : icon(badge === 'review' || badge === 'received' ? <><circle cx="11" cy="11" r="6" /><path d="M16 16l4 4" /></> : <path d="M6 12h12" />, 'result__icon', 3)}
+              {badge === 'correct' ? icon(CHECK, 'result__icon', 3) : badge === 'incorrect' ? icon(CROSS, 'result__icon', 3) : icon(badge === 'review' ? <><circle cx="11" cy="11" r="6" /><path d="M16 16l4 4" /></> : <path d="M6 12h12" />, 'result__icon', 3)}
               {t(`result.${badge}`)}
             </h1>
             {pointsLine ? <p className="hand hand--ink">{pointsLine}</p> : null}

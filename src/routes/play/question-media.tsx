@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { LiveQuestion } from '../../../shared/game'
 
 /** A question's picture or sound clip, framed on the paper (kit.md section 7). */
-export function QuestionMedia({ question, disabled = false }: { question: LiveQuestion; disabled?: boolean; /** Kept for the big screen's older call. */ muted?: string }) {
+export function QuestionMedia({ question, disabled = false }: { question: LiveQuestion; disabled?: boolean }) {
   const { t } = useTranslation()
   if (question.media_kind === 'none' || !question.media_url) return null
 

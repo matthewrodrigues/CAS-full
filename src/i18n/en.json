@@ -178,7 +178,6 @@
       "incorrect": "Aw, so close! Next one!",
       "review": "Let me take a closer look…",
       "noAnswer": "Next time, send us something!",
-      "received": "Thanks for playing that one!",
       "skipped": "That one's off the board!",
       "roundBreak": "Hi, friends! Ready to dive in?",
       "roundBreakOutgoing": "Over to you, {{name}}!",
@@ -479,8 +478,6 @@
     "pausedGeneric": "Paused by the host. The game picks back up when they're ready."
   },
   "locked": {
-    "title": "Answers are locked",
-    "waiting": "The host will reveal the answer in a moment.",
     "ourAnswer": "Our answer",
     "note": "Pencils down! The host will reveal the answer in a moment.",
     "noAnswerNote": "Pencils down! Your team didn't send an answer. The host will reveal it in a moment."
@@ -490,7 +487,6 @@
     "incorrect": "Not quite",
     "review": "Being checked by the host",
     "none": "No answer from your team",
-    "received": "Answer received",
     "reviewBody": "Your answer was close. The host will decide, and points appear if it counts.",
     "points_one": "{{sign}}{{count}} point",
     "points_other": "{{sign}}{{count}} points",
@@ -512,8 +508,6 @@
   },
   "roundBreak": {
     "title": "Round complete",
-    "rank": "Your team is #{{rank}} with {{points}} points",
-    "top": "Top teams",
     "next": "The next round starts soon.",
     "taking": "{{name}}'s taking over!",
     "tally_one": "of {{count}} team, with {{points}}",
@@ -535,11 +529,6 @@
     "noteSent": "Wager locked in! Change it any time before the question opens.",
     "noPoints": "Your team has no points to bet, so the wager is 0. Nothing to send!",
     "intro": "Bet some or all of your points on the last question. Get it right to win them, wrong to lose them.",
-    "score": "Your team has {{count}} points.",
-    "none": "Your team has no points to bet, so your wager is 0.",
-    "label": "Your wager",
-    "submit": "Lock in wager",
-    "current": "Your wager: {{amount}}",
     "captainOnly": "Your captain places the wager."
   },
   "ended": {
