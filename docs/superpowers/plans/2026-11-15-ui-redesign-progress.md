@@ -67,3 +67,4 @@ Background agents die with the session. Rebuild from what's on disk:
 - 2026-11-17: T10 (big screen) and T11 (host/staff, round hosts) reviewed and merged: 9 of 12 build tasks in; unit 533/533, typecheck clean. T8 and T9 are still building. Full e2e to run once they finish.
 - 2026-11-17: all four Wave D tasks built. T10 and T11 merged (e2e 37/37 on the merged branch, idle machine). T8 and T9 reviewed: each in fix round 1 (T8: reveal tone, dead branch, Countdown on the big screen, and it merges ui-redesign into its branch; T9: leaderboard-stress jump row and the season leaderboard with a new server route). Then: re-reviews, merges, T12, final review.
 - 2026-11-17 (evening): the usage limit interrupted the T8 and T9 fix rounds; both resumed from their on-disk work. Next: re-reviews, merges, T12, final review.
+- 2026-11-17: T8 (837c87a) and T9 (36fbc8b) fix rounds done; scoped re-reviews running for both. Then merge both, full test run, T12, final review.
