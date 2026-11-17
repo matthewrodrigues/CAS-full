@@ -38,7 +38,7 @@ export function stateMessage(db: Db, eventId: string): Extract<ServerMessage, { 
   return { type: 'state', state, cast: castOf(db, eventId, state), rounds: roundsOf(db, eventId, state) }
 }
 
-const visibleEvent =(db: Db, eventId: string) =>
+const visibleEvent = (db: Db, eventId: string) =>
   db
     .select({ id: events.id })
     .from(events)

@@ -52,7 +52,7 @@ test('a full night hosted from the console while the big screen follows', async 
   await primary('Start the game')
   await expect(display.getByRole('heading', { name: "What is the deepest known point in Earth's oceans?" })).toBeVisible()
   await tapAndSend(phone, 'Challenger Deep')
-  await expect(console_.getByText('1 of 1 teams answered')).toBeVisible()
+  await expect(console_.getByText('1 of 1 teams sent an answer')).toBeVisible()
   await primary('Lock answers')
   await primary('Reveal the answer')
   await expect(display.locator('.option--answer')).toContainText('Challenger Deep')

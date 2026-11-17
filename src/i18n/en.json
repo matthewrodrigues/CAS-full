@@ -94,7 +94,7 @@
     "display": "Open the big screen",
     "phase": "Phase: {{phase}}",
     "lobby": "{{count}} teams have joined.",
-    "answered": "{{answered}} of {{teams}} teams answered · {{connected}} connected",
+    "answered": "{{answered}} of {{teams}} teams sent an answer · {{connected}} connected",
     "primary": {
       "lobby": "Start the game",
       "live": "Lock answers",
