@@ -18,4 +18,9 @@ export const JOIN_CODES = {
   nudge: 'E2E8A',
   sheetStress: 'E2E8B',
   sheetRounds: 'E2E8C',
+  bigScreen: 'E2E10',
+  bigScreenHost: 'E2E11',
+  roundHostsStaff: 'E11A1',
+  roundHostsConsole: 'E11B1',
+  roundHostsStarted: 'E11C1',
 } as const

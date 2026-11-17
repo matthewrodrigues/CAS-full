@@ -36,6 +36,13 @@ const EVENTS = [
   { joinCode: 'E2E8A' },
   { joinCode: 'E2E8B' },
   { joinCode: 'E2E8C' },
+  // The big screen at 1920x1080 (host.spec.ts, Task 10).
+  { joinCode: 'E2E10' },
+  { joinCode: 'E2E11' },
+  // Round hosts (round-hosts.spec.ts): staff control, host console select, and a started round.
+  { joinCode: 'E11A1' },
+  { joinCode: 'E11B1' },
+  { joinCode: 'E11C1' },
 ]
 
 const db = openDb(DB_FILE)
