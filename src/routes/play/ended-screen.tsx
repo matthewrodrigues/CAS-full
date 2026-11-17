@@ -5,7 +5,7 @@ import { Link, useSearchParams } from 'react-router'
 import { Character, animalCharacter } from '@/components/character'
 import { HostStage } from '@/components/host-stage'
 import { StatusPill } from '@/components/status-pill'
-import { finishOf, prizeRows } from '@/game/after-game'
+import { finishOf, holdsPrizePlace, prizeRows } from '@/game/after-game'
 import { hostExpression } from '@/game/cast'
 import { leaderboardKey } from '@/game/use-live-game'
 import { api } from '@/lib/api'
@@ -54,7 +54,8 @@ function EndedResults() {
   const rank = finish?.rank ?? null
   const rows = prizeRows(teams, prizes.data?.prizes ?? [])
   const tiedForPrize = rows.some((row, i) => rows.findIndex((r) => r.team.rank === row.team.rank) !== i)
-  const won = rank !== null && rank <= 3
+  // The win heading and cheer follow the prize rule: a 0-point top-3 team hasn't won.
+  const won = finish !== null && holdsPrizePlace(finish)
   const ordinal = rank === null ? '' : t('ended.nth', { count: rank, ordinal: true })
   const heading = rank === null ? '' : t(finish!.tied ? (won ? 'ended.tiedWin' : 'ended.tied') : won ? 'ended.placeWin' : 'ended.place', { ordinal })
   const summary = !finish
@@ -78,7 +79,7 @@ function EndedResults() {
       {top}
 
       {/* Rocco hosts the end of the night, cheering for a top-3 place and consoling otherwise. */}
-      <HostStage host="rocco" expression={hostExpression(view, { place: rank })} line={line} tone="sky" hero labelledBy={`${id}-place`}>
+      <HostStage host="rocco" expression={hostExpression(view, { place: won ? rank : null })} line={line} tone="sky" hero labelledBy={`${id}-place`}>
         <div className="stack stack--tight">
           <h1 className="display" id={`${id}-place`}>
             {heading}

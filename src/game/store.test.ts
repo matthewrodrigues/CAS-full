@@ -35,15 +35,26 @@ const view: GameView = {
 }
 
 describe('applyMessage', () => {
+  const stateOf = (state: GameView['state'], patch: Partial<Pick<GameView, 'cast' | 'rounds'>> = {}) =>
+    ({ type: 'state', state, cast: patch.cast ?? view.cast, rounds: patch.rounds ?? view.rounds }) as const
+
   it('replaces the state and asks for a refetch', () => {
-    const next = applyMessage(view, { type: 'state', state: { ...view.state, phase: 'locked' } })
+    const next = applyMessage(view, stateOf({ ...view.state, phase: 'locked' }))
     expect(next.view.state.phase).toBe('locked')
     expect(next.refetch).toBe(true)
   })
 
+  it('takes the cast and rounds from a state message, so a round change never shows the old host', () => {
+    const cast = { host: 'rocco', incoming_host: 'june' } as const
+    const rounds = { total: 4, finished: { position: 1, title: 'Warm-up', format: 'standard', question_count: 5, points: 1 }, next: null } as const
+    const next = applyMessage(view, stateOf({ ...view.state, phase: 'round_break' }, { cast, rounds }))
+    expect(next.view.cast).toEqual(cast)
+    expect(next.view.rounds).toEqual(rounds)
+  })
+
   it('drops the old submission when a new question opens', () => {
     const answered = { ...view, submission: submission() }
-    const next = applyMessage(answered, { type: 'state', state: { ...view.state, current_event_question_id: 'q2' } })
+    const next = applyMessage(answered, stateOf({ ...view.state, current_event_question_id: 'q2' }))
     expect(next.view.submission).toBeNull()
   })
 

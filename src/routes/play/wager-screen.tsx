@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { HostStage } from '@/components/host-stage'
-import { parseWager } from '@/game/answer-sheet'
+import { parseWager, wagerSoFar } from '@/game/answer-sheet'
 import { hostExpression } from '@/game/cast'
 import { useGameStore } from '@/game/store'
 import { api } from '@/lib/api'
@@ -35,8 +35,11 @@ export function WagerScreen() {
     },
   })
 
-  const value = parseWager(amount, team.score)
+  // A captain-only member's field shows the team's wager; it can't be typed in.
+  const shownAmount = readOnly ? (locked !== null ? String(locked) : '') : amount
+  const value = parseWager(shownAmount, team.score)
   const isLocked = value !== null && value === locked
+  const soFar = wagerSoFar({ placed: locked, mine: value, readOnly })
   const send = () => {
     if (readOnly || isLocked || !canBet) return
     if (value === null) {
@@ -81,14 +84,14 @@ export function WagerScreen() {
                   className="field__input"
                   id={id}
                   type="text"
-                  value={amount}
+                  value={shownAmount}
                   placeholder="0"
                   disabled={readOnly}
                   inputMode="numeric"
                   autoComplete="off"
                   enterKeyHint="send"
                   aria-invalid={invalid || undefined}
-                  aria-describedby={`${id}-foot`}
+                  aria-describedby={soFar !== null ? `${id}-foot ${id}-team` : `${id}-foot`}
                   onChange={(e) => {
                     setAmount(e.target.value)
                     setInvalid(false)
@@ -103,6 +106,11 @@ export function WagerScreen() {
                 <div className="field__foot" id={`${id}-foot`}>
                   <span>{t('wager.foot', { max: team.score })}</span>
                 </div>
+                {soFar !== null ? (
+                  <p className="small" id={`${id}-team`}>
+                    <strong>{t('wager.teamSoFar', { amount: soFar })}</strong> <span className="tag">{t('question.sentTag')}</span>
+                  </p>
+                ) : null}
                 {invalid ? (
                   <div role="alert">
                     <FieldError>{t('wager.invalid', { max: team.score })}</FieldError>

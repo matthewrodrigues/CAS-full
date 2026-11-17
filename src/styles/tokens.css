@@ -7,8 +7,6 @@
  * Color meaning: green (--color-correct) means correct, red (--color-incorrect) means incorrect, and
  * neither is ever decoration. Correct/incorrect always pairs color with an icon and a word.
  *
- * incorrect, and neither is ever decoration. Correct/incorrect always pairs color with an icon and a word.
- *
  * ---------------------------------------------------------------------------------------------
  * CONTRAST: every text/background pair the kit intends (WCAG 2 relative luminance).
  * Body text needs 4.5:1; text 24px and up needs 3:1. Non-text UI (borders, focus) needs 3:1.

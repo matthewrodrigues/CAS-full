@@ -4,6 +4,7 @@
 // only, and a team always sees its own. Results and points appear only after the reveal.
 import { and, count, desc, eq, ne, sql } from 'drizzle-orm'
 import type { GameView, HostEvent, HostView, Leaderboard, PublicGameState, PublicSettings, PublicSubmission } from '../../shared/game'
+import type { ServerMessage } from '../../shared/messages'
 import type { Db } from '../db/client'
 import { eventLeaderboard, teamScore } from '../db/queries'
 import { eventQuestions, events, gameState, scoreEvents, submissions, teamMembers, teams, themes } from '../db/schema'
@@ -30,7 +31,14 @@ export function publicGameState(db: Db, eventId: string): PublicGameState | null
   }
 }
 
-const visibleEvent = (db: Db, eventId: string) =>
+/** The `state` WebSocket message: game_state plus the cast and rounds (public, the same for everyone). */
+export function stateMessage(db: Db, eventId: string): Extract<ServerMessage, { type: 'state' }> | null {
+  const state = publicGameState(db, eventId)
+  if (!state) return null
+  return { type: 'state', state, cast: castOf(db, eventId, state), rounds: roundsOf(db, eventId, state) }
+}
+
+const visibleEvent =(db: Db, eventId: string) =>
   db
     .select({ id: events.id })
     .from(events)

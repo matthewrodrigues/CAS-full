@@ -9,7 +9,10 @@ export function applyMessage(view: GameView, message: ServerMessage): { view: Ga
   switch (message.type) {
     case 'state': {
       const sameQuestion = message.state.current_event_question_id === view.state.current_event_question_id
-      return { view: { ...view, state: message.state, submission: sameQuestion ? view.submission : null }, refetch: true }
+      return {
+        view: { ...view, state: message.state, cast: message.cast, rounds: message.rounds, submission: sameQuestion ? view.submission : null },
+        refetch: true,
+      }
     }
     case 'team_submission':
       return message.submission.event_question_id === view.state.current_event_question_id

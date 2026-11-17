@@ -130,7 +130,6 @@
     "approveLabel": "Approve {{team}}",
     "rejectName": "Reject name",
     "rejectNameLabel": "Reject name for {{team}}",
-    "adjust": "Adjust score",
     "adjustPoints": "Points (+ or −)",
     "adjustNote": "Reason",
     "adjustApply": "Apply",
@@ -423,7 +422,6 @@
   "naming": {
     "tonight": "Tonight's prizes",
     "prizesBody": "Finish in the top 3 and your team names one of these real Academy animals.",
-    "prizeRow": "Place {{place}}: name the {{species}}",
     "placeSr": "Place",
     "won": "Place {{place}} · {{team}}",
     "title": "Name the {{species}}",
@@ -477,13 +475,10 @@
     "noUpdates": "No updates yet."
   },
   "question": {
-    "meta": "{{round}} · Question {{number}} of {{of}}",
     "of": "Question {{number}} of {{of}}",
     "points_one": "{{count}} point",
     "points_other": "{{count}} points",
     "timer": "Time left",
-    "seconds_one": "{{count}} s",
-    "seconds_other": "{{count}} s",
     "timerPaused": "Time left, paused",
     "options": "Answers",
     "teamOptions": "Your team's answer",
@@ -512,24 +507,16 @@
     "pause": "Pause the clip",
     "true": "True",
     "false": "False",
-    "yourAnswer": "Your answer: {{answer}}",
-    "teamAnswer": "Your team's answer: {{answer}}",
     "answerLabel": "Our answer",
     "numberLabel": "Our guess",
     "send": "That's our answer!",
     "sendInstead": "Send this one instead",
-    "sent": "Sent!",
-    "nudge": "Don't forget to send!",
-    "submitted": "Submitted",
     "draftSaved": "Draft saved",
+    "teamSoFar": "Our answer so far: {{answer}}",
     "notNumber": "Enter a number, like 1955.",
-    "captainOnly": "Your captain answers for the team.",
     "image": "Picture for this question",
     "audio": "Sound clip for this question",
     "caption": "Caption:",
-    "noAnswer": "No answer from your team",
-    "pausedTitle": "Paused by the host",
-    "pausedBody": "Answers wait until the host resumes the game.",
     "pausedNote": "Paused by the host. Your answer waits until the game picks back up.",
     "pausedGeneric": "Paused by the host. The game picks back up when they're ready."
   },
@@ -544,9 +531,6 @@
     "review": "Being checked by the host",
     "none": "No answer from your team",
     "reviewBody": "Your answer was close. The host will decide, and points appear if it counts.",
-    "points_one": "{{sign}}{{count}} point",
-    "points_other": "{{sign}}{{count}} points",
-    "answer": "Answer: {{answer}}",
     "funFact": "Fun fact",
     "skipped": "Question skipped",
     "skippedBody": "The host skipped this one. It doesn't count for anyone.",
@@ -559,8 +543,7 @@
     "lost_other": "−{{count}} points for your team",
     "rightAnswer": "Right answer: ",
     "notThisOne": "Not this one: ",
-    "ourPick": "our pick",
-    "stageLabel": "Your result"
+    "ourPick": "our pick"
   },
   "roundBreak": {
     "title": "Round complete",
@@ -569,6 +552,8 @@
     "next": "The next round starts soon.",
     "taking": "{{name}}'s taking over!",
     "takingRound": "{{name}}'s taking Round {{round}}!",
+    "nextRound": "Round {{round}} is next!",
+    "nextUp": "Another round is next!",
     "format": {
       "standard": "A regular round",
       "picture": "A picture round",
@@ -594,7 +579,8 @@
     "noteSent": "Wager locked in! Change it any time before the question opens.",
     "noPoints": "Your team has no points to bet, so the wager is 0. Nothing to send!",
     "intro": "Bet some or all of your points on the last question. Get it right to win them, wrong to lose them.",
-    "captainOnly": "Your captain places the wager."
+    "captainOnly": "Your captain places the wager.",
+    "teamSoFar": "Our wager so far: {{amount}}"
   },
   "ended": {
     "nth_ordinal_one": "{{count}}st",

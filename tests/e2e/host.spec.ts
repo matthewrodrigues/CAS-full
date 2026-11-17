@@ -2,7 +2,7 @@
 // display runs in another browser, with a player on a phone.
 import { expect, test, type Browser } from '@playwright/test'
 import { E2E_HOST_PASSCODE, JOIN_CODES } from './constants'
-import { botPlayer, captureScreen, createTeam, tapAndSend, expectNoAxeViolations, hostApi, joinAsPlayer, signInViaApi, type HostApi } from './support'
+import { advanceTo, botPlayer, captureScreen, createTeam, tapAndSend, expectNoAxeViolations, hostApi, joinAsPlayer, signInViaApi, type HostApi } from './support'
 
 const tablet = (browser: Browser) => browser.newContext({ viewport: { width: 1024, height: 768 } }).then((c) => c.newPage())
 
@@ -123,16 +123,6 @@ async function fillTeams(baseURL: string, host: HostApi, count: number) {
     await bot.dispose()
   }
   return { eventId, teamIds }
-}
-
-/** Skips and advances until the game reaches `phase`. */
-async function advanceTo(host: HostApi, eventId: string, phase: string) {
-  for (let i = 0; i < 80; i++) {
-    const state = (await host.state(eventId)).state.phase
-    if (state === phase) return
-    await host.act(state === 'live' || state === 'locked' || state === 'final_live' || state === 'final_locked' ? 'host_skip' : 'host_next', eventId)
-  }
-  throw new Error(`never reached ${phase}`)
 }
 
 test('every big-screen phase matches its design at 1920x1080', async ({ browser, baseURL }) => {

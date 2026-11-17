@@ -4,9 +4,20 @@ import type { Phase } from '../../shared/enums'
 import type { AnimalInfo, LeaderboardRow, NamingPrize } from '../../shared/game'
 import type { PillStatus } from '@/components/status-pill'
 
-/** The animal the team ranked `rank` names. Only the prize places (the top three) have one; every other rank has none. */
-export function prizeAnimal(rank: number, prizes: NamingPrize[]): AnimalInfo | null {
-  return prizes.find((p) => p.place === rank)?.animal ?? null
+/** The prize places: the top three. */
+export const PRIZE_PLACES = 3
+
+/**
+ * The one prize rule on every screen, the same as the server's (server/game/animals.ts,
+ * awardNamingRights): a team wins a place only in the top three and with points above zero.
+ */
+export function holdsPrizePlace(row: Pick<LeaderboardRow, 'rank' | 'points'>): boolean {
+  return row.rank >= 1 && row.rank <= PRIZE_PLACES && row.points > 0
+}
+
+/** The animal this team names, or null: only a team that holds a prize place names one. */
+export function prizeAnimal(row: Pick<LeaderboardRow, 'rank' | 'points'>, prizes: NamingPrize[]): AnimalInfo | null {
+  return holdsPrizePlace(row) ? (prizes.find((p) => p.place === row.rank)?.animal ?? null) : null
 }
 
 export type PrizeRow = { team: LeaderboardRow; animal: AnimalInfo }
@@ -14,7 +25,7 @@ export type PrizeRow = { team: LeaderboardRow; animal: AnimalInfo }
 /** The prize rows of the end screen: each team that holds a prize place, in rank order. A tie shows both teams. */
 export function prizeRows(teams: LeaderboardRow[], prizes: NamingPrize[]): PrizeRow[] {
   return teams.flatMap((team) => {
-    const animal = prizeAnimal(team.rank, prizes)
+    const animal = prizeAnimal(team, prizes)
     return animal ? [{ team, animal }] : []
   })
 }

@@ -28,7 +28,7 @@ export function LeaderboardList({
     <ol className="list" aria-label={label}>
       {shown.map((row) => {
         const own = row.team_id === ownTeamId
-        const animal = prizeAnimal(row.rank, prizes)
+        const animal = prizeAnimal(row, prizes)
         return (
           <li key={row.team_id} id={own ? 'you-row' : undefined} className={['list-row', row.rank <= 3 ? 'is-top' : null, own ? 'is-you' : null].filter(Boolean).join(' ')} aria-current={own ? 'true' : undefined}>
             <span className="list-row__rank">

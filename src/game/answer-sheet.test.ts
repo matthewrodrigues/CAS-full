@@ -1,5 +1,33 @@
 import { describe, expect, it } from 'vitest'
-import { circledFor, parseWager, ringLeft, ringSeconds, sheetButton, shouldNudge, sheetLine, tapOption } from './answer-sheet'
+import { circledFor, fieldNotes, parseWager, ringLeft, ringSeconds, sheetButton, shouldNudge, sheetLine, tapOption, wagerSoFar } from './answer-sheet'
+
+describe('fieldNotes', () => {
+  it("shows the team's sent answer when my field says something else", () => {
+    expect(fieldNotes({ picked: null, sent: 'squid', draft: null })).toEqual({ draftSaved: false, teamSent: 'squid' })
+    expect(fieldNotes({ picked: 'octopus', sent: 'squid', draft: null }).teamSent).toBe('squid')
+    expect(fieldNotes({ picked: 'squid', sent: 'squid', draft: null }).teamSent).toBeNull()
+    expect(fieldNotes({ picked: 42, sent: null, draft: null }).teamSent).toBeNull()
+  })
+  it("says Draft saved only for my own draft, not a teammate's under my empty field", () => {
+    expect(fieldNotes({ picked: null, sent: null, draft: 'squid' }).draftSaved).toBe(false)
+    expect(fieldNotes({ picked: 'octo', sent: null, draft: 'squid' }).draftSaved).toBe(false)
+    expect(fieldNotes({ picked: 'squid', sent: null, draft: 'squid' }).draftSaved).toBe(true)
+    expect(fieldNotes({ picked: 1955, sent: null, draft: 1955 }).draftSaved).toBe(true)
+  })
+})
+
+describe('wagerSoFar', () => {
+  it("shows the team's wager whenever one is placed and my field doesn't already show it", () => {
+    expect(wagerSoFar({ placed: null, mine: 5, readOnly: false })).toBeNull()
+    expect(wagerSoFar({ placed: 5, mine: null, readOnly: false })).toBe(5)
+    expect(wagerSoFar({ placed: 5, mine: 3, readOnly: false })).toBe(5)
+    expect(wagerSoFar({ placed: 5, mine: 5, readOnly: false })).toBeNull()
+  })
+  it('always shows it to a captain-only member', () => {
+    expect(wagerSoFar({ placed: 5, mine: 5, readOnly: true })).toBe(5)
+    expect(wagerSoFar({ placed: null, mine: null, readOnly: true })).toBeNull()
+  })
+})
 
 describe('shouldNudge', () => {
   const base = { circled: 1, sent: null, msLeft: 5000, locked: false }

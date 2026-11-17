@@ -90,6 +90,16 @@ describe('in the game', () => {
     expect(castOf(ctx, eventId)).toEqual({ host: second.host, incoming_host: null })
   })
 
+  it('the state broadcast carries the cast and rounds, the same as get_state', () => {
+    advanceUntil(ctx, eventId, 'locked')
+    const messages = listen(ctx, { eventId })
+    advanceUntil(ctx, eventId, 'round_break')
+    const last = messages.filter((m) => m.type === 'state').at(-1)
+    const view = getState(ctx, { eventId, playerId: null, isHost: false })!
+    expect(last).toEqual({ type: 'state', state: view.state, cast: view.cast, rounds: view.rounds })
+    expect(view.rounds.next).not.toBeNull()
+  })
+
   it('the final wager is introduced by the final round’s host', () => {
     advanceUntil(ctx, eventId, 'final_wager')
     const rounds = roundRows(db, eventId)
@@ -100,6 +110,14 @@ describe('in the game', () => {
     expect(castOf(ctx, eventId)).toEqual({ host: wager.host, incoming_host: wager.host })
     next(ctx, eventId)
     expect(castOf(ctx, eventId)).toEqual({ host: wager.host, incoming_host: null })
+  })
+
+  it('a host who keeps the stage is not handed over to, at a break or the wager', () => {
+    db.update(t.rounds).set({ hostChoice: 'pebble' }).run()
+    advanceUntil(ctx, eventId, 'round_break')
+    expect(castOf(ctx, eventId)).toEqual({ host: 'pebble', incoming_host: null })
+    advanceUntil(ctx, eventId, 'final_wager')
+    expect(castOf(ctx, eventId)).toEqual({ host: 'pebble', incoming_host: null })
   })
 
   it('every round gets a host, and no two rounds in a row share one', () => {
@@ -122,8 +140,9 @@ describe('in the game', () => {
 
   it('set_round_host updates the incoming host during the round break', () => {
     advanceUntil(ctx, eventId, 'round_break')
-    const second = roundRows(db, eventId)[1]
-    const choice: Host = second.host === 'june' ? 'pebble' : 'june'
+    const [firstRound, second] = roundRows(db, eventId)
+    // A host other than the incoming one, and not round 1's (who'd keep the stage: no hand-over).
+    const choice = HOSTS.find((h) => h !== second.host && h !== firstRound.host)!
     const messages = listen(ctx, { eventId })
 
     expect(setRoundHost(ctx, { eventId, roundId: second.id, hostChoice: choice })).toEqual({ ok: true, value: { host_choice: choice, host: choice } })
@@ -139,7 +158,9 @@ describe('in the game', () => {
   })
 
   it('set_round_host before a round is reached stores the choice and leaves the host to be picked', () => {
-    const third = roundRows(db, eventId)[2]
+    const [, second, third] = roundRows(db, eventId)
+    // Round 2 is Rocco's, so June taking round 3 is a real hand-over (a host keeping the stage isn't one).
+    setRoundHost(ctx, { eventId, roundId: second.id, hostChoice: 'rocco' })
     expect(setRoundHost(ctx, { eventId, roundId: third.id, hostChoice: 'pebble' })).toEqual({ ok: true, value: { host_choice: 'pebble', host: null } })
     next(ctx, eventId) // round 1 live: round 3 is still ahead
     expect(setRoundHost(ctx, { eventId, roundId: third.id, hostChoice: 'june' }).ok).toBe(true)

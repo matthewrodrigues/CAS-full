@@ -33,7 +33,7 @@ function Display() {
 
   switch (phase) {
     case 'lobby':
-      return <Lobby view={view} />
+      return <Lobby {...props} />
     case 'live':
     case 'final_live':
       return <QuestionView {...props} offset={live.offset} locked={false} />

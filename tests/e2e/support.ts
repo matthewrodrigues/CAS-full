@@ -37,6 +37,16 @@ export async function hostApi(baseURL: string) {
 }
 export type HostApi = Awaited<ReturnType<typeof hostApi>>
 
+/** Skips each question and advances (breaks, the wager, the final question) until the game reaches `phase`; gives up after 80 moves. */
+export async function advanceTo(host: HostApi, eventId: string, phase: string) {
+  for (let i = 0; i < 80; i++) {
+    const state = (await host.state(eventId)).state.phase
+    if (state === phase) return
+    await host.act(state === 'live' || state === 'locked' || state === 'final_live' || state === 'final_locked' ? 'host_skip' : 'host_next', eventId)
+  }
+  throw new Error(`never reached ${phase}`)
+}
+
 /** Joins in the browser through the nickname screen; returns the event id from the join response. */
 export async function joinAsPlayer(page: Page, joinCode: string, nickname: string): Promise<string> {
   await page.goto(`/play/${joinCode}`)
@@ -93,6 +103,16 @@ export async function captureScreen(page: Page, name: string) {
 
 /** No WCAG 2.2 AA violations on the current screen. */
 export async function expectNoAxeViolations(page: Page) {
+  // A card's entrance (kit-rise) fades in from opacity 0: let finite animations end first, or axe
+  // measures contrast mid-fade. Infinite ones (the breathing dot, idle characters) never end.
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+        .map((a) => a.finished.catch(() => undefined)),
+    ),
+  )
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze()
   expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([])
 }

@@ -2,7 +2,10 @@
 // play three questions end to end; and a dropped connection catches up without a reload.
 import { expect, test } from '@playwright/test'
 import { JOIN_CODES } from './constants'
-import { captureScreen, createTeam, tapAndSend, hostApi, joinAsPlayer, joinTeam } from './support'
+import { advanceTo, captureScreen, createTeam, tapAndSend, hostApi, joinAsPlayer, joinTeam } from './support'
+
+/** After an API-driven lock or reveal the page catches up over the socket: give it longer than the 5 s default. */
+const AFTER_API = { timeout: 15_000 }
 
 test.describe.configure({ mode: 'serial' })
 
@@ -23,7 +26,7 @@ test('a host over the API and a player in the browser play three questions', asy
   await expect(page.getByRole('button', { name: /Challenger Deep.*sent!/ })).toBeVisible()
   await host.act('host_lock', eventId)
   await host.act('host_reveal', eventId)
-  await expect(page.getByRole('heading', { name: 'Correct!' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Correct!' })).toBeVisible(AFTER_API)
   await expect(page.getByText('+10 points for your team!')).toBeVisible()
   await captureScreen(page, 'reveal-correct')
 
@@ -78,28 +81,21 @@ test('round break introduces the incoming host (after a wrong answer, before the
   const eventId = await joinAsPlayer(page, JOIN_CODES.sheetRounds, 'Round Robin')
   await createTeam(page, 'Round Trippers')
   const host = await hostApi(baseURL!)
-  const skipTo = async (phase: string) => {
-    for (;;) {
-      const { state } = await host.state(eventId)
-      if (state.phase === phase) return
-      if (['live', 'locked', 'final_live', 'final_locked'].includes(state.phase)) await host.act('host_skip', eventId)
-      else await host.act('host_next', eventId)
-    }
-  }
+  const skipTo = (phase: string) => advanceTo(host, eventId, phase)
 
   // Question 1 right (10 points, so there is something to wager), question 3 wrong.
   await host.act('host_next', eventId)
   await tapAndSend(page, 'Challenger Deep')
   await host.act('host_lock', eventId)
   await host.act('host_reveal', eventId)
-  await expect(page.getByRole('heading', { name: 'Correct!' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Correct!' })).toBeVisible(AFTER_API)
   await host.act('host_next', eventId) // question 2
   await host.act('host_skip', eventId)
   await host.act('host_next', eventId) // question 3, true/false (False is right)
   await tapAndSend(page, 'True')
   await host.act('host_lock', eventId)
   await host.act('host_reveal', eventId)
-  await expect(page.getByRole('heading', { name: 'Not quite' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Not quite' })).toBeVisible(AFTER_API)
   await expect(page.getByText('No points this time')).toBeVisible()
   await captureScreen(page, 'reveal-incorrect')
 

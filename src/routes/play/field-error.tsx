@@ -1,5 +1,7 @@
-/** A form error (kit.md §9): Tomato text with an icon, never color alone. Render inside the field's role="alert". */
-export function FieldError({ children }: { children: string }) {
+import type { ReactNode } from 'react'
+
+/** The one form error (kit.md §9): Tomato text with an icon, never color alone. Render inside the field's role="alert". */
+export function FieldError({ children }: { children: ReactNode }) {
   return (
     <p className="field__error">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" aria-hidden="true">

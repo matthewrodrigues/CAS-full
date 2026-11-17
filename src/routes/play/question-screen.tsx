@@ -5,7 +5,7 @@ import type { Answer } from '../../../shared/api'
 import type { PublicSubmission } from '../../../shared/game'
 import { Countdown } from '@/components/countdown'
 import { HostStage } from '@/components/host-stage'
-import { circledFor, shouldNudge, sheetButton, sheetLine, tapOption, type Circle } from '@/game/answer-sheet'
+import { circledFor, fieldNotes, shouldNudge, sheetButton, sheetLine, tapOption, type Circle } from '@/game/answer-sheet'
 import { hostExpression } from '@/game/cast'
 import { debounce } from '@/game/debounce'
 import { useGameStore } from '@/game/store'
@@ -120,7 +120,12 @@ function QuestionSheet({ paused }: { paused: boolean }) {
   const captain = team.members.find((m) => m.id === team.captain_id)?.nickname ?? ''
   const teamSent = readOnly && sentAnswer !== null
   const line = sheetLine({ type: question.type, mediaKind: question.media_kind, paused, readOnly, sent: isSent || teamSent, nudging })
-  const draftSaved = !choice && submission?.is_draft === true && submission.answer !== null && !isSent
+  const draftAnswer = submission?.is_draft && submission.answer && !('option' in submission.answer) ? submission.answer : null
+  const draftValue = draftAnswer ? ('text' in draftAnswer ? draftAnswer.text : draftAnswer.number) : null
+  const notes = fieldNotes<string | number>({ picked: choice ? null : picked, sent: choice ? null : sentValue, draft: draftValue })
+  const draftSaved = !choice && notes.draftSaved
+  // A teammate's sent answer, when my field says something else (captain-only members see it in the field).
+  const teamLine = !choice && !readOnly && notes.teamSent !== null && sentAnswer ? t('question.teamSoFar', { answer: answerText(sentAnswer, question, t) }) : null
   const headingId = promptId(eventQuestionId)
 
   return (
@@ -154,6 +159,7 @@ function QuestionSheet({ paused }: { paused: boolean }) {
               foot={draftSaved ? t('question.draftSaved') : numeric ? t('question.fieldFootNumber') : t('question.fieldFootText')}
               disabled={paused || readOnly}
               submitted={isSent || teamSent}
+              team={teamLine}
               invalid={invalid}
               onChange={change}
               onEnter={send}

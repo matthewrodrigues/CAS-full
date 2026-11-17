@@ -119,8 +119,8 @@ export type GameView = {
 /**
  * Who is on stage. `host` is the current round's host (Rocco in the lobby and at the end).
  * `incoming_host` is the host taking over: the next round's in round_break, and the final
- * round's in final_wager when a round came before it. Null otherwise. A paused game shows the
- * cast of the phase it paused from.
+ * round's in final_wager when a round came before it. Null otherwise, and null when the next
+ * round keeps the same host (no hand-over). A paused game shows the cast of the phase it paused from.
  */
 export type Cast = { host: Host; incoming_host: Host | null }
 

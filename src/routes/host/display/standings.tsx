@@ -5,6 +5,7 @@ import type { LeaderboardRow, NamingPrize } from '../../../../shared/game'
 import { Character, animalCharacter } from '@/components/character'
 import { HostStage } from '@/components/host-stage'
 import { BIG_PAGE_MS, BIG_PAGE_SIZE, bigExpression, pageRange, rotation } from '@/game/big-screen'
+import { prizeAnimal } from '@/game/after-game'
 import { ROUND_BREAK_OUTGOING_EXPRESSION } from '@/game/cast'
 import { useBoard, usePrizes } from './data'
 import { BigFrame } from './frame'
@@ -21,8 +22,11 @@ function useSlide(count: number): number {
   return tick % Math.max(1, count)
 }
 
-/** Only the top 3 with points show the animal they would name (the server awards by rank, and only above zero). */
-const prizeOf = (row: LeaderboardRow, prizes: NamingPrize[]) => (row.rank <= 3 && row.points > 0 ? prizes.find((p) => p.place === row.rank) : undefined)
+/** The animal a row names, by the one prize rule the phone and the server use. */
+const prizeOf = (row: LeaderboardRow, prizes: NamingPrize[]) => {
+  const animal = prizeAnimal(row, prizes)
+  return animal ? { place: row.rank, animal } : undefined
+}
 
 /** The standings at a round break or the end (big-leaderboard), then the next host's intro or the prizes (big-round-intro, big-prizes). */
 export function Standings({ view, paused }: PhaseProps) {

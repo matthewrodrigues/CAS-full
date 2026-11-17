@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { PHASES } from '../../shared/enums'
 import type { AnimalInfo, LeaderboardRow, NamingPrize } from '../../shared/game'
-import { isBigBoard, finishOf, pillForPhase, prizeAnimal, prizeRows, showJumpRow } from './after-game'
+import { isBigBoard, finishOf, holdsPrizePlace, pillForPhase, prizeAnimal, prizeRows, showJumpRow } from './after-game'
 
 const row = (team_id: string, rank: number, points: number, name: string | null = team_id): LeaderboardRow => ({ team_id, name, points, rank })
 const animal = (species: string): AnimalInfo => ({
@@ -22,14 +22,26 @@ const prizes: NamingPrize[] = [
   { place: 3, animal: animal('seahorse') },
 ]
 
+describe('holdsPrizePlace', () => {
+  it('is a top-three rank with points above zero, like the server', () => {
+    expect(holdsPrizePlace({ rank: 1, points: 1 })).toBe(true)
+    expect(holdsPrizePlace({ rank: 3, points: 9 })).toBe(true)
+    expect(holdsPrizePlace({ rank: 4, points: 9 })).toBe(false)
+    expect(holdsPrizePlace({ rank: 1, points: 0 })).toBe(false)
+  })
+})
+
 describe('prizeAnimal', () => {
   it('gives the top three ranks their animal and nobody else', () => {
-    expect(prizeAnimal(1, prizes)?.species).toBe('penguin')
-    expect(prizeAnimal(3, prizes)?.species).toBe('seahorse')
-    expect(prizeAnimal(4, prizes)).toBeNull()
+    expect(prizeAnimal({ rank: 1, points: 5 }, prizes)?.species).toBe('penguin')
+    expect(prizeAnimal({ rank: 3, points: 5 }, prizes)?.species).toBe('seahorse')
+    expect(prizeAnimal({ rank: 4, points: 5 }, prizes)).toBeNull()
+  })
+  it('is null for a top-three team with no points', () => {
+    expect(prizeAnimal({ rank: 1, points: 0 }, prizes)).toBeNull()
   })
   it('is null when the night has no prize for that place', () => {
-    expect(prizeAnimal(2, [prizes[0]])).toBeNull()
+    expect(prizeAnimal({ rank: 2, points: 5 }, [prizes[0]])).toBeNull()
   })
 })
 
@@ -49,6 +61,10 @@ describe('prizeRows', () => {
       ['b', 'octopus'],
       ['c', 'octopus'],
     ])
+  })
+  it('gives no row to a 0-point team in the top three', () => {
+    const teams = [row('a', 1, 4), row('b', 2, 0), row('c', 2, 0)]
+    expect(prizeRows(teams, prizes).map((r) => r.team.team_id)).toEqual(['a'])
   })
   it('is empty without prizes', () => {
     expect(prizeRows([row('a', 1, 1)], [])).toEqual([])

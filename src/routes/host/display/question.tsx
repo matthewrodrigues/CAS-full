@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { GameView } from '../../../../shared/game'
 import { HostStage } from '@/components/host-stage'
+import { NUDGE_MS } from '@/game/answer-sheet'
 import { bigExpression } from '@/game/big-screen'
 import { useMsLeft } from '@/game/use-ms-left'
 import { choiceOptions, liveQuestion } from '../../play/question'
@@ -22,7 +23,7 @@ export function QuestionView({ view, paused, offset, locked }: PhaseProps & { of
   const answered = view.host
     ? t(locked ? 'display.answeredLocked' : 'display.answeredLive', { answered: view.host.answered_teams, total: view.teams.length })
     : null
-  const nudge = !locked && !paused && view.state.closes_at !== null && msLeft > 0 && msLeft <= 5000
+  const nudge = !locked && !paused && view.state.closes_at !== null && msLeft > 0 && msLeft <= NUDGE_MS
   const line = paused ? t('host.lines.bigPaused') : locked ? t('host.lines.bigLocked') : nudge ? t('host.lines.bigNudge') : t('host.lines.bigAsking')
   const expression = paused ? bigExpression('paused') : bigExpression(locked ? 'locked' : 'live')
   const options = question.type === 'mc' || question.type === 'true_false' ? choiceOptions(question, t) : []

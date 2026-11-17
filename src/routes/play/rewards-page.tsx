@@ -8,7 +8,7 @@ import { PinIcon } from '@/components/pin-icon'
 import { hostLabel } from '@/game/cast'
 import { api } from '@/lib/api'
 import { usePlay } from './context'
-import { FieldError } from './after-game-forms'
+import { FieldError } from './field-error'
 import { errorCode, errorMessage } from './errors'
 import { PrizeList } from './prize-list'
 

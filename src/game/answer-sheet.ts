@@ -22,6 +22,25 @@ export function sheetButton<T extends number | string>(input: { picked: T | null
   return { isSent: false, label: hasInput ? 'send_instead' : null }
 }
 
+/**
+ * Under a typed or number field. `draftSaved`: the team's draft is what I've typed (a teammate's
+ * draft arriving doesn't make my field "saved"). `teamSent`: what the team has sent, when my field
+ * says something else, so teammates see the team's answer.
+ */
+export function fieldNotes<T extends number | string>(input: { picked: T | null; sent: T | null; draft: T | null }): { draftSaved: boolean; teamSent: T | null } {
+  const { picked, sent, draft } = input
+  return {
+    draftSaved: draft !== null && picked !== null && draft === picked && picked !== sent,
+    teamSent: sent !== null && sent !== picked ? sent : null,
+  }
+}
+
+/** The team's wager to show beside my field: whenever one is placed, unless my own field already shows it as placed. */
+export function wagerSoFar(input: { placed: number | null; mine: number | null; readOnly: boolean }): number | null {
+  const { placed, mine, readOnly } = input
+  return placed !== null && (readOnly || mine !== placed) ? placed : null
+}
+
 /** A player's own circle, tied to the question it was made on so it never leaks into the next one. */
 export type Circle = { eventQuestionId: string; option: number } | null
 

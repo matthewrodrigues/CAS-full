@@ -17,7 +17,7 @@ const { seedDemo } = await import('../server/db/seed-demo')
 const { and, eq } = await import('drizzle-orm')
 const { eventQuestions, events, questions, rounds } = await import('../server/db/schema')
 
-/** Join codes the e2e specs use (tests/e2e/support.ts mirrors this list). */
+/** Join codes the e2e specs use (tests/e2e/constants.ts mirrors this list). */
 const EVENTS = [
   { joinCode: 'DEMO1' },
   { joinCode: 'E2EA1' },

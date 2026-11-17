@@ -13,7 +13,7 @@ import { BigFrame } from './frame'
 const MAX_TEAMS = 15
 
 /** Before the first question (big-lobby): the QR to join, the code, who has joined, and Rocco. */
-export function Lobby({ view }: { view: GameView }) {
+export function Lobby({ view, paused }: { view: GameView; paused: boolean }) {
   const { t } = useTranslation()
   const config = useQuery({ queryKey: ['app-config'], queryFn: api.appConfig, staleTime: Infinity })
   const theme = useThemeName(view.event.id)
@@ -31,7 +31,14 @@ export function Lobby({ view }: { view: GameView }) {
   const names = view.teams.flatMap((team) => (team.name ? [team.name] : []))
 
   const stage = (
-    <HostStage host={view.cast.host} expression={bigExpression('lobby')} line={t('host.lines.bigLobby')} tone="butter" hero size={400}>
+    <HostStage
+      host={view.cast.host}
+      expression={paused ? bigExpression('paused') : bigExpression('lobby')}
+      line={paused ? t('host.lines.bigPaused') : t('host.lines.bigLobby')}
+      tone="butter"
+      hero
+      size={400}
+    >
       {prizes.data?.length ? (
         <div className="stack">
           <p className="body">{t('display.prizes')}</p>
@@ -46,7 +53,7 @@ export function Lobby({ view }: { view: GameView }) {
   )
 
   return (
-    <BigFrame pill="waiting" note={theme.data ? t('display.lobbyNote', { theme: theme.data }) : t('display.join')} stage={stage}>
+    <BigFrame pill={paused ? 'paused' : 'waiting'} note={theme.data ? t('display.lobbyNote', { theme: theme.data }) : t('display.join')} stage={stage}>
       <div className="row row--wide">
         <div className="qr">{qr ? <img src={qr} alt={t('display.qr')} /> : null}</div>
         <div className="stack stack--loose">

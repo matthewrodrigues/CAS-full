@@ -87,12 +87,17 @@ export function castOf(db: Db, eventId: string, state: PublicGameState): Cast {
     roundId ? (db.select({ host: rounds.host }).from(rounds).where(eq(rounds.id, roundId)).get()?.host ?? null) : null
   // A round whose host was never stored (a game already running when hosts shipped) gets Rocco.
   const host = hostOf(plan.rounds[index]?.id) ?? MAIN_HOST
-  if (phase === 'round_break') return { host, incoming_host: hostOf(followingRound(plan, index)?.id) }
+  // A host who keeps the stage (a fixed choice can repeat) isn't handed over to.
+  const takingOver = (incoming: Host | null, outgoing: Host | null) => (incoming && incoming !== outgoing ? incoming : null)
+  if (phase === 'round_break') return { host, incoming_host: takingOver(hostOf(followingRound(plan, index)?.id), host) }
   if (phase === 'final_wager') {
-    // The wager opens the final round, so its host is also the one taking over, unless no
-    // round came before it (then there is no one to take over from).
-    const enteredFromBreak = plan.rounds.slice(0, Math.max(index, 0)).some((r) => r.questions.length > 0)
-    return { host, incoming_host: enteredFromBreak ? host : null }
+    // The wager opens the final round, so its host is also the one taking over from the last
+    // round played before it, unless no round came before it (no one to take over from).
+    const before = plan.rounds
+      .slice(0, Math.max(index, 0))
+      .filter((r) => r.questions.length > 0)
+      .at(-1)
+    return { host, incoming_host: before ? takingOver(host, hostOf(before.id) ?? MAIN_HOST) : null }
   }
   return { host, incoming_host: null }
 }

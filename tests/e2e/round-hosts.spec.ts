@@ -2,16 +2,7 @@
 // the next round's host during a break, and a round that has started can't be changed.
 import { expect, test, type Browser, type Page } from '@playwright/test'
 import { E2E_HOST_PASSCODE, E2E_STAFF_PASSCODE, JOIN_CODES } from './constants'
-import { captureScreen, hostApi, signInViaApi, type HostApi } from './support'
-
-const phase = async (host: HostApi, eventId: string) => (await host.state(eventId)).state.phase as string
-
-/** The host's obvious next move, skipping questions, until the game reaches `target`. */
-async function skipTo(host: HostApi, eventId: string, target: string) {
-  for (let p = await phase(host, eventId); p !== target; p = await phase(host, eventId)) {
-    await host.act(p === 'live' || p === 'locked' ? 'host_skip' : 'host_next', eventId)
-  }
-}
+import { advanceTo as skipTo, captureScreen, hostApi, signInViaApi } from './support'
 
 async function eventIdFor(page: Page, code: string): Promise<string> {
   const res = await page.context().request.get('/api/host_events')
@@ -44,6 +35,8 @@ test('staff sets round 2\'s host to Pebble and the round break shows Pebble', as
   const staff = await staffSettings(browser, code)
   const round2 = staff.getByRole('group', { name: /Round 2/ })
   await round2.locator('label.choice', { hasText: 'Pebble' }).click()
+  // Round 1 fixed to Rocco: were it Pebble too, Pebble would keep the stage and there'd be no hand-over.
+  await staff.getByRole('group', { name: /Round 1/ }).locator('label.choice', { hasText: 'Rocco' }).click()
   await staff.getByRole('button', { name: 'Save round hosts' }).click()
   await expect(staff.getByText('Saved! Round hosts are set.')).toBeVisible()
   await captureScreen(staff, 'staff-round-hosts')
@@ -72,9 +65,11 @@ test('host console can change the next round\'s host during a break', async ({ b
   await skipTo(host, eventId, 'round_break')
   const select = consolePage.getByLabel("Next round's host")
   await expect(select).toBeVisible()
-  await select.selectOption('june')
-  await expect(select).toHaveValue('june')
-  await expect.poll(async () => (await host.state(eventId)).cast.incoming_host).toBe('june')
+  // Not round 1's host: a host who keeps the stage isn't handed over to (incoming_host stays null).
+  const choice = (await host.state(eventId)).cast.host === 'june' ? 'pebble' : 'june'
+  await select.selectOption(choice)
+  await expect(select).toHaveValue(choice)
+  await expect.poll(async () => (await host.state(eventId)).cast.incoming_host).toBe(choice)
   await captureScreen(consolePage, 'host-console-round-break')
   // Once the round starts there is nothing left to change.
   await host.act('host_next', eventId)

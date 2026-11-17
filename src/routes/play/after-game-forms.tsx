@@ -7,6 +7,7 @@ import { StatusPill } from '@/components/status-pill'
 import { api } from '@/lib/api'
 import { usePlay } from './context'
 import { errorCode, errorMessage } from './errors'
+import { FieldError } from './field-error'
 
 const icon = (children: ReactNode, className = 'btn__icon') => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -15,22 +16,6 @@ const icon = (children: ReactNode, className = 'btn__icon') => (
 )
 
 const STAR = <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z" />
-
-/** A form error (kit.md §9): icon plus words, never color alone. Put it inside a `role="alert"` region. */
-export function FieldError({ children }: { children: ReactNode }) {
-  return (
-    <p className="field__error row">
-      {icon(
-        <>
-          <circle cx="12" cy="12" r="8.5" />
-          <path d="M12 7.5v5" />
-          <path d="M12 16.2h.01" />
-        </>,
-      )}
-      <span>{children}</span>
-    </p>
-  )
-}
 
 /**
  * The feedback screen (design/screens/feedback.html), a screen of its own so the end screen stays one idea:

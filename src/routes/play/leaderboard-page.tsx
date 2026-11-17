@@ -8,7 +8,7 @@ import { StatusPill } from '@/components/status-pill'
 import { finishOf, isBigBoard, pillForPhase, showJumpRow } from '@/game/after-game'
 import { leaderboardKey } from '@/game/use-live-game'
 import { api } from '@/lib/api'
-import { FieldError } from './after-game-forms'
+import { FieldError } from './field-error'
 import { usePlay } from './context'
 import { PrizeList } from './prize-list'
 

@@ -24,7 +24,9 @@ export function RoundBreakScreen() {
   const board = useQuery({ queryKey: leaderboardKey(eventId), queryFn: () => api.getLeaderboard(eventId) })
   const team = view.my_team!
   const own = board.data?.teams.find((row) => row.team_id === team.id)
-  // The incoming host is the main character; the outgoing one hands over, small.
+  // The incoming host is the main character; the outgoing one hands over, small. With no
+  // incoming host (the same host keeps the next round) there's no hand-over: no cameo, and a
+  // neutral heading.
   const incoming = view.cast.incoming_host ?? view.cast.host
   const outgoing = view.cast.incoming_host ? view.cast.host : null
   const incomingName = t(`host.shortNames.${incoming}`)
@@ -36,7 +38,13 @@ export function RoundBreakScreen() {
       <HostStage host={incoming} expression={hostExpression(view)} line={t('host.lines.roundBreak')} tone="butter" hero labelledBy={`${id}-host`}>
         <div className="stack stack--tight">
           <h1 className="h1" id={`${id}-host`}>
-            {next ? t('roundBreak.takingRound', { name: incomingName, round: next.position }) : t('roundBreak.taking', { name: incomingName })}
+            {outgoing
+              ? next
+                ? t('roundBreak.takingRound', { name: incomingName, round: next.position })
+                : t('roundBreak.taking', { name: incomingName })
+              : next
+                ? t('roundBreak.nextRound', { round: next.position })
+                : t('roundBreak.nextUp')}
           </h1>
           {next ? (
             <>

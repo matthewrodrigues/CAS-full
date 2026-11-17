@@ -13,6 +13,7 @@ export function AnswerText({
   foot,
   disabled,
   submitted,
+  team = null,
   invalid,
   onChange,
   onEnter,
@@ -23,6 +24,8 @@ export function AnswerText({
   disabled: boolean
   /** The team has sent exactly this: the field turns pen blue. */
   submitted: boolean
+  /** What the team has sent, when it differs from this field ("Our answer so far: squid"). */
+  team?: string | null
   invalid: boolean
   onChange(value: string): void
   onEnter(): void
@@ -48,7 +51,7 @@ export function AnswerText({
         enterKeyHint="send"
         maxLength={200}
         aria-invalid={invalid || undefined}
-        aria-describedby={`${id}-foot`}
+        aria-describedby={team ? `${id}-foot ${id}-team` : `${id}-foot`}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
@@ -65,6 +68,11 @@ export function AnswerText({
           </span>
         )}
       </div>
+      {team ? (
+        <p className="small" id={`${id}-team`}>
+          <strong>{team}</strong> <span className="tag">{t('question.sentTag')}</span>
+        </p>
+      ) : null}
       {invalid ? (
         <div role="alert">
           <FieldError>{t('question.notNumber')}</FieldError>
