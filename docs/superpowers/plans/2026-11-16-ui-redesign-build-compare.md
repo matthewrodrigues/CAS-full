@@ -91,3 +91,9 @@ A grep for `bg-brand-deep text-surface`, `shadow-pop` and `font-heading` finds t
 - **`shadow-pop`** in `ui/button.tsx`. It's the kit's button edge, defined in `tokens.css`.
 
 Removed: `src/components/status-banner.tsx`, unused since `StatusPill` replaced it.
+
+## Notes from the fix round (commit 9f7e63e)
+
+- All eight fixes landed. The game view now has `rounds` (`total`, and at a round break the finished and next rounds' position, title, format, question count and points). It never carries question content or answers.
+- A game paused outside a question still shows the join code in its top note, not a round count.
+- A standard round's format line reads "A regular round" on the phone and "Regular round" on the big screen. The mockups only show a picture round, so this copy is new and worth a look.
