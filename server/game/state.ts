@@ -91,6 +91,7 @@ function publicSettings(db: Db, eventId: string): PublicSettings {
 function hostView(ctx: GameContext, eventId: string): HostView {
   return {
     ...hostCounts(ctx, eventId),
+    autopilot: ctx.autopilot.isOn(eventId),
     review_queue: reviewQueue(ctx, eventId),
     teams: teamRows(ctx.db, eventId).map((team) => ({
       id: team.id,

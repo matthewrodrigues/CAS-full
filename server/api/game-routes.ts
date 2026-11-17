@@ -10,6 +10,7 @@ import {
   StaffReviewAnimalNameInput,
   StaffSetNamingPrizeInput,
   CreateTeamInput,
+  DemoAutopilotInput,
   EmptyInput,
   EventIdInput,
   HostAdjustScoreInput,
@@ -61,6 +62,7 @@ const STATUS: Partial<Record<GameErrorCode, ContentfulStatusCode>> = {
   name_not_allowed: 400,
   nickname_not_allowed: 400,
   rate_limited: 429,
+  not_demo: 403,
 }
 // already_named, animal_taken and not_pending are state conflicts: 409 by default.
 
@@ -170,6 +172,11 @@ export function createGameRoutes(deps: AppDeps) {
       .post('/api/host_pause', host, validate('json', EventIdInput), (c) => respond(c, game.pause(c.req.valid('json').event_id)))
       .post('/api/host_resume', host, validate('json', EventIdInput), (c) => respond(c, game.resume(c.req.valid('json').event_id)))
       .post('/api/host_skip', host, validate('json', EventIdInput), (c) => respond(c, game.skip(c.req.valid('json').event_id)))
+      .post('/api/host_demo_restart', host, validate('json', EventIdInput), (c) => respond(c, game.restartDemo(c.req.valid('json').event_id)))
+      .post('/api/host_demo_autopilot', host, validate('json', DemoAutopilotInput), (c) => {
+        const { event_id, on } = c.req.valid('json')
+        return respond(c, game.setAutopilot(event_id, on))
+      })
       .post('/api/host_override', host, validate('json', HostOverrideInput), (c) => {
         const { submission_id, result, note } = c.req.valid('json')
         return respond(c, game.override({ submissionId: submission_id, result, note }))

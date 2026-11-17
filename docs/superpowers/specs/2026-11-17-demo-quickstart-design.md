@@ -26,7 +26,7 @@ The live demo (DEMO1 on https://nightlife-trivia.fly.dev) can be played only onc
 ## Behaviour
 
 **Restart demo** (a host action; DEMO1 only; works in any phase; asks "Restart the demo? Everyone's scores and teams are cleared." before it runs). It:
-- deletes DEMO1's teams (their members, submissions and score events go with them), any naming rights, reward awards and feedback tied to DEMO1;
+- deletes DEMO1's teams (their members, submissions and score events go with them), any naming rights and feedback tied to DEMO1 (the demo never issues prize codes in the first place: reward awards carry no event, so a restart could not take them back);
 - un-names any animal that a DEMO1 prize named (`named_event_id` = DEMO1), so the prizes can be won again;
 - clears the per-round host picks (`rounds.host`), so Random re-rolls next time;
 - sets the event back to `ready` and the game state to `lobby`, and broadcasts it, so open phones and the big screen return to the lobby at once;

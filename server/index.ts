@@ -24,7 +24,7 @@ for (const key of ['HOST_PASSCODE', 'STAFF_PASSCODE'] as const) {
 mkdirSync(config.mediaDir, { recursive: true })
 const db = openDb(DB_FILE)
 const realtime = createRealtime()
-const game = createGame({ db, realtime })
+const game = createGame({ db, realtime, autopilotDelayMs: env.AUTOPILOT_DELAY_MS })
 const app = createApp({ db, config, game, realtime })
 
 // A question open when the last process stopped either auto-locks on schedule or locks now.

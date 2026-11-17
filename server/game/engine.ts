@@ -4,6 +4,7 @@ import { createRateLimiter } from '../auth/rate-limit'
 import type { Db } from '../db/client'
 import type { Realtime } from '../realtime/rooms'
 import { pushHostStats, type GameContext } from './context'
+import * as demo from './demo'
 import * as flow from './flow'
 import * as hosts from './hosts'
 import * as scoring from './scoring'
@@ -12,9 +13,12 @@ import * as state from './state'
 import * as submissions from './submissions'
 import * as teams from './teams'
 import { createTimers } from './timers'
+import { createAutopilot } from './autopilot'
 
-export function createGame({ db, realtime }: { db: Db; realtime: Realtime }) {
-  const ctx: GameContext = { db, realtime, timers: createTimers(), writes: createRateLimiter({ max: 5, windowMs: 1000 }) }
+export function createGame({ db, realtime, autopilotDelayMs }: { db: Db; realtime: Realtime; autopilotDelayMs?: number }) {
+  // A step that lost a race with a manual press fails with wrong_phase, which is fine to ignore.
+  const autopilot = createAutopilot((eventId, op) => void (op === 'reveal' ? flow.reveal(ctx, eventId) : flow.next(ctx, eventId)), autopilotDelayMs)
+  const ctx: GameContext = { db, realtime, timers: createTimers(), writes: createRateLimiter({ max: 5, windowMs: 1000 }), autopilot }
   // Hosts see connected-team counts change as sockets come and go.
   realtime.onPresence((eventId) => pushHostStats(ctx, eventId))
   return {
@@ -43,7 +47,12 @@ export function createGame({ db, realtime }: { db: Db; realtime: Realtime }) {
     /** On startup: re-arm open questions' auto-lock, or lock those whose deadline passed. */
     resumeTimers: () => flow.resumeTimers(ctx),
     /** On shutdown (and after each test): cancel every pending auto-lock. */
-    stop: () => ctx.timers.disarmAll(),
+    setAutopilot: (eventId: string, on: boolean) => demo.setAutopilot(ctx, eventId, on),
+    restartDemo: (eventId: string) => demo.restartDemo(ctx, eventId),
+    stop: () => {
+      ctx.timers.disarmAll()
+      ctx.autopilot.stop()
+    },
   }
 }
 

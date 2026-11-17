@@ -24,6 +24,8 @@ export const EnvSchema = z
       .optional()
       .transform((value) => value || undefined)
       .pipe(z.url({ protocol: /^https?$/ }).transform((url) => url.replace(/\/+$/, '')).optional()),
+    /** e2e only: one delay (ms) for every demo autopilot step instead of the real pauses. */
+    AUTOPILOT_DELAY_MS: z.coerce.number().int().positive().optional(),
   })
   .superRefine((env, ctx) => {
     // In development an unset passcode only disables that role's login, so a clean clone still runs.

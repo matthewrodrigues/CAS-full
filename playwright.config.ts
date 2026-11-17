@@ -32,6 +32,8 @@ export default defineConfig({
       E2E_WEB_PORT: String(WEB_PORT),
       HOST_PASSCODE: E2E_HOST_PASSCODE,
       STAFF_PASSCODE: E2E_STAFF_PASSCODE,
+      // The demo autopilot waits this long between steps instead of its real pauses (demo.spec.ts).
+      AUTOPILOT_DELAY_MS: '500',
     },
     url: `http://localhost:${WEB_PORT}`,
     reuseExistingServer: false,

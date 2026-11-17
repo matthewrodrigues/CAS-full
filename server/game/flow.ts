@@ -13,6 +13,7 @@ import { loadEventPlan, nextStep } from './plan'
 import { buildRevealPayload, skippedRevealPayload } from './reveal'
 import { awardNamingRights } from './animals'
 import { awardPrizes } from './rewards'
+import { isDemoEvent } from './demo'
 import { gradeQuestion, pushReviewQueue, scoreQuestion } from './scoring'
 import { publicGameState } from './state'
 
@@ -31,7 +32,9 @@ function load(ctx: GameContext, eventId: string) {
 function write(ctx: GameContext, eventId: string, patch: StatePatch): GameResult<PublicGameState> {
   ctx.db.update(gameState).set(patch).where(eq(gameState.eventId, eventId)).run()
   broadcastState(ctx, eventId)
-  return ok(publicGameState(ctx.db, eventId)!)
+  const state = publicGameState(ctx.db, eventId)!
+  ctx.autopilot.onPhase(eventId, state.phase)
+  return ok(state)
 }
 
 /** Auto-lock waits for the grace window plus the most extra time any player in the event has. */
@@ -115,7 +118,8 @@ export function next(ctx: GameContext, eventId: string): GameResult<PublicGameSt
     case 'ended':
       ctx.timers.disarm(eventId)
       ctx.db.update(events).set({ status: 'ended' }).where(eq(events.id, eventId)).run()
-      awardPrizes(ctx.db, eventId)
+      // The demo can be replayed, and its prize codes would be real and couldn't be undone.
+      if (!isDemoEvent(ctx.db, eventId)) awardPrizes(ctx.db, eventId)
       awardNamingRights(ctx.db, eventId)
       return write(ctx, eventId, { phase: 'ended', livePayload: null, revealPayload: null, opensAt: null, closesAt: null })
   }

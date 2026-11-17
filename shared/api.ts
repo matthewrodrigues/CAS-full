@@ -23,6 +23,9 @@ export const EventIdInput = z.object({ event_id: id })
 export const CreateTeamInput = z.object({ event_id: id, name: z.string().trim().min(1).max(30) })
 export const JoinTeamInput = z.object({ team_id: id })
 
+/** The demo quickstart's autopilot switch (DEMO1 only). */
+export const DemoAutopilotInput = z.object({ event_id: id, on: z.boolean() })
+
 /** Staff or the host pick a round's host, until its first question opens. */
 export const SetRoundHostInput = z.object({ event_id: id, round_id: id, host_choice: z.enum(HOST_CHOICES) })
 
