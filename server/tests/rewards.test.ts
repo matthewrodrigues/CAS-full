@@ -18,7 +18,8 @@ let staff: string
 beforeEach(() => {
   test = makeTestApp()
   mediaDir = mkdtempSync(join(tmpdir(), 'nightlife-rewards-'))
-  eventId = seedDemo(test.db, { mediaDir }).eventId
+  // Not DEMO1: the demo never issues prize codes (server/game/demo.ts).
+  eventId = seedDemo(test.db, { mediaDir, joinCode: 'PRZ01' }).eventId
   // The seed's prizes are animal naming rights; code prizes are optional tiers staff can add.
   test.db
     .insert(t.rewards)
@@ -41,7 +42,7 @@ const post = (path: string, token: string, body: unknown) => call(test.app, 'POS
 const get = (path: string, token: string) => call(test.app, 'GET', path, { token })
 
 async function player(nickname: string, team?: string) {
-  const token = cookieFrom(await call(test.app, 'POST', '/api/join_event', { body: { join_code: 'DEMO1', nickname } }))!
+  const token = cookieFrom(await call(test.app, 'POST', '/api/join_event', { body: { join_code: 'PRZ01', nickname } }))!
   const teamId = team ? (await bodyOf(await post('/api/create_team', token, { event_id: eventId, name: team }))).id : null
   return { token, teamId }
 }
@@ -92,9 +93,9 @@ describe('after the night', () => {
   it('lets a player who played rejoin the ended event to see their prizes, but no one new', async () => {
     const a = await player('Back Again', 'Returners')
     await endTheNight({ [a.teamId]: 10 })
-    const again = await call(test.app, 'POST', '/api/join_event', { token: a.token, body: { join_code: 'DEMO1', nickname: 'Back Again' } })
+    const again = await call(test.app, 'POST', '/api/join_event', { token: a.token, body: { join_code: 'PRZ01', nickname: 'Back Again' } })
     expect(again.status).toBe(200)
-    const stranger = await call(test.app, 'POST', '/api/join_event', { body: { join_code: 'DEMO1', nickname: 'Too Late' } })
+    const stranger = await call(test.app, 'POST', '/api/join_event', { body: { join_code: 'PRZ01', nickname: 'Too Late' } })
     expect(await bodyOf(stranger)).toEqual({ error: 'event_ended' })
   })
 })

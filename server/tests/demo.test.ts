@@ -121,6 +121,21 @@ describe('restart demo', () => {
   })
 })
 
+describe('demo prizes', () => {
+  it('ending the demo issues no prize codes, while another night still does', async () => {
+    test.db.insert(t.rewards).values({ name: 'Real prize', tier: 1, expiresAfterDays: 30, perPersonLimit: 1 }).run()
+    const demo = await teamIn('DEMO1', demoId, 'Anglers')
+    await post('/api/host_adjust_score', host, { team_id: demo.teamId, points: 20, note: 'Setup' })
+    await playToEnd(demoId)
+    expect(test.db.select({ n: count() }).from(t.rewardAwards).get()!.n).toBe(0)
+
+    const other = await teamIn('OTHR1', otherId, 'Others')
+    await post('/api/host_adjust_score', host, { team_id: other.teamId, points: 20, note: 'Setup' })
+    await playToEnd(otherId)
+    expect(test.db.select({ n: count() }).from(t.rewardAwards).get()!.n).toBe(1)
+  })
+})
+
 describe('demo is DEMO1 only, and host only', () => {
   it('refuses another event', async () => {
     expect(await bodyOf(await post('/api/host_demo_restart', host, { event_id: otherId }))).toEqual({ error: 'not_demo' })
