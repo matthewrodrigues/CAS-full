@@ -237,47 +237,66 @@ Every operation checks the session's role where relevant.
 
 ## 7. Design system and UI
 
+### The look: "Lamplight at the Academy"
+
+Warm, cozy, cute and character-led: oat and cream surfaces, honey tape, handwritten touches and midnight-blue accents. The approved references are in `design/`: the kit in `design/system/` (`tokens.css`, `kit.css`, `kit.md`), the binding user decisions in `design/system/decisions.md`, and one mockup per screen in `design/screens/`. The app's screens are built from those mockups.
+
 ### Tokens (`src/styles/tokens.css`)
 
-Components must never use a raw color value. Use Tailwind v4 and define these tokens in an `@theme` block in `tokens.css` that starts with `--color-*: initial;`, so Tailwind's built-in palette (`bg-green-500` and the rest) doesn't exist. Map shadcn/ui's variables (`--background`, `--foreground`, `--primary`, `--destructive`, `--ring`, `--border` and the rest) to these tokens inside `tokens.css`, and remove the color block that `shadcn init` writes to another file.
+Components must never use a raw color value. Tokens are defined in a Tailwind v4 `@theme` block in `tokens.css` that starts with `--color-*: initial;`, so Tailwind's built-in palette (`bg-green-500` and the rest) doesn't exist. shadcn/ui's variables (`--background`, `--primary`, `--ring` and the rest) are mapped to these tokens in the same file. `tokens.css` is the source of truth; the table lists the main tokens.
 
 | Token | Value | Job |
 |---|---|---|
-| `--color-bg` | `#FBF6EA` | App background (cream) |
-| `--color-surface` | `#FFFFFF` | Cards |
-| `--color-brand` | `#7C4DFF` | Primary buttons, brand accent |
-| `--color-brand-deep` | `#35236B` | Headers, nav |
-| `--color-correct` | `#1FA58A` | Correct answers, success |
-| `--color-incorrect` | `#C62D3A` | Incorrect answers, errors, destructive actions |
-| `--color-depth` | `#1F5C4D` | Depth, secondary surfaces |
-| `--color-info` | `#2F6FE4` | Info, links |
-| `--color-info-soft` | `#A9D8F5` | Soft backgrounds |
-| `--color-win` | `#F6C945` | Winners, streaks (dark text only) |
-| `--color-urgent` | `#F28C38` | Timer, urgent actions (dark text only) |
-| `--color-ink` | `#1D1B26` | Body text |
-| `--color-ink-muted` | `#5E5A6B` | Secondary text |
-| `--color-border` | `#8C8698` | Input borders, dividers |
-| `--color-focus` | `#2F6FE4` | Focus ring, drawn with a 2px offset so it shows on dark surfaces |
+| `--color-bg` | `#F7EBDA` | Oat: app background |
+| `--color-surface` | `#FFFDF8` | Milk: cards, inputs, list rows |
+| `--color-brand` | `#3554B0` | Night sky: primary buttons, selection, pen marks |
+| `--color-brand-deep` | `#1E2640` | Midnight: big screen, button edges, locked pill |
+| `--color-correct` | `#4DBE7C` | Fern: correct answers only (dark text only) |
+| `--color-incorrect` | `#C0392F` | Tomato: incorrect answers, errors, destructive actions |
+| `--color-depth` | `#2B3654` | Dusk: secondary dark surfaces |
+| `--color-info` | `#2B66A0` | Harbor: info, links |
+| `--color-info-soft` | `#CBDDF0` | Mist: soft backgrounds, the "Question live" pill |
+| `--color-win` | `#FFC94A` | Lamplight: winners, top three (dark text only) |
+| `--color-urgent` | `#FF8A3D` | Poppy: timer at 5 seconds or less (dark text only) |
+| `--color-ink` | `#3B2A23` | Cocoa: body text |
+| `--color-ink-muted` | `#6B5648` | Walnut: secondary text |
+| `--color-border` | `#8E7765` | Bark: input borders, dividers |
+| `--color-focus` | `#E04E93` | Orchid: focus ring only, drawn with an offset |
+| `--color-paper` | `#FFF8EC` | The index-card answer sheet |
+| `--color-rule` | `#E3A541` | Honey: the card's header rule and tape family |
+| `--color-pen` | `#3554B0` | The pen circle on the picked answer |
+| `--color-stage`, `-stage-butter`, `-stage-sky` | `#FFDCC2`, `#FDEBB5`, `#D5E4F6` | Character stages: peach (default), butter (waiting, lobby, round break), sky (correct results, the end) |
+| `--color-char-*` | see file | Flat fills for the character art |
 
-Fonts and radii also live in `tokens.css`: `--font-sans` (a system font stack until the design picks fonts) and `--radius` (12px).
+Fonts (self-hosted via `@fontsource-variable`): `--font-heading` Fredoka, `--font-sans` Nunito, `--font-hand` Shantell Sans (short accents only: question number, timer, points). `--radius` is 16px.
 
-These are starting values. The final values come from the Claude Design design system; if `design/screens/` or a newer tokens note disagrees with this table, ask which wins.
+### The kit (`src/styles/kit.css`)
+
+The kit holds the shared component classes from `design/system/kit.css`: the paper card (tape, fold, header rule), options, buttons, the status pill, the character stage and speech bubble, list rows, the tab bar and the big-screen scale. It sits in `@layer components`, and its scale variables are prefixed `--kit-` (`--kit-text-*`, `--kit-radius-*`, `--kit-ease-*`) so they don't override Tailwind's theme. `src/styles/kit-vars.test.ts` guards that.
+
+### Characters
+
+Three hosts ask the questions and react: Rocco the raccoon (the main host: lobby, final results, prizes), Pebble the penguin and Dr. June the scientist. Each has six expressions: greeting, asking, waiting, cheering, consoling, relaxing. Each round has a host setting (Rocco, Pebble, Dr. June or Random; Random is the default and never repeats the previous round's host). Staff set it in the event settings and the live host can override it before a round starts; the round break introduces the incoming host. The rules live in `server/game/hosts.ts`, and the view carries `cast: { host, incoming_host }`.
+
+Animals that teams win naming rights to have avatars (`animals.avatar`). The art is inline SVG in `design/characters/`, listed in `shared/characters.ts` and rendered by `src/components/character.tsx`, so `var(--color-char-*)` resolves. A character appears on every play screen.
 
 ### UI rules
 
 - Question text ≥ 20px. Tap targets ≥ 44px. One primary button per screen.
-- Max two or three bright colors per screen; cream does most of the work.
+- Max two or three bright colors per screen; oat and cream do most of the work. Green means correct and red means incorrect, nowhere else.
 - Correct/incorrect always pairs color with an icon **and** a word.
-- Clear status states on every play screen: waiting for host, question live, answers locked, results in.
+- Every play screen shows one status pill, with exactly these words: "Waiting for the host", "Question live", "Answers locked", "Results are in", "Paused by the host", "Place your wager".
+- Answering is tap, then send: tapping circles an answer on your own sheet; "That's our answer!" sends it for the team, and a team can change and resend until the question locks. At 5 seconds, if a circled answer isn't sent, the host nudges.
+- The tab bar (Play / Leaderboard / Rewards / Animals) shows on the lobby, the round break and the after-game screens. It's hidden on landing, join, staff, and every question, wager, locked, reveal and paused screen.
 - Friendly empty states (e.g. "Scores appear once the round starts.").
 - Subtle motion only (countdown ring, small celebration); fully disabled under `prefers-reduced-motion`. No flashing.
 - `aria-live` region announces phase changes ("Question 4 is live, 20 seconds").
 - Captions shown by default for sound questions.
-- Build each screen to match its reference in `design/screens/`. If a screen has no reference yet, build a clean placeholder on tokens and note it.
+- Each screen matches its reference in `design/screens/` at 390px (1920×1080 for the big screen). The e2e suite captures every screen to `test-results/screens/<name>.png` with `captureScreen`; the comparison is recorded in `docs/superpowers/plans/2026-11-16-ui-redesign-build-compare.md`. The host console and staff pages have no mockups; they use the same tokens and kit.
 
-### Screens needed for Phase 1
+### Screens
 
-Join (landing → nickname → create/join team), Lobby, Live question (MC, typed, true/false, closest number; any of them with an image or audio clip), Locked, Reveal + fun fact, Round break, Final wager, Leaderboard (tonight + season), Rewards + redemption code (QR), Feedback, Host control panel, Big-screen display, Staff redeem page.
+Join (landing → nickname → create/join team), Lobby, Live question (MC, typed, true/false, closest number; any of them with an image or audio clip), Locked, Reveal + fun fact, Round break, Paused, Final wager, Final results and prizes, Leaderboard (tonight + season), Rewards (the only prize is naming an Academy animal; there are no player-facing prize codes), Animals and My Animal, Feedback, Host control panel, Big-screen display, Staff pages (the code-redemption engine and staff redeem page remain).
 
 ---
 
