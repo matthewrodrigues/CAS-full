@@ -95,6 +95,20 @@
     "phase": "Phase: {{phase}}",
     "lobby": "{{count}} teams have joined.",
     "answered": "{{answered}} of {{teams}} teams sent an answer · {{connected}} connected",
+    "demo": {
+      "title": "Demo",
+      "body": "Run the demo by itself, and start it over whenever you like.",
+      "autopilot": "Autopilot",
+      "autopilotOn": "Autopilot is on: it reveals and moves on by itself.",
+      "autopilotHint": "Press Start when everyone's in. Autopilot does the rest.",
+      "on": "On",
+      "off": "Off",
+      "restart": "Restart demo",
+      "restartConfirm": "Restart the demo? Everyone's scores and teams are cleared.",
+      "restartYes": "Yes, restart",
+      "restartNo": "Keep playing",
+      "restarted": "The demo is back in the lobby."
+    },
     "primary": {
       "lobby": "Start the game",
       "live": "Lock answers",

@@ -5,6 +5,8 @@ export const E2E_STAFF_PASSCODE = 'e2e-staff-passcode'
 /** One seeded event per spec file (scripts/e2e-prepare.ts seeds the same list). */
 export const JOIN_CODES = {
   smoke: 'DEMO1',
+  // The demo quickstart (demo.spec.ts) needs DEMO1 itself: only DEMO1 has the Demo card.
+  demo: 'DEMO1',
   join: 'E2EA1',
   questions: 'E2EB1',
   results: 'E2EC1',

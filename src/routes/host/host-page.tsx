@@ -11,6 +11,7 @@ import { nextRoundToHost } from '@/game/round-hosts'
 import { useLiveGame } from '@/game/use-live-game'
 import { api, type HostOperation } from '@/lib/api'
 import { errorCode, errorMessage } from '../play/errors'
+import { DemoCard } from './demo-card'
 import { liveQuestion } from '../play/question'
 
 /** /host/:eventId — run the night: one obvious next action, counts, review queue, teams. Placeholder layout. */
@@ -21,6 +22,9 @@ export function HostPage() {
     </RoleGate>
   )
 }
+
+/** The demo event (server/db/seed-demo.ts); only it gets the Demo card, and the server refuses the rest. */
+const DEMO_JOIN_CODE = 'DEMO1'
 
 const PRIMARY: Partial<Record<string, HostOperation>> = {
   lobby: 'host_next',
@@ -94,6 +98,7 @@ function Console() {
             </p>
           ) : null}
         </section>
+        {view.event.join_code === DEMO_JOIN_CODE ? <DemoCard eventId={eventId} autopilot={view.host.autopilot} refresh={live.refresh} /> : null}
         <ReviewQueue items={view.host.review_queue} refresh={live.refresh} />
         <Teams teams={view.host.teams} refresh={live.refresh} />
       </main>
