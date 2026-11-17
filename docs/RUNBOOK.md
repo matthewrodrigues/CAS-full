@@ -18,6 +18,18 @@ How to run a night with the pilot build. The build spec is [SPEC.md](SPEC.md).
 - Team names show on the big screen only once approved in the console.
 - Prizes are issued when the host ends the game: tier 1 to the winning team, tier 2 to the runner-up, and the last tier to every team (each member gets a code). Staff redeem them once each.
 
+## Running the demo
+
+The demo night is DEMO1. It can be replayed, and it can run itself, so one person can show it from a phone.
+
+1. Sign in at `/host` and open DEMO1. The console has a **Demo** card (DEMO1 only).
+2. Switch **Autopilot** on. After you press Start it reveals each answer and moves on by itself; questions still lock on their own timers. Pause still works, and you can press any button yourself.
+3. Players join at `/play/DEMO1`, or scan the big screen's QR code.
+4. Press **Start the game**.
+5. To run it again, press **Restart demo**. It clears the demo's teams, scores and feedback, un-names any animal the demo named, and sends every phone and the big screen back to the lobby. Players keep their nicknames and just make a new team.
+
+A server restart (a deploy, or Fly restarting the machine) turns Autopilot off; switch it back on. Naming the animal at the end still needs staff approval, as on a real night.
+
 ## Settings
 
 Staff can change each event's settings at `/staff/settings`: team size, who can answer (any member or captain only), speed bonus, grace window, and typed-answer thresholds.
