@@ -125,7 +125,7 @@ function QuestionSheet({ paused }: { paused: boolean }) {
 
   return (
     <>
-      <ScreenTop status={paused ? 'paused' : 'live'} note={roundNote(t, question.round)} />
+      <ScreenTop status={paused ? 'paused' : 'live'} note={roundNote(t, question.round, view.rounds.total)} />
       <HostStage host={view.cast.host} expression={hostExpression(view)} line={t(`host.lines.${line}`)} tone={paused ? 'butter' : 'peach'} />
 
       <article className="paper" aria-labelledby={headingId}>

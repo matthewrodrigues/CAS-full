@@ -13,8 +13,8 @@ import { ScreenTop } from './paper-parts'
 /**
  * Between rounds (design/screens/round-break.html): the incoming host greets the team on a butter
  * stage, and the paper shows where the team stands, with the outgoing host handing over, small.
- * The app doesn't know the next round's title or format, nor how many rounds there are, so the mockup's
- * "Round 2 of 4", round name and picture-round line are left out.
+ * The round numbers, titles, formats and question count come from view.rounds; whatever it doesn't
+ * carry (no round after this one) is left out and the older wording stands in.
  */
 export function RoundBreakScreen() {
   const { t } = useTranslation()
@@ -28,15 +28,24 @@ export function RoundBreakScreen() {
   const incoming = view.cast.incoming_host ?? view.cast.host
   const outgoing = view.cast.incoming_host ? view.cast.host : null
   const incomingName = t(`host.shortNames.${incoming}`)
+  const { finished, next, total } = view.rounds
 
   return (
     <>
-      <ScreenTop status="waiting" note={view.event.join_code} />
+      <ScreenTop status="waiting" note={next ? t('display.roundOf', { round: next.position, rounds: total }) : view.event.join_code} />
       <HostStage host={incoming} expression={hostExpression(view)} line={t('host.lines.roundBreak')} tone="butter" hero labelledBy={`${id}-host`}>
         <div className="stack stack--tight">
           <h1 className="h1" id={`${id}-host`}>
-            {t('roundBreak.taking', { name: incomingName })}
+            {next ? t('roundBreak.takingRound', { name: incomingName, round: next.position }) : t('roundBreak.taking', { name: incomingName })}
           </h1>
+          {next ? (
+            <>
+              <p className="body">
+                <strong>{next.title}</strong>
+              </p>
+              <p className="small muted">{t(`roundBreak.format.${next.format}`)}</p>
+            </>
+          ) : null}
         </div>
       </HostStage>
 
@@ -44,8 +53,9 @@ export function RoundBreakScreen() {
         <header className="paper__head">
           <div className="paper__meta">
             <h2 className="hand" id={`${id}-summary`}>
-              {t('roundBreak.title')}
+              {finished ? t('roundBreak.titleDone', { round: finished.position }) : t('roundBreak.title')}
             </h2>
+            {finished ? <p className="small">{t('roundBreak.doneMeta', { title: finished.title, questions: t('display.questionCount', { count: finished.question_count }) })}</p> : null}
           </div>
         </header>
         <div className="paper__body">

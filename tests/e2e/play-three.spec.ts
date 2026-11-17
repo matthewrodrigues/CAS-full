@@ -109,7 +109,7 @@ test('round break introduces the incoming host (after a wrong answer, before the
   const names = { rocco: 'Rocco the raccoon', pebble: 'Pebble the penguin', june: 'Dr. June' } as const
   await expect(page.getByRole('img', { name: `${names[cast.incoming_host as keyof typeof names]}, waving hello` })).toBeVisible()
   await expect(page.getByRole('img', { name: `${names[cast.host as keyof typeof names]}, relaxing` })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Round complete' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Round 1 done!' })).toBeVisible()
   await captureScreen(page, 'round-break')
 
   // On to the final wager: the final round's host asks how much to bet.

@@ -71,7 +71,7 @@ test('a reveal shows the answer, the result in words, the points and the fun fac
 
 test('the round break shows the team rank and the top teams', async () => {
   await skipTo('round_break')
-  await expect(page.getByRole('heading', { name: 'Round complete' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Round 1 done!' })).toBeVisible()
   await expect(page.getByText('#1')).toBeVisible()
   await expect(page.getByText('with 10 points')).toBeVisible()
   await expect(page.getByText('Results Rookies')).toBeVisible()
@@ -107,7 +107,7 @@ test('the end screen shows the final rank, the prizes and what to do next', asyn
   await host.act('host_next', eventId) // ended
   await expect(page.getByRole('heading', { name: '1st place!' })).toBeVisible()
   await expect(page.getByText('Thanks for playing! Your team finished #1 with 50 points.')).toBeVisible()
-  await expect(page.getByRole('link', { name: "Let's name our animal!" })).toBeVisible()
+  await expect(page.getByRole('link', { name: "Let's name our penguin chick!" })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Tell us how tonight went' })).toBeVisible()
   await captureScreen(page, 'ended-prizes')
 })

@@ -65,8 +65,9 @@ export function revealRows({
   return rows
 }
 
-/** The hand note in a play screen's top row: "Round 2", or "Final round" for the wager round (the app doesn't know how many rounds there are). */
-export const roundNote = (t: TFunction, round: LiveQuestion['round']): string => (round.format === 'wager' ? t('wager.finalRound') : t('question.round', { position: round.position }))
+/** The hand note in a play screen's top row: "Round 2 of 4", or "Final round" for the wager round. */
+export const roundNote = (t: TFunction, round: LiveQuestion['round'], total: number): string =>
+  round.format === 'wager' ? t('wager.finalRound') : t('display.roundOf', { round: round.position, rounds: total })
 
 /** The id of a question's heading, so its paper is labelled by it. */
 export const promptId = (eventQuestionId: string): string => `${eventQuestionId}-prompt`

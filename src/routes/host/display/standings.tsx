@@ -6,7 +6,7 @@ import { Character, animalCharacter } from '@/components/character'
 import { HostStage } from '@/components/host-stage'
 import { BIG_PAGE_MS, BIG_PAGE_SIZE, bigExpression, pageRange, rotation } from '@/game/big-screen'
 import { ROUND_BREAK_OUTGOING_EXPRESSION } from '@/game/cast'
-import { useBoard, usePrizes, useRounds } from './data'
+import { useBoard, usePrizes } from './data'
 import { BigFrame } from './frame'
 import type { PhaseProps } from './question'
 
@@ -30,10 +30,9 @@ export function Standings({ view, paused }: PhaseProps) {
   const ended = view.state.phase === 'ended' || view.state.paused_from_phase === 'ended'
   const rows = useBoard(view.event.id).data ?? []
   const prizes = usePrizes(view.event.id).data ?? []
-  const rounds = useRounds(view.event.id).data
   const incoming = !ended ? view.cast.incoming_host : null
-  const nextRound = rounds?.find((r) => !r.started)
-  const finished = rounds?.filter((r) => r.started).at(-1)
+  const nextRound = view.rounds.next
+  const finished = view.rounds.finished
   const winners = rows.filter((row) => prizeOf(row, prizes))
   const extra = ended ? (winners.length ? ('prizes' as const) : null) : incoming && nextRound ? ('intro' as const) : null
   const slides = rotation(rows.length, extra)
@@ -53,7 +52,8 @@ export function Standings({ view, paused }: PhaseProps) {
         <article className="paper" aria-labelledby="round-title">
           <header className="paper__head">
             <div className="paper__meta">
-              <p className="hand">{t('display.roundOf', { round: nextRound.position, rounds: rounds!.length })}</p>
+              <p className="hand">{t('display.roundOf', { round: nextRound.position, rounds: view.rounds.total })}</p>
+              <p className="small">{t('display.roundMeta', { format: t(`display.format.${nextRound.format}`), questions: t('display.questionCount', { count: nextRound.question_count }) })}{nextRound.points === null ? '' : t('display.roundMetaPoints', { points: t('display.pointsEach', { count: nextRound.points }) })}</p>
             </div>
           </header>
           <div className="paper__body">

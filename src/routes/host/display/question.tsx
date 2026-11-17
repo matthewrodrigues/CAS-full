@@ -5,7 +5,7 @@ import { bigExpression } from '@/game/big-screen'
 import { useMsLeft } from '@/game/use-ms-left'
 import { choiceOptions, liveQuestion } from '../../play/question'
 import { CountdownRing } from '@/components/countdown'
-import { roundLabel, useRounds } from './data'
+import { roundLabel } from './data'
 import { BigFrame } from './frame'
 import { BigMedia } from './media'
 
@@ -16,9 +16,8 @@ export function QuestionView({ view, paused, offset, locked }: PhaseProps & { of
   const { t } = useTranslation()
   const question = liveQuestion(view.state)
   const msLeft = useMsLeft(view.state, offset)
-  const rounds = useRounds(view.event.id).data
   if (!question) return null
-  const round = roundLabel(t, question.round.position, rounds?.length)
+  const round = roundLabel(t, question.round.position, view.rounds.total)
   const code = view.event.join_code
   const answered = view.host
     ? t(locked ? 'display.answeredLocked' : 'display.answeredLive', { answered: view.host.answered_teams, total: view.teams.length })

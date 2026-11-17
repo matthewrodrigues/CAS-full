@@ -31,6 +31,7 @@ const view: GameView = {
   teams: [],
   settings: { max_team_size: 6, team_submissions: 'any_member' },
   cast: { host: 'rocco', incoming_host: null },
+  rounds: { total: 4, finished: null, next: null },
 }
 
 describe('applyMessage', () => {

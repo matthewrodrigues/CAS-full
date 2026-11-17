@@ -845,7 +845,7 @@ a {
   text-align: left;
   cursor: pointer;
 }
-.option:hover:not(:disabled) {
+.option:hover:not(:disabled):not([aria-pressed='true']):not(.is-picked) {
   border-color: var(--color-border);
 }
 .option:active:not(:disabled) {

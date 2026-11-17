@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { HostStage } from '@/components/host-stage'
 import { bigExpression } from '@/game/big-screen'
 import { liveQuestion, revealPayload, trueFalse } from '../../play/question'
-import { roundLabel, useRounds } from './data'
+import { roundLabel } from './data'
 import { BigFrame } from './frame'
 import type { PhaseProps } from './question'
 
@@ -11,7 +11,6 @@ export function Reveal({ view, paused }: PhaseProps) {
   const { t } = useTranslation()
   const reveal = revealPayload(view.state)
   const question = liveQuestion(view.state)
-  const rounds = useRounds(view.event.id).data
   if (!reveal) return null
   const skipped = 'skipped' in reveal
   const answer = skipped
@@ -20,7 +19,7 @@ export function Reveal({ view, paused }: PhaseProps) {
     : reveal.type === 'true_false' && reveal.correct_option !== null ? trueFalse(t)[reveal.correct_option]
     : reveal.type === 'closest_number' ? String(reveal.numeric_answer)
     : reveal.correct_text
-  const note = question ? roundLabel(t, question.round.position, rounds?.length) : t('display.roundBreak')
+  const note = question ? roundLabel(t, question.round.position, view.rounds.total) : t('display.roundBreak')
 
   const stage = (
     <HostStage

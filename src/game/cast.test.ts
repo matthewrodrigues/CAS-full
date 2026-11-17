@@ -36,6 +36,7 @@ function view(phase: Phase, submission: Partial<PublicSubmission> | null = null)
     teams: [],
     settings: { max_team_size: 6, team_submissions: 'any_member' },
     cast: { host: 'rocco', incoming_host: null },
+    rounds: { total: 4, finished: null, next: null },
   } as GameView
 }
 

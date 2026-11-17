@@ -49,7 +49,7 @@ export function RevealScreen() {
 
   return (
     <>
-      <ScreenTop status="results" note={roundNote(t, question.round)} />
+      <ScreenTop status="results" note={roundNote(t, question.round, view.rounds.total)} />
       <HostStage host={host} expression={expression} line={t(`host.lines.${stageLine}`)} tone={result === 'correct' ? 'sky' : 'peach'} hero labelledBy={headingId}>
         {badge === null ? (
           <div className="stack stack--tight">

@@ -23,7 +23,7 @@ export function LockedScreen() {
 
   return (
     <>
-      <ScreenTop status="locked" note={roundNote(t, question.round)} />
+      <ScreenTop status="locked" note={roundNote(t, question.round, view.rounds.total)} />
       <HostStage host={view.cast.host} expression={hostExpression(view)} line={t(answer ? 'host.lines.locked' : 'host.lines.lockedNone')} tone="butter" hero />
 
       <div className="paper-shadow">

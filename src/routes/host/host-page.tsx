@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useId, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
-import { HOST_CHOICES, type HostChoice } from '../../../shared/characters'
+import { HOST_CHOICES_SHOWN, type HostChoice } from '../../../shared/characters'
 import type { HostTeam, ReviewItem } from '../../../shared/game'
 import { Countdown } from '@/components/countdown'
 import { LiveRegion } from '@/components/live-region'
@@ -235,7 +235,7 @@ function NextHost({ eventId, phase, refresh }: { eventId: string; phase: string;
       </label>
       <span className="select">
         <select id={id} className="field__select" value={change.variables ?? next.host_choice} disabled={change.isPending} onChange={(e) => change.mutate(e.target.value as HostChoice)}>
-          {HOST_CHOICES.map((choice) => (
+          {HOST_CHOICES_SHOWN.map((choice) => (
             <option key={choice} value={choice}>
               {t(`staff.hostChoices.${choice}`)}
             </option>

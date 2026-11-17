@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router'
-import { ANIMAL_AVATARS, HOST_CHOICES, type AnimalAvatar, type HostChoice } from '../../../shared/characters'
+import { ANIMAL_AVATARS, HOST_CHOICES_SHOWN, type AnimalAvatar, type HostChoice } from '../../../shared/characters'
 import type { RoundHost, StaffAnimal, StaffNamingRight } from '../../../shared/game'
 import type { EventSettings } from '../../../shared/settings'
 import { Character, animalCharacter, hostCharacter } from '@/components/character'
@@ -280,7 +280,7 @@ function RoundHosts({ eventId }: { eventId: string }) {
               <span className="hand hand--sm">{t('staff.roundLabel', { number: round.position })}</span>
               {round.title}
             </legend>
-            {HOST_CHOICES.map((choice) => (
+            {HOST_CHOICES_SHOWN.map((choice) => (
               <label className="choice" key={choice}>
                 <input
                   type="radio"

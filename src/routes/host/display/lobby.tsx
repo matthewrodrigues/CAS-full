@@ -46,7 +46,7 @@ export function Lobby({ view }: { view: GameView }) {
   )
 
   return (
-    <BigFrame pill="waiting" note={theme.data ?? t('display.join')} stage={stage}>
+    <BigFrame pill="waiting" note={theme.data ? t('display.lobbyNote', { theme: theme.data }) : t('display.join')} stage={stage}>
       <div className="row row--wide">
         <div className="qr">{qr ? <img src={qr} alt={t('display.qr')} /> : null}</div>
         <div className="stack stack--loose">

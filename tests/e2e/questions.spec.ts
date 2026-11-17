@@ -86,14 +86,14 @@ test('true/false and closest number submit', async () => {
   await expect(page.getByRole('button', { name: /True.*sent!/ })).toBeVisible()
 
   await nextQuestion() // question 4, closest number
-  await page.getByLabel('Your guess').fill('nineteen')
+  await page.getByLabel('Our guess').fill('nineteen')
   await page.getByRole('button', { name: "That's our answer!" }).click()
   await expect(page.getByRole('alert')).toHaveText('Enter a number, like 1955.')
-  await page.getByLabel('Your guess').fill('1955')
+  await page.getByLabel('Our guess').fill('1955')
   await captureScreen(page, 'question-number')
   await page.getByRole('button', { name: "That's our answer!" }).click()
   await expect(page.getByText(/^Sent! Edit it/)).toBeVisible()
-  await expect(page.getByLabel('Your guess')).toHaveValue('1955')
+  await expect(page.getByLabel('Our guess')).toHaveValue('1955')
 })
 
 test('the countdown counts down, and freezes while paused', async () => {

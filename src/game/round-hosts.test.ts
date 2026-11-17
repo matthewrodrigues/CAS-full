@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { HOST_CHOICES, HOST_CHOICES_SHOWN } from '../../shared/characters'
 import type { RoundHost } from '../../shared/game'
 import { changedChoices, nextRoundToHost } from './round-hosts'
 
@@ -32,5 +33,12 @@ describe('changedChoices', () => {
   })
   it('is empty with no draft', () => {
     expect(changedChoices([round(1)], {})).toEqual([])
+  })
+})
+
+describe('HOST_CHOICES_SHOWN', () => {
+  it('lists the hosts first and Random last, with the same choices as the schema', () => {
+    expect(HOST_CHOICES_SHOWN).toEqual(['rocco', 'pebble', 'june', 'random'])
+    expect([...HOST_CHOICES_SHOWN].sort()).toEqual([...HOST_CHOICES].sort())
   })
 })

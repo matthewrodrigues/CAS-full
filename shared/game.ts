@@ -96,6 +96,12 @@ export type PublicSettings = {
   team_submissions: 'any_member' | 'captain_only'
 }
 
+/** A round's public summary: no question content. `points` is the per-question value when they all match. */
+export type RoundInfo = { position: number; title: string; format: RoundFormat; question_count: number; points: number | null }
+
+/** The night's round count, and at a round break the round just finished and the one coming up. */
+export type RoundsView = { total: number; finished: RoundInfo | null; next: RoundInfo | null }
+
 /** get_state(event_id): everything a (re)connecting client renders from. */
 export type GameView = {
   event: { id: string; join_code: string; status: EventStatus }
@@ -106,6 +112,7 @@ export type GameView = {
   teams: TeamSummary[]
   settings: PublicSettings
   cast: Cast
+  rounds: RoundsView
   host?: HostView
 }
 

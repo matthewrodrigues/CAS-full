@@ -69,7 +69,7 @@ function EndedResults() {
   const right = rights.data?.rights.find((r) => r.team_id === ownId)
   const next = right
     ? right.animal.name === null
-      ? { to: 'rewards', label: t('ended.nameIt') }
+      ? { to: 'rewards', label: t('ended.nameIt', { animal: t(`ended.animalNoun.${right.animal.avatar}`, { defaultValue: t('ended.animalFallback') }) }) }
       : { to: `animals/${right.animal.id}`, label: t('ended.showAnimal') }
     : { to: 'leaderboard', label: t('ended.board') }
 

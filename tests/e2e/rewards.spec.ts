@@ -38,7 +38,7 @@ test('the winning team names an Academy animal, staff approve it, and the player
   await expectNoAxeViolations(phone)
 
   await phone.getByRole('link', { name: 'Play', exact: true }).click()
-  await phone.getByRole('link', { name: "Let's name our animal!" }).click()
+  await phone.getByRole('link', { name: "Let's name our penguin chick!" }).click()
   await expect(phone.getByRole('heading', { name: 'Name the African penguin chick' })).toBeVisible()
   await expect(phone.getByText('Your team won the right to name this animal!')).toBeVisible()
   await expect(phone.getByText('Code:')).toHaveCount(0) // no prize codes on a player screen

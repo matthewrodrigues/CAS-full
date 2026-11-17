@@ -1,7 +1,7 @@
 import type { TFunction } from 'i18next'
 import { describe, expect, it } from 'vitest'
 import type { LiveQuestion, RevealPayload } from '../../../shared/game'
-import { revealRows } from './question'
+import { revealRows, roundNote } from './question'
 
 const t = ((key: string) => (key === 'question.true' ? 'True' : key === 'question.false' ? 'False' : key)) as TFunction
 const base = { event_question_id: 'q', round: { position: 1, title: 'R', format: 'standard' }, number: 1, of: 1, media_kind: 'none', media_url: null, caption: null, duration_s: 20, points: 10 }
@@ -47,5 +47,15 @@ describe('revealRows', () => {
   })
   it('a skipped question has no rows', () => {
     expect(revealRows({ question: mc, reveal: { event_question_id: 'q', skipped: true }, answer: null, result: null, t })).toEqual([])
+  })
+})
+
+describe('roundNote', () => {
+  const tn = ((key: string, o?: { round: number; rounds: number }) => (o ? `${key} ${o.round}/${o.rounds}` : key)) as TFunction
+  it('says which round of how many', () => {
+    expect(roundNote(tn, { position: 2, title: 'R', format: 'standard' }, 4)).toBe('display.roundOf 2/4')
+  })
+  it('keeps "Final round" for the wager round', () => {
+    expect(roundNote(tn, { position: 4, title: 'R', format: 'wager' }, 4)).toBe('wager.finalRound')
   })
 })
