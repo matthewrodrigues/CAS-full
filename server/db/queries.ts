@@ -68,11 +68,11 @@ export function teamScore(db: Db, teamId: string): number {
   return db.select({ points: totalPoints() }).from(scoreEvents).where(eq(scoreEvents.teamId, teamId)).get()?.points ?? 0
 }
 
-/** Points per player across a season: each team member receives the team's full points. */
+/** Points and nights played per player across a season: each team member receives the team's full points. */
 export function seasonLeaderboard(db: Db, seasonId: string) {
   const points = totalPoints()
   const rows = db
-    .select({ playerId: players.id, nickname: players.nickname, points })
+    .select({ playerId: players.id, nickname: players.nickname, displayMode: players.displayMode, points, nights: sql<number>`count(distinct ${teamMembers.eventId})`.mapWith(Number) })
     .from(teamMembers)
     .innerJoin(events, eq(events.id, teamMembers.eventId))
     .innerJoin(players, eq(players.id, teamMembers.playerId))

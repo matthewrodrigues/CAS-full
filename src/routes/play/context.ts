@@ -6,6 +6,9 @@ export type PlayContext = {
   eventId: string
   joinCode: string
   playerId: string
+  nickname: string
+  /** Tonight's theme, e.g. "Deep Sea Night": the hand note in each screen's top row. */
+  themeName: string
   live: ReturnType<typeof useLiveGame>
 }
 

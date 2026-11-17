@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join: pick a nickname</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<!-- A form screen, so the host steps back to 64px next to the heading (kit §15): the keyboard
+     needs the room. No status pill yet: the player isn't in the game until they join. -->
+<main class="screen">
+  <div class="screen__top">
+    <p class="hand hand--sm">Deep Sea Night</p>
+    <p class="hand hand--sm">Step 1 of 2</p>
+  </div>
+
+  <header class="row">
+    <span class="char char--64" role="img" data-character="hosts/rocco/greeting" aria-label="Rocco the raccoon, waving hello"></span>
+    <h1 class="h1">What should we call you?</h1>
+  </header>
+  <p class="muted">Your teammates see your nickname, and so does the leaderboard if you win big.</p>
+
+  <form class="stack stack--loose" id="form" action="join-team.html" method="get" novalidate>
+    <div class="field">
+      <label class="field__label" for="nickname">Your nickname</label>
+      <input class="field__input" id="nickname" name="nickname" maxlength="24" autocomplete="nickname" autocapitalize="words" enterkeyhint="go" placeholder="e.g. Sam the Squid" aria-describedby="nickname-foot nickname-error">
+      <div class="field__foot" id="nickname-foot">
+        <span>Keep it friendly!</span>
+        <span class="field__count" id="count" aria-live="off">0 / 24</span>
+      </div>
+      <div role="alert" id="nickname-error"></div>
+    </div>
+  </form>
+
+  <div class="screen__actions">
+    <button type="submit" form="form" class="btn btn--primary btn--block" id="go" disabled>That's me!</button>
+    <p class="small muted center">Next up: pick your team.</p>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="join-nickname.html">Empty</a>
+  <a href="join-nickname.html?state=typed">Typed</a>
+  <a href="join-nickname.html?state=error">Not allowed</a>
+  <a href="join-team.html?nickname=Sam">Next: team</a>
+</nav>
+
+<script>
+  // Mockup behavior: count characters, enable the button, show the "not allowed" error state.
+  const input = document.getElementById('nickname')
+  const count = document.getElementById('count')
+  const go = document.getElementById('go')
+  const error = document.getElementById('nickname-error')
+  const state = new URLSearchParams(location.search).get('state')
+
+  function render() {
+    count.textContent = `${input.value.length} / 24`
+    go.disabled = !input.value.trim()
+  }
+  input.addEventListener('input', () => {
+    error.replaceChildren()
+    input.removeAttribute('aria-invalid')
+    render()
+  })
+  if (state === 'typed') input.value = 'Sam'
+  if (state === 'error') {
+    input.value = 'Sam'
+    input.setAttribute('aria-invalid', 'true')
+    error.innerHTML =
+      '<p class="field__error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5v.01"/></svg><span>Please pick a different nickname.</span></p>'
+  }
+  render()
+</script>
+</body>
+</html>

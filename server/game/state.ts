@@ -4,10 +4,13 @@
 // only, and a team always sees its own. Results and points appear only after the reveal.
 import { and, count, desc, eq, ne, sql } from 'drizzle-orm'
 import type { GameView, HostEvent, HostView, Leaderboard, PublicGameState, PublicSettings, PublicSubmission } from '../../shared/game'
+import type { ServerMessage } from '../../shared/messages'
 import type { Db } from '../db/client'
 import { eventLeaderboard, teamScore } from '../db/queries'
 import { eventQuestions, events, gameState, scoreEvents, submissions, teamMembers, teams, themes } from '../db/schema'
 import { hostCounts, type GameContext } from './context'
+import { castOf } from './hosts'
+import { roundsOf } from './round-info'
 import { reviewQueue } from './scoring'
 import { toPublicSubmission } from './submissions'
 import { myTeam, teamOf } from './teams'
@@ -26,6 +29,13 @@ export function publicGameState(db: Db, eventId: string): PublicGameState | null
     live_payload: row.livePayload,
     reveal_payload: row.revealPayload,
   }
+}
+
+/** The `state` WebSocket message: game_state plus the cast and rounds (public, the same for everyone). */
+export function stateMessage(db: Db, eventId: string): Extract<ServerMessage, { type: 'state' }> | null {
+  const state = publicGameState(db, eventId)
+  if (!state) return null
+  return { type: 'state', state, cast: castOf(db, eventId, state), rounds: roundsOf(db, eventId, state) }
 }
 
 const visibleEvent = (db: Db, eventId: string) =>
@@ -75,7 +85,7 @@ function shownName(team: { id: string; name: string; nameStatus: string }, { own
 
 function publicSettings(db: Db, eventId: string): PublicSettings {
   const { settings } = db.select({ settings: events.settings }).from(events).where(eq(events.id, eventId)).get()!
-  return { max_team_size: settings.max_team_size, team_submissions: settings.team_submissions, live_background: settings.live_background }
+  return { max_team_size: settings.max_team_size, team_submissions: settings.team_submissions }
 }
 
 function hostView(ctx: GameContext, eventId: string): HostView {
@@ -110,6 +120,8 @@ export function getState(
     my_team: teamId ? myTeam(db, teamId) : null,
     teams: teamRows(db, eventId).map((team) => ({ id: team.id, name: shownName(team, { ownTeamId: teamId, isHost }), member_count: team.members })),
     settings: publicSettings(db, eventId),
+    cast: castOf(db, eventId, state),
+    rounds: roundsOf(db, eventId, state),
   }
   return isHost ? { ...view, host: hostView(ctx, eventId) } : view
 }

@@ -3,7 +3,8 @@
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import * as t from '../db/schema'
 import { seedDemo } from '../db/seed-demo'
 import { bodyOf, call, cookieFrom, makeTestApp, sessionFor } from './helpers'
 
@@ -20,6 +21,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  vi.useRealTimers()
   test.game.stop()
   rmSync(mediaDir, { recursive: true, force: true })
 })
@@ -53,6 +55,8 @@ describe('error statuses', () => {
     expect((await post('/api/create_team', loner, { event_id: eventId, name: 'shit happens' })).status).toBe(400)
 
     await hostDoes('host_next') // question 1, mc
+    // Freeze the clock so the six writes below land in one rate-limit second even on a loaded machine.
+    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() })
     expect((await answer(loner, { option: 0 })).status).toBe(403)
     expect((await answer(a.token, { text: 'Challenger Deep' })).status).toBe(400) // write 1 of 5 this second
     for (let i = 0; i < 4; i++) expect((await answer(a.token, { option: 0 }, true)).status).toBe(200)
@@ -127,7 +131,7 @@ describe('get_state', () => {
       ]),
     )
     expect(player).not.toHaveProperty('host')
-    expect(player.settings).toEqual({ max_team_size: 6, team_submissions: 'any_member', live_background: 'cream' })
+    expect(player.settings).toEqual({ max_team_size: 6, team_submissions: 'any_member' })
 
     const hostView = await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))
     expect(hostView.host).toMatchObject({ connected_teams: 0, answered_teams: 0, review_queue: [] })
@@ -145,5 +149,77 @@ describe('get_state', () => {
     expect(await submission()).toMatchObject({ result: null, points: null })
     await hostDoes('host_reveal')
     expect(await submission()).toMatchObject({ result: 'correct', points: 10 })
+  })
+})
+
+describe('round hosts', () => {
+  const roundIds = async (token: string) => (await bodyOf(await get(`/api/round_hosts?event_id=${eventId}`, token))).rounds as { round_id: string; position: number }[]
+
+  it('get_state carries the cast: Rocco in the lobby, then the round 1 host', async () => {
+    expect((await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))).cast).toEqual({ host: 'rocco', incoming_host: null })
+    const [first] = await roundIds(host)
+    await post('/api/set_round_host', host, { event_id: eventId, round_id: first.round_id, host_choice: 'pebble' })
+    await hostDoes('host_next')
+    expect((await bodyOf(await get(`/api/get_state?event_id=${eventId}`, host))).cast).toEqual({ host: 'pebble', incoming_host: null })
+  })
+
+  it('set_round_host refuses a started round', async () => {
+    const [first] = await roundIds(host)
+    await hostDoes('host_next')
+    const res = await post('/api/set_round_host', host, { event_id: eventId, round_id: first.round_id, host_choice: 'june' })
+    expect(res.status).toBe(409)
+    expect(await bodyOf(res)).toEqual({ error: 'round_started' })
+  })
+
+  it('staff and hosts read and set round hosts', async () => {
+    for (const role of ['host', 'staff'] as const) {
+      const token = sessionFor(test.db, role)
+      const third = (await roundIds(token))[2]
+      const choice = role === 'host' ? 'pebble' : 'june'
+      const set = await post('/api/set_round_host', token, { event_id: eventId, round_id: third.round_id, host_choice: choice })
+      expect(set.status).toBe(200)
+      expect(await bodyOf(set)).toEqual({ host_choice: choice, host: null })
+      expect((await roundIds(token))[2]).toMatchObject({ position: 3, host_choice: choice, host: null, started: false })
+    }
+  })
+
+  it('rejects a host choice that is not one of the cast, and a round of another event', async () => {
+    const [first] = await roundIds(host)
+    expect((await post('/api/set_round_host', host, { event_id: eventId, round_id: first.round_id, host_choice: 'octopus' })).status).toBe(400)
+    expect((await post('/api/set_round_host', host, { event_id: crypto.randomUUID(), round_id: first.round_id, host_choice: 'june' })).status).toBe(404)
+  })
+})
+
+describe('the season leaderboard', () => {
+  const season = (token?: string, id = eventId) => call(test.app, 'GET', `/api/season_leaderboard?event_id=${id}`, { token })
+
+  it("lists the season's players with points, rank and nights, and marks the viewer", async () => {
+    const a = await teamFor('Sam the Squid', 'Anglers')
+    await teamFor('Ben', 'Barreleyes')
+    await post('/api/host_adjust_score', host, { team_id: a.teamId, points: 12, note: 'E2E' })
+    const body = await bodyOf(await season(a.token))
+    expect(body.season).toMatchObject({ name: 'Fall 2026' })
+    expect(body.players).toEqual([
+      { rank: 1, name: 'Sam the Squid', points: 12, nights: 1, is_you: true },
+      { rank: 2, name: 'Ben', points: 0, nights: 1, is_you: false },
+    ])
+  })
+
+  it('applies a lone player display mode and sends nothing but name, points, rank and nights', async () => {
+    const a = await teamFor('Sam the Squid', 'Anglers')
+    test.db.update(t.players).set({ displayMode: 'initials' }).run()
+    const body = await bodyOf(await season(a.token))
+    expect(body.players[0].name).toBe('STS')
+    expect(Object.keys(body.players[0]).sort()).toEqual(['is_you', 'name', 'nights', 'points', 'rank'])
+  })
+
+  it('is empty for a season with no players', async () => {
+    expect((await bodyOf(await season(await joinAs('Early')))).players).toEqual([])
+  })
+
+  it('404s for an unknown event and needs a session', async () => {
+    expect((await season(host, crypto.randomUUID())).status).toBe(404)
+    expect((await season(undefined)).status).toBe(401)
+    expect((await season(host)).status).toBe(200) // a host session may read it too
   })
 })

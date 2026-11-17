@@ -1,79 +1,49 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
+import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { debounce } from '@/game/debounce'
-import { cn } from '@/lib/utils'
-
-const DRAFT_MS = 500
+import { FieldError } from './field-error'
 
 /**
- * Typed and closest-number answers (SPEC section 5): every edit saves a draft 500 ms after the
- * last keystroke, so nothing is lost if the connection drops; the one primary button submits.
- * Only the player's own edits save drafts, so a restored draft is never overwritten on mount.
+ * Typed and closest-number answers on the paper (kit.md section 9): a labelled field with its
+ * footnote. The sheet owns the text, the draft saving and the one primary button, so this is only
+ * the field. `foot` is the line under it (the hint, or "Draft saved").
  */
 export function AnswerText({
   numeric,
-  initial,
+  value,
+  foot,
   disabled,
-  violet,
-  onDraft,
-  onSubmit,
+  submitted,
+  team = null,
+  invalid,
+  onChange,
+  onEnter,
 }: {
   numeric: boolean
-  initial: string
+  value: string
+  foot: string
   disabled: boolean
-  violet: boolean
-  onDraft(value: string | number): void
-  onSubmit(value: string | number): void
+  /** The team has sent exactly this: the field turns pen blue. */
+  submitted: boolean
+  /** What the team has sent, when it differs from this field ("Our answer so far: squid"). */
+  team?: string | null
+  invalid: boolean
+  onChange(value: string): void
+  onEnter(): void
 }) {
   const { t } = useTranslation()
   const id = useId()
-  const [text, setText] = useState(initial)
-  const [invalid, setInvalid] = useState(false)
-  const parse = (value: string): string | number | null => {
-    if (!numeric) return value.trim()
-    const number = Number(value.replace(/,/g, '').trim())
-    return value.trim() !== '' && Number.isFinite(number) ? number : null
-  }
-  // The latest onDraft, so the debounced save survives re-renders with a fresh callback.
-  const draft = useRef(onDraft)
-  useEffect(() => {
-    draft.current = onDraft
-  }, [onDraft])
-  // The ref is read when the timer fires, not during render; the rule can't tell.
-  // oxlint-disable-next-line react/refs
-  const [saveDraft] = useState(() => debounce((value: string | number) => draft.current(value), DRAFT_MS))
-  // A draft still pending when the question closes would only be refused.
-  useEffect(() => () => saveDraft.cancel(), [saveDraft])
-
-  const change = (value: string) => {
-    setText(value)
-    setInvalid(false)
-    const parsed = parse(value)
-    if (parsed !== null && parsed !== '') saveDraft(parsed)
-  }
-
-  const submit = (event: FormEvent) => {
-    event.preventDefault()
-    const parsed = parse(text)
-    if (parsed === null || parsed === '') {
-      setInvalid(numeric)
-      return
-    }
-    saveDraft.cancel()
-    onSubmit(parsed)
-  }
-
+  const classes = ['field', numeric ? 'field--number' : null, submitted ? 'field--submitted' : null].filter(Boolean).join(' ')
   return (
-    <form onSubmit={submit} className="flex flex-col gap-3" noValidate>
-      <label htmlFor={id} className={cn('text-base font-medium', violet ? 'text-surface' : 'text-ink')}>
+    <div className={classes}>
+      <label className="field__label" htmlFor={id}>
         {numeric ? t('question.numberLabel') : t('question.answerLabel')}
       </label>
-      <Input
+      <input
+        className="field__input"
         id={id}
-        value={text}
-        onChange={(e) => change(e.target.value)}
+        type="text"
+        value={value}
+        placeholder={numeric ? t('question.placeholderNumber') : t('question.placeholderText')}
         disabled={disabled}
         inputMode={numeric ? 'decimal' : 'text'}
         autoComplete="off"
@@ -81,16 +51,33 @@ export function AnswerText({
         enterKeyHint="send"
         maxLength={200}
         aria-invalid={invalid || undefined}
-        aria-describedby={invalid ? `${id}-error` : undefined}
+        aria-describedby={team ? `${id}-foot ${id}-team` : `${id}-foot`}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+            onEnter()
+          }
+        }}
       />
-      {invalid ? (
-        <p id={`${id}-error`} role="alert" className={cn('text-base font-medium', violet ? 'text-surface' : 'text-incorrect')}>
-          {t('question.notNumber')}
+      <div className="field__foot" id={`${id}-foot`}>
+        <span>{foot}</span>
+        {numeric ? null : (
+          <span className="field__count" aria-hidden="true">
+            {value.length} / 200
+          </span>
+        )}
+      </div>
+      {team ? (
+        <p className="small" id={`${id}-team`}>
+          <strong>{team}</strong> <span className="tag">{t('question.sentTag')}</span>
         </p>
       ) : null}
-      <Button type="submit" size="lg" disabled={disabled}>
-        {t('question.submit')}
-      </Button>
-    </form>
+      {invalid ? (
+        <div role="alert">
+          <FieldError>{t('question.notNumber')}</FieldError>
+        </div>
+      ) : null}
+    </div>
   )
 }

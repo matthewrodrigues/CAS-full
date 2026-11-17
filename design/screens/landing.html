@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landing</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<!-- The start page at the site root. Most players skip it: the QR code on the big screen opens
+     the join screen for tonight's game directly. Peach stage + brand button: two bright colors. -->
+<main class="screen">
+  <div class="screen__top">
+    <p class="hand hand--sm">Thursday NightLife at the Academy</p>
+  </div>
+
+  <section class="stage stage--hero" aria-label="Your host">
+    <p class="bubble bubble--down">Hi! Come on in!</p>
+    <span class="char char--240 char--idle" role="img" data-character="hosts/rocco/greeting" aria-label="Rocco the raccoon, waving hello"></span>
+    <div class="stack stack--tight">
+      <h1 class="display">NightLife Trivia</h1>
+      <p class="muted">Rocco and friends host a game of trivia every Thursday night.</p>
+    </div>
+  </section>
+
+  <div class="stack stack--tight center">
+    <p class="body">Scan the QR code on the big screen to join tonight's game.</p>
+  </div>
+
+  <div class="screen__actions">
+    <a class="btn btn--primary btn--block" href="join-nickname.html">Let me try the demo!</a>
+    <nav class="link-row" aria-label="More">
+      <a href="#host">Host a game</a>
+      <a href="staff-round-hosts.html">Staff</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup flow">
+  <span>Flow:</span>
+  <a href="landing.html">Landing</a>
+  <a href="join-nickname.html">Nickname</a>
+  <a href="join-team.html">Team</a>
+  <a href="lobby.html">Lobby</a>
+</nav>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Big screen: leaderboard</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body class="big">
+
+<main class="screen screen--big screen--night">
+  <div class="screen__top">
+    <div role="status" aria-live="polite">
+      <span class="pill pill--results">
+        <svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>
+        Results are in
+      </span>
+    </div>
+    <p class="hand hand--night" id="page-note">Teams 1–8 of 20 · page 1 of 3</p>
+  </div>
+
+  <section class="stage stage--sky stage--hero" aria-labelledby="board-title">
+    <p class="bubble bubble--down" id="speech">Look at you all go!</p>
+    <span class="char char--400" data-character="hosts/pebble/cheering" role="img" aria-label="Pebble the penguin, cheering"></span>
+    <div class="stack--tight stack">
+      <h1 class="h1" id="board-title">Round 2 complete</h1>
+      <p class="body">Top teams after 19 questions</p>
+    </div>
+  </section>
+
+  <div class="big-col">
+    <ol class="list list--board" id="board" aria-labelledby="board-title"></ol>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Big-screen flow">
+  <span>Big screen, in game order:</span>
+  <a href="big-lobby.html">Lobby</a>
+  <a href="big-question.html">Question</a>
+  <a href="big-round-intro.html">Round intro</a>
+  <a href="big-leaderboard.html">Leaderboard</a>
+  <a href="big-locked.html">Locked</a>
+  <a href="big-reveal.html">Reveal</a>
+  <a href="big-prizes.html">Prizes</a>
+</nav>
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state (the big screen pages every 8 seconds):</span>
+  <a href="big-leaderboard.html">Teams 1–8</a>
+  <a href="big-leaderboard.html?page=2">Teams 9–16</a>
+  <a href="big-leaderboard.html?page=3">Teams 17–20</a>
+</nav>
+
+<script>
+  // Mockup data: 20 teams after Round 2 (10 + 9 questions, 10 points each, 190 possible). Names up to 30 characters.
+  // Teams don't own animals: only ranks 1–3 show the prize animal they'd win, as on the phone.
+  // The big screen shows at most 8 rows at once (kit §13) and pages through the rest.
+  const prizes = ['penguin-chick', 'giant-pacific-octopus', 'pacific-seahorse']
+  const teams = [
+    ['The Bioluminescent Bar Snacks!', 180],
+    ['Kelp Me If You Can', 170],
+    ['Hadal Zone Hooligans of SF Bay', 160],
+    ['The Anglerfish Five', 150],
+    ['Octopus Garden Party Planners!', 150],
+    ['Squid Game Night', 150],
+    ['The Barreleye Brigade', 140],
+    ['Mola Mola Mavericks', 140],
+    ['Pressure Drop', 130],
+    ['Trench Coats', 130],
+    ['Blobfish Appreciation Society', 120],
+    ['The Yeti Crabs', 120],
+    ['Sea Cucumber Sandwich', 110],
+    ['Whale Hello There', 110],
+    ['Snapping Shrimp Ensemble', 100],
+    ['Krill Seekers', 90],
+    ["Dumbo's Ear Club", 90],
+    ['The Midnight Zoners', 80],
+    ['Penguin Chick Fan Club', 70],
+    ['Just Here for the Planetarium', 60],
+  ]
+  const PER_PAGE = 8
+  const pages = Math.ceil(teams.length / PER_PAGE)
+  const page = Math.min(pages, Math.max(1, Number(new URLSearchParams(location.search).get('page') ?? 1)))
+  const start = (page - 1) * PER_PAGE
+  const shown = teams.slice(start, start + PER_PAGE)
+
+  // Tied scores share a rank ("4", "4", "4", then "7"). The top 3 are untied, so each prize has one team.
+  const rankOf = (i) => teams.findIndex((t) => t[1] === teams[i][1]) + 1
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
+  document.getElementById('board').innerHTML = shown
+    .map(([name, score], j) => {
+      const rank = rankOf(start + j)
+      return `<li class="list-row${rank <= 3 ? ' is-top' : ''}">
+        <span class="list-row__rank">${rank}</span>
+        ${rank <= 3 ? `<span class="char char--96" data-character="animals/${prizes[rank - 1]}" aria-hidden="true"></span>` : ''}
+        <span class="list-row__name">${esc(name)}</span>
+        <span class="list-row__score">${score}<span class="sr-only"> points</span></span>
+      </li>`
+    })
+    .join('')
+  document.getElementById('board').setAttribute('start', start + 1)
+  document.getElementById('page-note').textContent =
+    `Teams ${start + 1}–${start + shown.length} of ${teams.length} · page ${page} of ${pages}`
+  if (page > 1) {
+    document.getElementById('speech').textContent = 'Every team counts! Keep going…'
+    document.querySelector('[data-character^="hosts/"]').dataset.character = 'hosts/pebble/waiting'
+    document.querySelector('[data-character^="hosts/"]').setAttribute('aria-label', 'Pebble the penguin, smiling')
+  }
+</script>
+</body>
+</html>

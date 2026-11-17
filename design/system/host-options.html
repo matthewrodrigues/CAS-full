@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Host options</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+<style>
+  .page { max-width: 1340px; margin: 0 auto; padding: var(--space-6) var(--space-4) var(--space-10); display: flex; flex-direction: column; gap: var(--space-10); }
+  .intro { max-width: 62ch; display: flex; flex-direction: column; gap: var(--space-3); }
+  .option-block { display: flex; flex-direction: column; gap: var(--space-4); }
+  .option-block > header { display: flex; flex-direction: column; gap: var(--space-2); max-width: 70ch; }
+  .boards { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+  .board { border-radius: var(--radius-card); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+  .board--paper { background: var(--color-paper); box-shadow: var(--shadow-card); }
+  .board--night { background: var(--color-brand-deep); color: var(--color-paper); }
+  .board--night .hand { color: var(--color-info-soft); }
+  .big-pair { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .fig { margin: 0; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
+  .fig svg { display: block; }
+  .fig svg[width="400"] { max-width: calc(100vw - 2 * var(--space-4) - 2 * var(--space-4)); height: auto; }
+  .board { max-width: 100%; }
+  .pick { max-width: 70ch; }
+  .small-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-4); }
+  .label { font-size: var(--text-sm); font-weight: 700; }
+  .board--night .label { color: var(--color-info-soft); }
+  .set-row { display: flex; align-items: flex-end; gap: var(--space-2); }
+</style>
+</head>
+<body>
+
+<!-- Character art, defined once and reused at every size. Each host: one body, swappable face and arms. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- Shared: the paper-tone backing disc and the ground shadow. -->
+    <symbol id="s-disc" viewBox="0 0 400 400">
+      <circle cx="200" cy="206" r="186" fill="var(--color-char-disc-rim)"/>
+      <circle cx="200" cy="200" r="184" fill="var(--color-char-disc)"/>
+      <ellipse cx="200" cy="350" rx="104" ry="14" fill="var(--color-char-disc-rim)"/>
+    </symbol>
+    <!-- The prop for "asking": a little index card with a honey rule and a question mark (a path, not text). -->
+    <symbol id="s-card" viewBox="-50 -40 100 80">
+      <rect x="-40" y="-30" width="80" height="60" rx="7" fill="var(--color-char-cream)"/>
+      <path d="M-40 -23 a7 7 0 0 1 7 -7 h66 a7 7 0 0 1 7 7 v3 h-80z" fill="var(--color-char-cream-shade)"/>
+      <path d="M-30 -12 h60" stroke="var(--color-char-honey)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M-8 1 q0 -9 8 -9 q8 0 8 8 q0 6 -8 8 v4" fill="none" stroke="var(--color-char-ink)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="0" cy="21" r="3.6" fill="var(--color-char-ink)"/>
+    </symbol>
+    <!-- A small four-point sparkle for "cheering". -->
+    <symbol id="s-spark" viewBox="-20 -20 40 40">
+      <path d="M0 -18 C3 -5 5 -3 18 0 C5 3 3 5 0 18 C-3 5 -5 3 -18 0 C-5 -3 -3 -5 0 -18Z" fill="var(--color-char-honey)"/>
+    </symbol>
+
+    <!-- ============ A. Pebble, the African penguin ============ -->
+    <symbol id="pg-body" viewBox="0 0 400 400">
+      <ellipse cx="158" cy="340" rx="32" ry="15" fill="var(--color-char-honey-shade)"/>
+      <ellipse cx="242" cy="340" rx="32" ry="15" fill="var(--color-char-honey-shade)"/>
+      <path d="M200 52C296 52 330 146 330 224C330 304 278 346 200 346C122 346 70 304 70 224C70 146 104 52 200 52Z" fill="var(--color-char-penguin)"/>
+      <path d="M200 146C184 108 116 104 108 162C102 212 106 334 200 334C294 334 298 212 292 162C284 104 216 108 200 146Z" fill="var(--color-char-cream)"/>
+      <path d="M122 286Q200 316 278 286" fill="none" stroke="var(--color-char-penguin)" stroke-width="11" stroke-linecap="round"/>
+      <circle cx="172" cy="306" r="5" fill="var(--color-char-penguin)"/>
+      <circle cx="226" cy="312" r="4" fill="var(--color-char-penguin)"/>
+      <path d="M126 136q20 -16 42 2" fill="none" stroke="var(--color-char-pink)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M274 136q-20 -16 -42 2" fill="none" stroke="var(--color-char-pink)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M200 256L168 240Q158 256 168 272Z" fill="var(--color-char-sky)"/>
+      <path d="M200 256L232 240Q242 256 232 272Z" fill="var(--color-char-sky)"/>
+      <circle cx="200" cy="256" r="10" fill="var(--color-char-sky-shade)"/>
+    </symbol>
+    <symbol id="pg-face-asking" viewBox="0 0 400 400">
+      <ellipse cx="140" cy="222" rx="16" ry="10" fill="var(--color-char-blush)"/>
+      <ellipse cx="260" cy="222" rx="16" ry="10" fill="var(--color-char-blush)"/>
+      <circle cx="162" cy="196" r="12" fill="var(--color-char-ink)"/>
+      <circle cx="238" cy="196" r="12" fill="var(--color-char-ink)"/>
+      <path d="M146 166q16 -11 31 -2" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M223 164q15 -9 31 2" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M182 207Q200 197 218 207Q208 226 200 228Q192 226 182 207Z" fill="var(--color-char-honey)"/>
+    </symbol>
+    <symbol id="pg-face-cheering" viewBox="0 0 400 400">
+      <ellipse cx="138" cy="220" rx="19" ry="12" fill="var(--color-char-blush)"/>
+      <ellipse cx="262" cy="220" rx="19" ry="12" fill="var(--color-char-blush)"/>
+      <path d="M147 200q15 -20 30 0" fill="none" stroke="var(--color-char-ink)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M223 200q15 -20 30 0" fill="none" stroke="var(--color-char-ink)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M182 210H218Q216 240 200 241Q184 240 182 210Z" fill="var(--color-char-ink)"/>
+      <path d="M189 232Q200 224 211 232Q207 240 200 240Q193 240 189 232Z" fill="var(--color-char-mouth)"/>
+      <path d="M178 208Q200 194 222 208Q200 220 178 208Z" fill="var(--color-char-honey)"/>
+    </symbol>
+    <symbol id="pg-arms-asking" viewBox="0 0 400 400">
+      <path d="M96 198C74 214 60 246 62 276C63 292 80 296 86 282C98 258 106 230 106 206Z" fill="var(--color-char-penguin-shade)"/>
+      <use href="#s-card" x="286" y="50" width="110" height="88" transform="rotate(10 341 94)"/>
+      <path d="M314 208C336 196 352 168 356 138C358 122 342 118 336 130C326 152 314 176 304 192Z" fill="var(--color-char-penguin-shade)"/>
+    </symbol>
+    <symbol id="pg-arms-cheering" viewBox="0 0 400 400">
+      <path d="M88 206C66 196 48 172 40 146C36 132 50 124 58 134C72 152 86 174 96 190Z" fill="var(--color-char-penguin-shade)"/>
+      <path d="M312 206C334 196 352 172 360 146C364 132 350 124 342 134C328 152 314 174 304 190Z" fill="var(--color-char-penguin-shade)"/>
+      <use href="#s-spark" x="18" y="62" width="44" height="44"/>
+      <use href="#s-spark" x="336" y="58" width="36" height="36"/>
+      <use href="#s-spark" x="350" y="196" width="24" height="24"/>
+    </symbol>
+    <symbol id="pg-asking" viewBox="0 0 400 400">
+      <use href="#s-disc"/><use href="#pg-body"/><use href="#pg-face-asking"/><use href="#pg-arms-asking"/>
+    </symbol>
+    <symbol id="pg-cheering" viewBox="0 0 400 400">
+      <use href="#s-disc"/><use href="#pg-body"/><use href="#pg-face-cheering"/><use href="#pg-arms-cheering"/>
+    </symbol>
+
+    <!-- ============ B. Dr. June, the night-shift scientist ============ -->
+    <symbol id="sc-body" viewBox="0 0 400 400">
+      <!-- hair behind the head: a soft cloud of curls -->
+      <circle cx="200" cy="146" r="116" fill="var(--color-char-hair-shade)"/>
+      <circle cx="96" cy="196" r="44" fill="var(--color-char-hair-shade)"/>
+      <circle cx="304" cy="196" r="44" fill="var(--color-char-hair-shade)"/>
+      <!-- lab coat -->
+      <path d="M128 258C108 280 100 320 104 348H296C300 320 292 280 272 258Z" fill="var(--color-char-cream)"/>
+      <path d="M104 348C102 326 106 300 116 280L132 348Z" fill="var(--color-char-cream-shade)"/>
+      <path d="M296 348C298 326 294 300 284 280L268 348Z" fill="var(--color-char-cream-shade)"/>
+      <path d="M176 258L200 312L224 258Z" fill="var(--color-char-sky)"/>
+      <path d="M160 258L200 330L176 258Z" fill="var(--color-char-cream-shade)"/>
+      <path d="M240 258L200 330L224 258Z" fill="var(--color-char-cream-shade)"/>
+      <rect x="238" y="290" width="34" height="8" rx="4" fill="var(--color-char-cream-shade)"/>
+      <rect x="252" y="276" width="7" height="20" rx="3.5" fill="var(--color-char-honey)"/>
+      <!-- ears and head -->
+      <circle cx="96" cy="186" r="20" fill="var(--color-char-skin-shade)"/>
+      <circle cx="304" cy="186" r="20" fill="var(--color-char-skin-shade)"/>
+      <circle cx="200" cy="168" r="106" fill="var(--color-char-skin)"/>
+      <!-- hair: top bun and a curly fringe -->
+      <circle cx="200" cy="42" r="40" fill="var(--color-char-hair)"/>
+      <path d="M94 170C86 92 140 56 200 56C262 56 316 92 306 170C300 146 290 128 272 116C236 142 172 146 128 118C110 130 99 148 94 170Z" fill="var(--color-char-hair)"/>
+      <path d="M178 44q22 -16 44 0" fill="none" stroke="var(--color-char-honey)" stroke-width="9" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="sc-face-asking" viewBox="0 0 400 400">
+      <ellipse cx="134" cy="226" rx="16" ry="10" fill="var(--color-char-blush)"/>
+      <ellipse cx="266" cy="226" rx="16" ry="10" fill="var(--color-char-blush)"/>
+      <circle cx="160" cy="196" r="30" fill="none" stroke="var(--color-char-honey-shade)" stroke-width="8"/>
+      <circle cx="240" cy="196" r="30" fill="none" stroke="var(--color-char-honey-shade)" stroke-width="8"/>
+      <path d="M190 192q10 -7 20 0" fill="none" stroke="var(--color-char-honey-shade)" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="160" cy="198" r="11" fill="var(--color-char-ink)"/>
+      <circle cx="240" cy="198" r="11" fill="var(--color-char-ink)"/>
+      <path d="M144 150q16 -10 32 -2" fill="none" stroke="var(--color-char-hair)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M224 148q16 -8 32 2" fill="none" stroke="var(--color-char-hair)" stroke-width="7" stroke-linecap="round"/>
+      <ellipse cx="200" cy="240" rx="11" ry="9" fill="var(--color-char-ink)"/>
+      <ellipse cx="200" cy="243" rx="6" ry="4" fill="var(--color-char-mouth)"/>
+    </symbol>
+    <symbol id="sc-face-cheering" viewBox="0 0 400 400">
+      <ellipse cx="132" cy="226" rx="19" ry="12" fill="var(--color-char-blush)"/>
+      <ellipse cx="268" cy="226" rx="19" ry="12" fill="var(--color-char-blush)"/>
+      <circle cx="160" cy="196" r="30" fill="none" stroke="var(--color-char-honey-shade)" stroke-width="8"/>
+      <circle cx="240" cy="196" r="30" fill="none" stroke="var(--color-char-honey-shade)" stroke-width="8"/>
+      <path d="M190 192q10 -7 20 0" fill="none" stroke="var(--color-char-honey-shade)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M146 204q14 -20 28 0" fill="none" stroke="var(--color-char-ink)" stroke-width="9" stroke-linecap="round"/>
+      <path d="M226 204q14 -20 28 0" fill="none" stroke="var(--color-char-ink)" stroke-width="9" stroke-linecap="round"/>
+      <path d="M178 232H222Q220 262 200 263Q180 262 178 232Z" fill="var(--color-char-ink)"/>
+      <path d="M187 252Q200 244 213 252Q208 262 200 262Q192 262 187 252Z" fill="var(--color-char-mouth)"/>
+    </symbol>
+    <symbol id="sc-arms-asking" viewBox="0 0 400 400">
+      <path d="M136 274Q120 296 122 320" fill="none" stroke="var(--color-char-cream-shade)" stroke-width="34" stroke-linecap="round"/>
+      <circle cx="124" cy="330" r="16" fill="var(--color-char-skin)"/>
+      <path d="M266 272Q300 250 318 200" fill="none" stroke="var(--color-char-cream-shade)" stroke-width="36" stroke-linecap="round"/>
+      <circle cx="320" cy="188" r="17" fill="var(--color-char-skin)"/>
+      <use href="#s-card" x="286" y="88" width="110" height="88" transform="rotate(10 341 132)"/>
+    </symbol>
+    <symbol id="sc-arms-cheering" viewBox="0 0 400 400">
+      <path d="M134 276Q76 270 56 214" fill="none" stroke="var(--color-char-cream-shade)" stroke-width="34" stroke-linecap="round"/>
+      <circle cx="52" cy="198" r="17" fill="var(--color-char-skin)"/>
+      <path d="M266 276Q324 270 344 214" fill="none" stroke="var(--color-char-cream-shade)" stroke-width="34" stroke-linecap="round"/>
+      <circle cx="348" cy="198" r="17" fill="var(--color-char-skin)"/>
+      <use href="#s-spark" x="34" y="92" width="40" height="40"/>
+      <use href="#s-spark" x="330" y="98" width="32" height="32"/>
+    </symbol>
+    <symbol id="sc-asking" viewBox="0 0 400 400">
+      <use href="#s-disc"/><use href="#sc-body"/><use href="#sc-face-asking"/><use href="#sc-arms-asking"/>
+    </symbol>
+    <symbol id="sc-cheering" viewBox="0 0 400 400">
+      <use href="#s-disc"/><use href="#sc-body"/><use href="#sc-face-cheering"/><use href="#sc-arms-cheering"/>
+    </symbol>
+
+    <!-- ============ C. Rocco, the Golden Gate Park raccoon ============ -->
+    <symbol id="rc-body" viewBox="0 0 400 400">
+      <!-- striped tail, curled up behind -->
+      <path d="M262 318C318 318 352 280 348 226C346 196 330 178 312 172" fill="none" stroke="var(--color-char-fur)" stroke-width="54" stroke-linecap="round"/>
+      <path d="M262 318C318 318 352 280 348 226C346 196 330 178 312 172" fill="none" stroke="var(--color-char-mask)" stroke-width="54" stroke-dasharray="0 34 22 34 22 34 22 200" />
+      <!-- body -->
+      <ellipse cx="166" cy="348" rx="28" ry="13" fill="var(--color-char-mask)"/>
+      <ellipse cx="234" cy="348" rx="28" ry="13" fill="var(--color-char-mask)"/>
+      <ellipse cx="200" cy="296" rx="86" ry="60" fill="var(--color-char-fur-shade)"/>
+      <ellipse cx="200" cy="306" rx="52" ry="42" fill="var(--color-char-cream)"/>
+      <!-- ears -->
+      <ellipse cx="116" cy="92" rx="36" ry="40" transform="rotate(-22 116 92)" fill="var(--color-char-fur-shade)"/>
+      <ellipse cx="284" cy="92" rx="36" ry="40" transform="rotate(22 284 92)" fill="var(--color-char-fur-shade)"/>
+      <ellipse cx="120" cy="98" rx="18" ry="22" transform="rotate(-22 120 98)" fill="var(--color-char-cream)"/>
+      <ellipse cx="280" cy="98" rx="18" ry="22" transform="rotate(22 280 98)" fill="var(--color-char-cream)"/>
+      <!-- head with cheek tufts -->
+      <path d="M200 70C282 70 324 116 330 172L352 196L326 206C314 252 264 272 200 272C136 272 86 252 74 206L48 196L70 172C76 116 118 70 200 70Z" fill="var(--color-char-fur)"/>
+      <!-- white brows, dark mask, white muzzle -->
+      <path d="M106 186C112 146 162 140 200 166C238 140 288 146 294 186Z" fill="var(--color-char-cream)"/>
+      <path d="M86 200C96 168 150 162 200 190C250 162 304 168 314 200C304 238 250 244 222 224C210 216 190 216 178 224C150 244 96 238 86 200Z" fill="var(--color-char-mask)"/>
+      <ellipse cx="200" cy="236" rx="48" ry="32" fill="var(--color-char-cream)"/>
+      <ellipse cx="200" cy="216" rx="14" ry="10" fill="var(--color-char-ink)"/>
+    </symbol>
+    <symbol id="rc-face-asking" viewBox="0 0 400 400">
+      <circle cx="148" cy="202" r="13" fill="var(--color-char-cream)"/>
+      <circle cx="252" cy="202" r="13" fill="var(--color-char-cream)"/>
+      <circle cx="148" cy="203" r="10.5" fill="var(--color-char-ink)"/>
+      <circle cx="252" cy="203" r="10.5" fill="var(--color-char-ink)"/>
+      <ellipse cx="164" cy="248" rx="11" ry="7" fill="var(--color-char-blush)"/>
+      <ellipse cx="236" cy="248" rx="11" ry="7" fill="var(--color-char-blush)"/>
+      <path d="M186 236q7 8 14 0q7 8 14 0" fill="none" stroke="var(--color-char-ink)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M130 160q16 -10 32 -2" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M238 158q16 -8 32 2" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="rc-face-cheering" viewBox="0 0 400 400">
+      <path d="M134 208q14 -20 28 0" fill="none" stroke="var(--color-char-cream)" stroke-width="9" stroke-linecap="round"/>
+      <path d="M238 208q14 -20 28 0" fill="none" stroke="var(--color-char-cream)" stroke-width="9" stroke-linecap="round"/>
+      <ellipse cx="160" cy="250" rx="13" ry="8" fill="var(--color-char-blush)"/>
+      <ellipse cx="240" cy="250" rx="13" ry="8" fill="var(--color-char-blush)"/>
+      <path d="M182 232H218Q216 258 200 259Q184 258 182 232Z" fill="var(--color-char-ink)"/>
+      <path d="M189 250Q200 243 211 250Q207 258 200 258Q193 258 189 250Z" fill="var(--color-char-mouth)"/>
+    </symbol>
+    <symbol id="rc-arms-asking" viewBox="0 0 400 400">
+      <ellipse cx="158" cy="300" rx="20" ry="16" fill="var(--color-char-mask)"/>
+      <path d="M262 286Q298 262 312 214" fill="none" stroke="var(--color-char-fur-shade)" stroke-width="30" stroke-linecap="round"/>
+      <circle cx="314" cy="204" r="18" fill="var(--color-char-mask)"/>
+      <use href="#s-card" x="280" y="102" width="110" height="88" transform="rotate(10 335 146)"/>
+    </symbol>
+    <symbol id="rc-arms-cheering" viewBox="0 0 400 400">
+      <path d="M138 286Q102 262 88 214" fill="none" stroke="var(--color-char-fur-shade)" stroke-width="30" stroke-linecap="round"/>
+      <circle cx="86" cy="204" r="18" fill="var(--color-char-mask)"/>
+      <path d="M262 286Q298 262 312 214" fill="none" stroke="var(--color-char-fur-shade)" stroke-width="30" stroke-linecap="round"/>
+      <circle cx="314" cy="204" r="18" fill="var(--color-char-mask)"/>
+      <use href="#s-spark" x="30" y="100" width="40" height="40"/>
+      <use href="#s-spark" x="196" y="20" width="32" height="32"/>
+    </symbol>
+    <symbol id="rc-asking" viewBox="0 0 400 400">
+      <use href="#s-disc"/><use href="#rc-body"/><use href="#rc-face-asking"/><use href="#rc-arms-asking"/>
+    </symbol>
+    <symbol id="rc-cheering" viewBox="0 0 400 400">
+      <use href="#s-disc"/><use href="#rc-body"/><use href="#rc-face-cheering"/><use href="#rc-arms-cheering"/>
+    </symbol>
+
+    <!-- ============ The giant Pacific octopus avatar (prize animal), same style ============ -->
+    <symbol id="oc" viewBox="0 0 400 400">
+      <use href="#s-disc"/>
+      <g fill="none" stroke-linecap="round" stroke-width="38">
+        <path d="M128 236C92 262 62 286 70 318C76 340 104 338 102 318" stroke="var(--color-char-octopus-shade)"/>
+        <path d="M272 236C308 262 338 286 330 318C324 340 296 338 298 318" stroke="var(--color-char-octopus-shade)"/>
+        <path d="M160 256C146 292 116 318 132 338C144 352 166 342 158 324" stroke="var(--color-char-octopus)"/>
+        <path d="M240 256C254 292 284 318 268 338C256 352 234 342 242 324" stroke="var(--color-char-octopus)"/>
+        <path d="M196 262C192 300 184 326 200 342C214 354 228 336 214 326" stroke="var(--color-char-octopus)"/>
+      </g>
+      <circle cx="102" cy="320" r="5" fill="var(--color-char-cream)"/>
+      <circle cx="298" cy="320" r="5" fill="var(--color-char-cream)"/>
+      <circle cx="158" cy="326" r="5" fill="var(--color-char-cream)"/>
+      <circle cx="242" cy="326" r="5" fill="var(--color-char-cream)"/>
+      <path d="M200 58C292 58 326 128 318 196C312 250 270 272 200 272C130 272 88 250 82 196C74 128 108 58 200 58Z" fill="var(--color-char-octopus)"/>
+      <circle cx="146" cy="116" r="12" fill="var(--color-char-octopus-shade)"/>
+      <circle cx="252" cy="104" r="9" fill="var(--color-char-octopus-shade)"/>
+      <circle cx="278" cy="140" r="14" fill="var(--color-char-octopus-shade)"/>
+      <circle cx="120" cy="156" r="7" fill="var(--color-char-octopus-shade)"/>
+      <ellipse cx="136" cy="222" rx="17" ry="10" fill="var(--color-char-blush)"/>
+      <ellipse cx="264" cy="222" rx="17" ry="10" fill="var(--color-char-blush)"/>
+      <circle cx="160" cy="200" r="12" fill="var(--color-char-ink)"/>
+      <circle cx="240" cy="200" r="12" fill="var(--color-char-ink)"/>
+      <path d="M186 222q14 12 28 0" fill="none" stroke="var(--color-char-ink)" stroke-width="7" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main class="page">
+  <header class="intro">
+    <p class="hand">Design kit · review 1</p>
+    <h1 class="h1">Who hosts the night?</h1>
+    <p>Three host options, drawn in the kit's chunky flat kawaii style. Each one is shown asking a question and cheering, at full size and at 48px, on the paper card and on Midnight, the darkest surface. The giant Pacific octopus prize avatar sits beside each host so you can judge whether they look like one set.</p>
+    <p class="note pick"><span><strong>The lead's pick: C, Rocco.</strong> He has the clearest silhouette at 48px (mask, ears and ringed tail), the most personality for a game that only happens after dark, and, as a park neighbor rather than an exhibit, he never competes with the prize animals. Pebble is a close second if you'd rather the host be an Academy animal.</span></p>
+  </header>
+
+  <!-- A -->
+  <section class="option-block" aria-labelledby="a-title">
+    <header>
+      <p class="hand">Option A · an Academy animal</p>
+      <h2 class="h2" id="a-title">Pebble, the African penguin</h2>
+      <p>Pebble is a grown-up African penguin from the Academy's colony, in a sky-blue bow tie, who works the room like a proud quizmaster. African penguins are the Academy's best-loved residents, so everyone in the bar knows them, and the pink brow and spotted chest make Pebble an African penguin rather than a generic cartoon one. The tuxedo already looks dressed for a night out. Penguins are noisy, social birds that live in a crowd, which suits a game played by teams. The tradeoff: the penguin chick is one of tonight's prizes, so host and prize share a species family.</p>
+    </header>
+    <div class="boards">
+      <div class="board board--paper">
+        <p class="label">On the paper card</p>
+        <div class="big-pair">
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="Pebble asking"><use href="#pg-asking"/></svg><figcaption class="hand hand--sm">asking</figcaption></figure>
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="Pebble cheering"><use href="#pg-cheering"/></svg><figcaption class="hand hand--sm">cheering</figcaption></figure>
+        </div>
+        <div class="small-row">
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#pg-asking"/></svg><figcaption class="small">48 asking</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#pg-cheering"/></svg><figcaption class="small">48 cheering</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg><figcaption class="small">48 octopus</figcaption></figure>
+          <figure class="fig"><div class="set-row"><svg width="160" height="160" viewBox="0 0 400 400" aria-hidden="true"><use href="#pg-asking"/></svg><svg width="120" height="120" viewBox="0 0 400 400" role="img" aria-label="Giant Pacific octopus"><use href="#oc"/></svg></div><figcaption class="small">one set: host and octopus</figcaption></figure>
+        </div>
+      </div>
+      <div class="board board--night">
+        <p class="label">On Midnight</p>
+        <div class="big-pair">
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" aria-hidden="true"><use href="#pg-asking"/></svg><figcaption class="hand hand--sm">asking</figcaption></figure>
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" aria-hidden="true"><use href="#pg-cheering"/></svg><figcaption class="hand hand--sm">cheering</figcaption></figure>
+        </div>
+        <div class="small-row">
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#pg-asking"/></svg><figcaption class="small">48 asking</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#pg-cheering"/></svg><figcaption class="small">48 cheering</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg><figcaption class="small">48 octopus</figcaption></figure>
+          <figure class="fig"><div class="set-row"><svg width="160" height="160" viewBox="0 0 400 400" aria-hidden="true"><use href="#pg-asking"/></svg><svg width="120" height="120" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg></div><figcaption class="small">one set: host and octopus</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="option-block" aria-labelledby="b-title">
+    <header>
+      <p class="hand">Option B · a person</p>
+      <h2 class="h2" id="b-title">Dr. June, the night-shift scientist</h2>
+      <p>Dr. June is the Academy biologist who stays late on Thursdays: big curly bun with a honey pencil tucked in, round honey glasses, lab coat over a sky-blue shirt. She's the friend who knows a fun fact about everything and can't wait to tell you. A scientist host says "this is a science museum" without a logo, lets every animal stay a prize instead of a rival, and gives the game a warm human face. She's the most expressive of the three, because a face with brows and glasses reads clearly at any size. The tradeoff: a person means skin tone and hair choices, and some players may read her as a real staff member.</p>
+    </header>
+    <div class="boards">
+      <div class="board board--paper">
+        <p class="label">On the paper card</p>
+        <div class="big-pair">
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="Dr. June asking"><use href="#sc-asking"/></svg><figcaption class="hand hand--sm">asking</figcaption></figure>
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="Dr. June cheering"><use href="#sc-cheering"/></svg><figcaption class="hand hand--sm">cheering</figcaption></figure>
+        </div>
+        <div class="small-row">
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#sc-asking"/></svg><figcaption class="small">48 asking</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#sc-cheering"/></svg><figcaption class="small">48 cheering</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg><figcaption class="small">48 octopus</figcaption></figure>
+          <figure class="fig"><div class="set-row"><svg width="160" height="160" viewBox="0 0 400 400" aria-hidden="true"><use href="#sc-asking"/></svg><svg width="120" height="120" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg></div><figcaption class="small">one set: host and octopus</figcaption></figure>
+        </div>
+      </div>
+      <div class="board board--night">
+        <p class="label">On Midnight</p>
+        <div class="big-pair">
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" aria-hidden="true"><use href="#sc-asking"/></svg><figcaption class="hand hand--sm">asking</figcaption></figure>
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" aria-hidden="true"><use href="#sc-cheering"/></svg><figcaption class="hand hand--sm">cheering</figcaption></figure>
+        </div>
+        <div class="small-row">
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#sc-asking"/></svg><figcaption class="small">48 asking</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#sc-cheering"/></svg><figcaption class="small">48 cheering</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg><figcaption class="small">48 octopus</figcaption></figure>
+          <figure class="fig"><div class="set-row"><svg width="160" height="160" viewBox="0 0 400 400" aria-hidden="true"><use href="#sc-asking"/></svg><svg width="120" height="120" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg></div><figcaption class="small">one set: host and octopus</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="option-block" aria-labelledby="c-title">
+    <header>
+      <p class="hand">Option C · a nocturnal neighbor</p>
+      <h2 class="h2" id="c-title">Rocco, the Golden Gate Park raccoon</h2>
+      <p>Rocco lives in Golden Gate Park, right outside the Academy's doors, and Thursday night is his night. He's a nocturnal regular who sneaks into NightLife, a bit cheeky and very curious, with a striped tail he can't keep still. Raccoons are the night shift of the animal world, so he fits a game that only happens after dark, and he's a local San Francisco character, not an exhibit, so he never competes with the prize animals. His bandit mask and ringed tail make the strongest silhouette of the three at 48px. The tradeoff: he isn't an Academy animal, so the Academy link comes from the story, not the species.</p>
+    </header>
+    <div class="boards">
+      <div class="board board--paper">
+        <p class="label">On the paper card</p>
+        <div class="big-pair">
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="Rocco asking"><use href="#rc-asking"/></svg><figcaption class="hand hand--sm">asking</figcaption></figure>
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="Rocco cheering"><use href="#rc-cheering"/></svg><figcaption class="hand hand--sm">cheering</figcaption></figure>
+        </div>
+        <div class="small-row">
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#rc-asking"/></svg><figcaption class="small">48 asking</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#rc-cheering"/></svg><figcaption class="small">48 cheering</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg><figcaption class="small">48 octopus</figcaption></figure>
+          <figure class="fig"><div class="set-row"><svg width="160" height="160" viewBox="0 0 400 400" aria-hidden="true"><use href="#rc-asking"/></svg><svg width="120" height="120" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg></div><figcaption class="small">one set: host and octopus</figcaption></figure>
+        </div>
+      </div>
+      <div class="board board--night">
+        <p class="label">On Midnight</p>
+        <div class="big-pair">
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" aria-hidden="true"><use href="#rc-asking"/></svg><figcaption class="hand hand--sm">asking</figcaption></figure>
+          <figure class="fig"><svg width="400" height="400" viewBox="0 0 400 400" aria-hidden="true"><use href="#rc-cheering"/></svg><figcaption class="hand hand--sm">cheering</figcaption></figure>
+        </div>
+        <div class="small-row">
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#rc-asking"/></svg><figcaption class="small">48 asking</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#rc-cheering"/></svg><figcaption class="small">48 cheering</figcaption></figure>
+          <figure class="fig"><svg width="48" height="48" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg><figcaption class="small">48 octopus</figcaption></figure>
+          <figure class="fig"><div class="set-row"><svg width="160" height="160" viewBox="0 0 400 400" aria-hidden="true"><use href="#rc-asking"/></svg><svg width="120" height="120" viewBox="0 0 400 400" aria-hidden="true"><use href="#oc"/></svg></div><figcaption class="small">one set: host and octopus</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

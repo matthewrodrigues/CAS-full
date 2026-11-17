@@ -1,5 +1,5 @@
 // Demo content (docs/SPEC.md section 4): one season, the "Deep Sea Night" theme, event DEMO1
-// with four rounds and 29 questions covering every type, and three rewards. Host and staff
+// with four rounds and 29 questions covering every type, and three animal naming prizes. Host and staff
 // access comes from the passcodes in .env, so no accounts are seeded.
 import { randomUUID } from 'node:crypto'
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -9,7 +9,7 @@ import type { MediaKind, QuestionType, RoundFormat } from '../../shared/enums'
 import { parseSettings, type EventSettings } from '../../shared/settings'
 import { validateQuestion, validateRounds } from '../game/content-rules'
 import type { Db } from './client'
-import { eventQuestions, events, gameState, questionAnswers, questions, rewards, rounds, seasons, themes } from './schema'
+import { animals, animalUpdates, eventQuestions, events, gameState, namingPrizes, questionAnswers, questions, rounds, seasons, themes } from './schema'
 
 export const DEMO_JOIN_CODE = 'DEMO1'
 const THEME_SLUG = 'deep-sea-night'
@@ -284,6 +284,64 @@ const ROUNDS: SeedRound[] = [
   },
 ]
 
+const DAY_MS = 86_400_000
+
+/** Naming prizes for places 1, 2 and 3, with a first update for each animal's feed. */
+const PRIZE_ANIMALS = [
+  {
+    row: {
+      species: 'African penguin chick',
+      avatar: 'penguin-chick' as const,
+      scientificName: 'Spheniscus demersus',
+      exhibit: 'African Hall penguin colony',
+      about: 'Hatched this fall. It will trade its fluffy grey down for waterproof adult feathers in a few months.',
+    },
+    update: 'The chick has started following its parents to the edge of the pool. Swimming lessons soon!',
+  },
+  {
+    row: {
+      species: 'Giant Pacific octopus',
+      avatar: 'giant-pacific-octopus' as const,
+      scientificName: 'Enteroctopus dofleini',
+      exhibit: 'Steinhart Aquarium, Northern California Coast',
+      about: 'Can change the color and texture of its skin in a fraction of a second, and loves puzzle feeders.',
+    },
+    update: 'Opened its first puzzle feeder in under four minutes.',
+  },
+  {
+    row: {
+      species: 'Pacific seahorse',
+      avatar: 'pacific-seahorse' as const,
+      scientificName: 'Hippocampus ingens',
+      exhibit: 'Steinhart Aquarium, Water Planet',
+      about: 'In seahorses the father carries the eggs in a pouch until they hatch.',
+    },
+    update: 'Settled into the seagrass and has a favorite anchor spot already.',
+  },
+]
+
+const NAMED_ANIMAL = {
+  row: {
+    species: 'Moray eel',
+    avatar: 'moray-eel' as const,
+    scientificName: 'Gymnothorax javanicus',
+    exhibit: 'Philippine Coral Reef',
+    about: 'Hides in the reef by day and comes out to explore at night.',
+    name: 'Noodle',
+    namedByTeam: 'The Anglerfish Five',
+  },
+  updates: ['Noodle has a new favorite cave on the left side of the reef.', 'Weighed in at a healthy 2.1 kg at this week’s checkup.'],
+}
+
+function seedPrizes(tx: Pick<Db, 'insert'>, eventId: string, now: number) {
+  PRIZE_ANIMALS.forEach((animal, i) => {
+    const animalId = randomUUID()
+    tx.insert(animals).values({ id: animalId, ...animal.row, createdAt: now }).run()
+    tx.insert(namingPrizes).values({ eventId, animalId, place: i + 1 }).run()
+    tx.insert(animalUpdates).values({ animalId, body: animal.update, postedAt: now }).run()
+  })
+}
+
 const DURATION_S: Record<QuestionType, number> = { mc: 20, true_false: 20, typed: 30, closest_number: 30 }
 const WAGER_DURATION_S = 45
 const POINTS = 10
@@ -338,8 +396,13 @@ export function seedDemo(
   db: Db,
   { mediaDir, joinCode = DEMO_JOIN_CODE, settings = {} }: { mediaDir: string; joinCode?: string; settings?: Partial<EventSettings> },
 ): { eventId: string; created: boolean } {
-  const existing = db.select({ id: events.id }).from(events).where(eq(events.joinCode, joinCode)).get()
-  if (existing) return { eventId: existing.id, created: false }
+  const existing = db.select({ id: events.id, status: events.status }).from(events).where(eq(events.joinCode, joinCode)).get()
+  if (existing) {
+    // Databases seeded before naming prizes existed get them once, while the night is still to come.
+    const hasPrizes = db.select({ id: namingPrizes.id }).from(namingPrizes).where(eq(namingPrizes.eventId, existing.id)).get()
+    if (!hasPrizes && existing.status !== 'ended') db.transaction((tx) => seedPrizes(tx, existing.id, Date.now()))
+    return { eventId: existing.id, created: false }
+  }
 
   const roundProblems = validateRounds(ROUNDS.map((r, i) => ({ position: i + 1, format: r.format })))
   if (roundProblems.length) throw new Error(`Seed rounds are invalid: ${roundProblems.join('; ')}`)
@@ -419,15 +482,17 @@ export function seedDemo(
         tx.insert(eventQuestions).values({ ...row.eventQuestion, roundId: round.id }).run()
       }
     }
-    // Rewards are shared by every seeded event, so only the first seed adds them.
-    // Placeholders until the Academy sets the prize list (section 12). No reward involves drinks.
+    // The night's prizes: the top three teams each name an Academy animal. Each event gets its
+    // own animals (an animal can be named only once). Placeholder animals until the Academy
+    // picks real ones (section 12). No prize involves drinks.
+    const now = Date.now()
+    seedPrizes(tx, eventId, now)
+    // One animal already named by an earlier night, shared by every seed, so the Animals tab has something to follow.
     if (!theme) {
-      tx.insert(rewards)
-        .values([
-          { name: 'Top team prize', tier: 1, description: 'Placeholder for the first-place prize.', expiresAfterDays: 30 },
-          { name: 'Runner-up prize', tier: 2, description: 'Placeholder for the second-place prize.', expiresAfterDays: 60 },
-          { name: 'Thanks for playing', tier: 3, description: 'Placeholder for a small prize for every team.', expiresAfterDays: 90 },
-        ])
+      const animalId = randomUUID()
+      tx.insert(animals).values({ id: animalId, ...NAMED_ANIMAL.row, namedAt: now - 14 * DAY_MS, createdAt: now - 30 * DAY_MS }).run()
+      tx.insert(animalUpdates)
+        .values(NAMED_ANIMAL.updates.map((body, i) => ({ animalId, body, postedAt: now - (NAMED_ANIMAL.updates.length - i) * 3 * DAY_MS })))
         .run()
     }
   })

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Big screen: reveal</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body class="big">
+
+<main class="screen screen--big screen--night">
+  <div class="screen__top">
+    <div role="status" aria-live="polite">
+      <span class="pill pill--results">
+        <svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>
+        Results are in
+      </span>
+    </div>
+    <p class="hand hand--night">Round 3 of 4</p>
+  </div>
+
+  <section class="stage stage--sky stage--hero" aria-label="Your host">
+    <p class="bubble bubble--down">Brilliant! 14 teams got it!</p>
+    <span class="char char--400" data-character="hosts/june/cheering" role="img" aria-label="Dr. June the scientist, cheering"></span>
+    <p class="body">14 of 20 teams were right</p>
+  </section>
+
+  <div class="big-col">
+    <article class="paper" aria-labelledby="prompt">
+      <header class="paper__head">
+        <div class="paper__meta">
+          <p class="hand">Question 5 of 9</p>
+          <p class="small">Ocean Sounds · 10 points</p>
+        </div>
+        <p class="result result--correct">
+          <svg class="result__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          Correct!
+        </p>
+      </header>
+      <div class="paper__body">
+        <h1 class="question" id="prompt" data-role="question">Snapping shrimp make this crackling. What makes the snap?</h1>
+        <div class="option option--static option--answer is-correct">
+          <span class="option__mark option__mark--correct"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+          <span class="option__label"><span class="sr-only">Correct answer: </span>A collapsing bubble from the claw</span>
+        </div>
+        <div class="fact">
+          <svg class="fact__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>
+          <div>
+            <p class="fact__label">Fun fact</p>
+            <p>The bubble collapses so fast that for an instant it gets about as hot as the surface of the Sun.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Big-screen flow">
+  <span>Big screen, in game order:</span>
+  <a href="big-lobby.html">Lobby</a>
+  <a href="big-question.html">Question</a>
+  <a href="big-round-intro.html">Round intro</a>
+  <a href="big-leaderboard.html">Leaderboard</a>
+  <a href="big-locked.html">Locked</a>
+  <a href="big-reveal.html">Reveal</a>
+  <a href="big-prizes.html">Prizes</a>
+</nav>
+</body>
+</html>

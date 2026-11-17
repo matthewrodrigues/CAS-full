@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animals tab</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen">
+  <div class="screen__top">
+    <p class="hand hand--sm">Keeper news</p>
+  </div>
+
+  <div class="stack stack--tight">
+    <h1 class="h1">Academy animals</h1>
+    <p class="body muted">Follow the animals trivia teams have named and see news from the keepers.</p>
+  </div>
+
+  <section class="stack" aria-labelledby="mine-title">
+    <h2 class="h2" id="mine-title">Animals you follow</h2>
+    <ul class="list">
+      <li><a class="list-row is-you" href="my-animal.html">
+        <span class="char char--48" data-character="animals/giant-pacific-octopus-happy" aria-hidden="true"></span>
+        <span class="list-row__name">Professor Wiggles <span class="tag">You</span><span class="list-row__sub">Giant Pacific octopus · named by your team</span><span class="list-row__sub">Nov 13: Opened its first puzzle feeder in under four minutes.</span></span>
+        <span class="list-row__score"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
+      </a></li>
+    </ul>
+  </section>
+
+  <section class="stack" aria-labelledby="tonight-title">
+    <div class="stack stack--tight">
+      <h2 class="h2" id="tonight-title">Tonight's animals</h2>
+      <p class="small muted">Tonight's winning teams are picking their names now.</p>
+    </div>
+    <ul class="list">
+      <li><a class="list-row" href="my-animal.html">
+        <span class="char char--48" data-character="animals/penguin-chick" aria-hidden="true"></span>
+        <span class="list-row__name">African penguin chick<span class="list-row__sub">No name yet · African Hall penguin colony</span></span>
+        <span class="list-row__score"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
+      </a></li>
+      <li><a class="list-row" href="my-animal.html">
+        <span class="char char--48" data-character="animals/pacific-seahorse" aria-hidden="true"></span>
+        <span class="list-row__name">Pacific seahorse<span class="list-row__sub">No name yet · Steinhart Aquarium, Water Planet</span></span>
+        <span class="list-row__score"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
+      </a></li>
+    </ul>
+  </section>
+
+  <section class="stack" aria-labelledby="all-title">
+    <h2 class="h2" id="all-title">Named by trivia winners</h2>
+    <ul class="list">
+      <li><a class="list-row" href="my-animal.html">
+        <span class="char char--48" data-character="animals/moray-eel" aria-hidden="true"></span>
+        <span class="list-row__name">Noodle<span class="list-row__sub">Moray eel · named by The Anglerfish Five</span><span class="list-row__sub">Nov 10: Weighed in at a healthy 2.1 kg at this week’s checkup.</span></span>
+        <span class="list-row__score"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
+      </a></li>
+    </ul>
+  </section>
+  <nav class="tabbar" aria-label="Game sections">
+    <ul class="tabbar__list">
+      <li><a class="tabbar__link" href="ended-prizes.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1.9-1.1 1.6"/><path d="M12 17h.01"/></svg>Play</a></li>
+      <li><a class="tabbar__link" href="leaderboard-tonight.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4"/><path d="M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M8 20h8"/></svg>Leaderboard</a></li>
+      <li><a class="tabbar__link" href="rewards.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="5" rx="1.5"/><path d="M5.5 13v7h13v-7"/><path d="M12 8v12"/><path d="M12 8C10 4 6.5 4 6.5 6.3S12 8 12 8Zm0 0c2-4 5.5-4 5.5-1.7S12 8 12 8Z"/></svg>Rewards</a></li>
+      <li><a class="tabbar__link" href="animals.html" aria-current="page"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6.5" cy="10.5" r="1.7"/><circle cx="10" cy="6.5" r="1.7"/><circle cx="14" cy="6.5" r="1.7"/><circle cx="17.5" cy="10.5" r="1.7"/><path d="M12 12.5c-3 0-5.5 3.4-5.5 5.3 0 1.4 1.1 2.2 2.5 2.2 1.3 0 1.9-.6 3-.6s1.7.6 3 .6c1.4 0 2.5-.8 2.5-2.2 0-1.9-2.5-5.3-5.5-5.3Z"/></svg>Animals</a></li>
+    </ul>
+  </nav>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="animals.html">Animals tab</a>
+  <a href="my-animal.html">My animal</a>
+</nav>
+
+</body>
+</html>

@@ -12,7 +12,7 @@ import { sameOrigin } from '../auth/guards'
 import { loadSession } from '../auth/sessions'
 import type { AppDeps, AppEnv } from '../context'
 import { events } from '../db/schema'
-import { publicGameState } from '../game/state'
+import { stateMessage } from '../game/state'
 import { teamOf } from '../game/teams'
 
 export function createWsRoute({ db, realtime }: AppDeps) {
@@ -42,9 +42,9 @@ export function createWsRoute({ db, realtime }: AppDeps) {
       let leave = () => {}
       return {
         onOpen(_event, ws) {
-          const state = publicGameState(db, eventId)
+          const message = stateMessage(db, eventId)
           // State first, then the rooms: nothing can be broadcast in between (one thread).
-          if (state) send(ws, { type: 'state', state })
+          if (message) send(ws, message)
           const playerId = session.playerId
           leave = realtime.add(ws, {
             eventId,

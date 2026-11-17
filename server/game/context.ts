@@ -4,7 +4,7 @@ import type { createRateLimiter } from '../auth/rate-limit'
 import type { Db } from '../db/client'
 import { gameState, submissions } from '../db/schema'
 import type { Realtime } from '../realtime/rooms'
-import { publicGameState } from './state'
+import { stateMessage } from './state'
 import type { Timers } from './timers'
 
 /**
@@ -18,14 +18,14 @@ export type GameResult<T> = { ok: true; value: T } | { ok: false; error: GameErr
 export const ok = <T>(value: T): GameResult<T> => ({ ok: true, value })
 export const fail = (error: GameErrorCode): { ok: false; error: GameErrorCode } => ({ ok: false, error })
 
-/** Teams with a socket open, and teams with an answer (draft or submitted) to the current question. */
+/** Teams with a socket open, and teams that have sent an answer (not a draft) to the current question. */
 export function hostCounts(ctx: GameContext, eventId: string) {
   const current = ctx.db.select({ id: gameState.currentEventQuestionId }).from(gameState).where(eq(gameState.eventId, eventId)).get()
   const answered = current?.id
     ? (ctx.db
         .select({ n: count() })
         .from(submissions)
-        .where(and(eq(submissions.eventQuestionId, current.id), isNotNull(submissions.answer)))
+        .where(and(eq(submissions.eventQuestionId, current.id), isNotNull(submissions.answer), eq(submissions.isDraft, false)))
         .get()?.n ?? 0)
     : 0
   return { connected_teams: ctx.realtime.connectedTeams(eventId), answered_teams: answered }
@@ -38,7 +38,7 @@ export function pushHostStats(ctx: GameContext, eventId: string) {
 
 /** The new game_state to everyone in the event, after every phase change. */
 export function broadcastState(ctx: GameContext, eventId: string) {
-  const state = publicGameState(ctx.db, eventId)
-  if (state) ctx.realtime.toEvent(eventId, { type: 'state', state })
+  const message = stateMessage(ctx.db, eventId)
+  if (message) ctx.realtime.toEvent(eventId, message)
   pushHostStats(ctx, eventId)
 }

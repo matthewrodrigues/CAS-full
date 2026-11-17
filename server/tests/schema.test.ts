@@ -1,9 +1,13 @@
 import { randomUUID } from 'node:crypto'
 import { eq, sum } from 'drizzle-orm'
+import { mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { parseSettings } from '../../shared/settings'
 import type { Db } from '../db/client'
 import * as t from '../db/schema'
+import { seedDemo } from '../db/seed-demo'
 import { buildFixture, type Fixture } from './fixtures'
 import { makeTestDb } from './helpers'
 
@@ -150,6 +154,26 @@ describe('schema constraints', () => {
   })
 })
 
+describe('animal avatars', () => {
+  it('seeds the demo animals with their avatars', () => {
+    const mediaDir = mkdtempSync(join(tmpdir(), 'nightlife-schema-'))
+    try {
+      seedDemo(db, { mediaDir })
+      const avatarOf = (species: string) => db.select().from(t.animals).where(eq(t.animals.species, species)).get()?.avatar
+      expect(avatarOf('African penguin chick')).toBe('penguin-chick')
+      expect(avatarOf('Giant Pacific octopus')).toBe('giant-pacific-octopus')
+      expect(avatarOf('Pacific seahorse')).toBe('pacific-seahorse')
+      expect(avatarOf('Moray eel')).toBe('moray-eel')
+    } finally {
+      rmSync(mediaDir, { recursive: true, force: true })
+    }
+  })
+
+  it('rejects an avatar outside the set', () => {
+    expect(() => db.$client.prepare("insert into animals (id, species, exhibit, avatar, created_at) values ('a', 's', 'e', 'shark', 0)").run()).toThrow()
+  })
+})
+
 describe('event settings', () => {
   it('fills every default', () => {
     expect(parseSettings({})).toEqual({
@@ -159,8 +183,12 @@ describe('event settings', () => {
       grace_ms: 1200,
       auto_accept_threshold: 0.8,
       review_threshold: 0.5,
-      live_background: 'cream',
     })
+  })
+
+  it('parseSettings ignores a stored live_background', () => {
+    const parsed = parseSettings({ live_background: 'violet' })
+    expect(parsed).not.toHaveProperty('live_background')
   })
 
   it('rejects a review threshold above the auto-accept threshold', () => {

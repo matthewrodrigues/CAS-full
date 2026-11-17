@@ -71,16 +71,16 @@ describe('eventLeaderboard', () => {
 describe('seasonLeaderboard', () => {
   it("credits every member with the team's points across the season's nights", () => {
     expect(seasonLeaderboard(db, ids.s1)).toEqual([
-      { playerId: ids.Ana, nickname: 'Ana', points: 45, rank: 1 },
-      { playerId: ids.Cy, nickname: 'Cy', points: 35, rank: 2 },
-      { playerId: ids.Ben, nickname: 'Ben', points: 30, rank: 3 },
-      { playerId: ids.Dee, nickname: 'Dee', points: 20, rank: 4 },
-      { playerId: ids.Eli, nickname: 'Eli', points: 0, rank: 5 },
+      { playerId: ids.Ana, nickname: 'Ana', displayMode: 'nickname', points: 45, nights: 2, rank: 1 },
+      { playerId: ids.Cy, nickname: 'Cy', displayMode: 'nickname', points: 35, nights: 2, rank: 2 },
+      { playerId: ids.Ben, nickname: 'Ben', displayMode: 'nickname', points: 30, nights: 1, rank: 3 },
+      { playerId: ids.Dee, nickname: 'Dee', displayMode: 'nickname', points: 20, nights: 1, rank: 4 },
+      { playerId: ids.Eli, nickname: 'Eli', displayMode: 'nickname', points: 0, nights: 1, rank: 5 },
     ])
   })
 
   it('excludes events from other seasons', () => {
-    expect(seasonLeaderboard(db, ids.s2)).toEqual([{ playerId: ids.Dee, nickname: 'Dee', points: 100, rank: 1 }])
+    expect(seasonLeaderboard(db, ids.s2)).toEqual([{ playerId: ids.Dee, nickname: 'Dee', displayMode: 'nickname', points: 100, nights: 1, rank: 1 }])
   })
 
   it("drops a deleted player but keeps their team's event total", () => {

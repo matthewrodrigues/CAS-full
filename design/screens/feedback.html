@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback and newsletter</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--results"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>Results are in</span>
+    </div>
+    <p class="hand hand--sm">Game DEMO1</p>
+  </div>
+
+  <section class="stage" aria-label="Your host">
+    <span id="host-relax"><span class="char char--96" data-character="hosts/rocco/relaxing" role="img" aria-label="Rocco the raccoon, relaxing"></span></span>
+    <span id="host-cheer" hidden><span class="char char--96" data-character="hosts/rocco/cheering" role="img" aria-label="Rocco the raccoon, cheering"></span></span>
+    <p class="bubble" id="speech">Put your feet up and spill!</p>
+  </section>
+
+  <form class="card" id="feedback-form" aria-labelledby="feedback-title" novalidate>
+    <h1 class="h1" id="feedback-title">How was tonight?</h1>
+    <fieldset class="rating">
+      <legend class="rating__legend">Rate the game from 1 to 5</legend>
+      <div class="rating__stars">
+        <label class="rating__star is-on">
+          <input type="radio" name="rating" value="1">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>
+          <span class="sr-only">1 star</span>
+        </label>
+        <label class="rating__star is-on">
+          <input type="radio" name="rating" value="2">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>
+          <span class="sr-only">2 stars</span>
+        </label>
+        <label class="rating__star is-on">
+          <input type="radio" name="rating" value="3">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>
+          <span class="sr-only">3 stars</span>
+        </label>
+        <label class="rating__star is-on">
+          <input type="radio" name="rating" value="4" checked>
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>
+          <span class="sr-only">4 stars</span>
+        </label>
+        <label class="rating__star">
+          <input type="radio" name="rating" value="5">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>
+          <span class="sr-only">5 stars</span>
+        </label>
+      </div>
+    </fieldset>
+    <div class="field">
+      <label class="field__label" for="comment">Anything to tell us? (optional)</label>
+      <textarea class="field__input field__input--area" id="comment" maxlength="1000" rows="3" aria-describedby="comment-foot">Loved the octopus round! Could the audio questions be a little louder?</textarea>
+      <div class="field__foot" id="comment-foot"><span>Only Academy staff read this.</span><span class="field__count" id="comment-count">69 / 1000</span></div>
+    </div>
+    <button type="submit" class="btn btn--primary btn--block" id="send">Send my feedback</button>
+  </form>
+  <div role="status" aria-live="polite"><p class="note" id="feedback-thanks" hidden>
+    <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 2.8C19.5 15.4 12 20 12 20Z"/></svg>
+    <span>Thanks for the feedback!</span>
+  </p></div>
+
+  <form class="card" id="news-form" aria-labelledby="news-title" novalidate>
+    <h2 class="h2" id="news-title">Hear about the next NightLife</h2>
+    <div class="field">
+      <label class="field__label" for="email">Email</label>
+      <input class="field__input" id="email" type="email" autocomplete="email" placeholder="you@example.com">
+    </div>
+    <label class="check">
+      <span class="check__control">
+        <input type="checkbox" id="consent" aria-describedby="consent-error">
+        <span class="check__box"><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+      </span>
+      <span class="check__text">Yes, email me about NightLife events. I can unsubscribe any time.</span>
+    </label>
+    <div role="alert" id="consent-error"></div>
+    <button type="submit" class="btn btn--secondary btn--block">Sign me up</button>
+    <a class="btn btn--quiet" href="#privacy">How we use your data</a>
+  </form>
+  <div role="status" aria-live="polite"><p class="note" id="news-thanks" hidden>
+    <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>
+    <span>You're signed up.</span>
+  </p></div>
+  <nav class="tabbar" aria-label="Game sections">
+    <ul class="tabbar__list">
+      <li><a class="tabbar__link" href="ended-prizes.html" aria-current="page"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1.9-1.1 1.6"/><path d="M12 17h.01"/></svg>Play</a></li>
+      <li><a class="tabbar__link" href="leaderboard-tonight.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4"/><path d="M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M8 20h8"/></svg>Leaderboard</a></li>
+      <li><a class="tabbar__link" href="rewards.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="5" rx="1.5"/><path d="M5.5 13v7h13v-7"/><path d="M12 8v12"/><path d="M12 8C10 4 6.5 4 6.5 6.3S12 8 12 8Zm0 0c2-4 5.5-4 5.5-1.7S12 8 12 8Z"/></svg>Rewards</a></li>
+      <li><a class="tabbar__link" href="animals.html"><svg class="tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6.5" cy="10.5" r="1.7"/><circle cx="10" cy="6.5" r="1.7"/><circle cx="14" cy="6.5" r="1.7"/><circle cx="17.5" cy="10.5" r="1.7"/><path d="M12 12.5c-3 0-5.5 3.4-5.5 5.3 0 1.4 1.1 2.2 2.5 2.2 1.3 0 1.9-.6 3-.6s1.7.6 3 .6c1.4 0 2.5-.8 2.5-2.2 0-1.9-2.5-5.3-5.5-5.3Z"/></svg>Animals</a></li>
+    </ul>
+  </nav>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="feedback.html">Filling in</a>
+  <a href="feedback.html?state=consent">Consent missing</a>
+  <a href="feedback.html?state=thanks">All sent</a>
+</nav>
+
+<script>
+// Mockup behavior: stars fill up to the pick, feedback sends with a rating, and the newsletter
+  // needs the (unticked) consent box before it sends.
+  const stars = [...document.querySelectorAll('.rating__star')]
+  const paint = () => {
+    const picked = stars.findIndex((s) => s.querySelector('input').checked)
+    stars.forEach((s, i) => s.classList.toggle('is-on', i <= picked))
+    document.getElementById('send').disabled = picked === -1
+  }
+  stars.forEach((s) => s.querySelector('input').addEventListener('change', paint))
+  const comment = document.getElementById('comment')
+  comment.addEventListener('input', () => (document.getElementById('comment-count').textContent = comment.value.length + ' / 1000'))
+
+  const thankFeedback = () => {
+    document.getElementById('feedback-form').hidden = true
+    document.getElementById('feedback-thanks').hidden = false
+    document.getElementById('host-relax').hidden = true
+    document.getElementById('host-cheer').hidden = false
+    document.getElementById('speech').textContent = 'Thanks, pal! See you Thursday!'
+  }
+  document.getElementById('feedback-form').addEventListener('submit', (event) => {
+    event.preventDefault()
+    thankFeedback()
+  })
+
+  const consent = document.getElementById('consent')
+  const error = document.getElementById('consent-error')
+  const ALERT = "<svg class=\"btn__icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path d=\"M12 7.5v5\"/><path d=\"M12 16.2h.01\"/></svg>"
+  const needConsent = () => (error.innerHTML = '<p class="field__error row">' + ALERT + '<span>Tick the box to agree first.</span></p>')
+  consent.addEventListener('change', () => (error.innerHTML = ''))
+  const thankNews = () => {
+    document.getElementById('news-form').hidden = true
+    document.getElementById('news-thanks').hidden = false
+  }
+  document.getElementById('news-form').addEventListener('submit', (event) => {
+    event.preventDefault()
+    if (!consent.checked) return needConsent()
+    thankNews()
+  })
+
+  const state = new URLSearchParams(location.search).get('state')
+  if (state === 'consent') {
+    document.getElementById('email').value = 'maya@example.com'
+    needConsent()
+  }
+  if (state === 'thanks') {
+    thankFeedback()
+    thankNews()
+  }
+  paint()
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join: pick a team</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<!-- A form screen: the host is 64px next to the heading (kit §15), so the keyboard has room.
+     Tap, then send, like the game itself: type a new team name OR tap a team, then one button. -->
+<main class="screen">
+  <div class="screen__top">
+    <p class="hand hand--sm">Deep Sea Night</p>
+    <p class="hand hand--sm">Step 2 of 2</p>
+  </div>
+
+  <header class="row">
+    <span class="char char--64" role="img" data-character="hosts/rocco/greeting" aria-label="Rocco the raccoon, waving hello"></span>
+    <div class="stack stack--tight">
+      <h1 class="h1">Pick your team</h1>
+      <p class="muted">Hi, <span id="hello">Sam</span>! Start a team or hop on one.</p>
+    </div>
+  </header>
+
+  <div role="status" aria-live="polite"><p class="note" id="started" hidden>
+    <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <span>The game has started. You can still join a team.</span>
+  </p></div>
+
+  <form class="stack stack--loose" id="form" action="lobby.html" method="get" novalidate>
+    <input type="hidden" name="nickname" id="nickname-carry" value="Sam">
+    <input type="hidden" name="team" id="team-carry" value="">
+
+    <section class="field" aria-labelledby="create-title">
+      <h2 class="h2" id="create-title">Start a new team</h2>
+      <label class="field__label" for="team-name">Team name</label>
+      <input class="field__input" id="team-name" maxlength="30" autocapitalize="words" enterkeyhint="go" placeholder="e.g. The Anglerfish Five" aria-describedby="team-foot team-error">
+      <div class="field__foot" id="team-foot">
+        <span>The host checks names first.</span>
+        <span class="field__count" id="count">0 / 30</span>
+      </div>
+      <div role="alert" id="team-error"></div>
+    </section>
+
+    <section class="stack" aria-labelledby="join-title">
+      <h2 class="h2" id="join-title">Or join a team</h2>
+      <ul class="options" aria-label="Teams" id="teams">
+        <li><button type="button" class="option" aria-pressed="false" data-team="The Anglerfish Five"><span class="initial initial--sm" aria-hidden="true">A</span><span class="option__label">The Anglerfish Five<span class="option__sub">4 players · Priya is captain</span></span></button></li>
+        <li><button type="button" class="option" aria-pressed="false" data-team="The Blobfish Brigade"><span class="initial initial--sm" aria-hidden="true">B</span><span class="option__label">The Blobfish Brigade<span class="option__sub">2 players · Jess is captain</span></span></button></li>
+        <li><button type="button" class="option" disabled aria-label="Squid Pro Quo: full"><span class="initial initial--sm" aria-hidden="true">S</span><span class="option__label">Squid Pro Quo<span class="option__sub">6 of 6 players · this team is full</span></span></button></li>
+      </ul>
+      <p class="small muted" id="none" hidden>No teams yet. Start the first one!</p>
+    </section>
+  </form>
+
+  <div class="screen__actions">
+    <button type="submit" form="form" class="btn btn--primary btn--block" id="go" disabled>Count me in!</button>
+    <p class="small muted center" id="hint">Name a new team or tap one above.</p>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="join-team.html">Choosing</a>
+  <a href="join-team.html?state=picked">Team picked</a>
+  <a href="join-team.html?state=typed">New name typed</a>
+  <a href="join-team.html?state=taken">Name taken</a>
+  <a href="join-team.html?state=empty">No teams yet</a>
+  <a href="join-team.html?state=started">Game started</a>
+  <a href="lobby.html">Next: lobby</a>
+</nav>
+
+<script>
+  // Mockup behavior: a team name and a team pick are either/or. One button sends whichever is set.
+  const params = new URLSearchParams(location.search)
+  const state = params.get('state')
+  const nickname = params.get('nickname') || 'Sam'
+  document.getElementById('hello').textContent = nickname
+  document.getElementById('nickname-carry').value = nickname
+
+  const input = document.getElementById('team-name')
+  const count = document.getElementById('count')
+  const go = document.getElementById('go')
+  const hint = document.getElementById('hint')
+  const error = document.getElementById('team-error')
+  const carry = document.getElementById('team-carry')
+  const teams = [...document.querySelectorAll('#teams .option:not(:disabled)')]
+
+  function render() {
+    const picked = teams.find((t) => t.getAttribute('aria-pressed') === 'true')
+    const typed = input.value.trim()
+    count.textContent = `${input.value.length} / 30`
+    go.disabled = !picked && !typed
+    go.textContent = typed ? 'Start our team!' : 'Count me in!'
+    hint.textContent = typed
+      ? "You'll be the captain."
+      : picked
+        ? `You're joining ${picked.dataset.team}.`
+        : teams.length ? 'Name a new team or tap one above.' : 'Name your team to get started.'
+    carry.value = typed || picked?.dataset.team || ''
+  }
+  function clearError() {
+    error.replaceChildren()
+    input.removeAttribute('aria-invalid')
+  }
+  input.addEventListener('input', () => {
+    teams.forEach((t) => t.setAttribute('aria-pressed', 'false'))
+    clearError()
+    render()
+  })
+  teams.forEach((t) =>
+    t.addEventListener('click', () => {
+      teams.forEach((x) => x.setAttribute('aria-pressed', String(x === t)))
+      input.value = ''
+      clearError()
+      render()
+    }),
+  )
+
+  if (state === 'picked') teams[1]?.setAttribute('aria-pressed', 'true')
+  if (state === 'typed') input.value = 'Pressure Drop'
+  if (state === 'taken') {
+    input.value = 'The Blobfish Brigade'
+    input.setAttribute('aria-invalid', 'true')
+    error.innerHTML =
+      '<p class="field__error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5v.01"/></svg><span>Another team already has that name. Tap it below to join them instead?</span></p>'
+  }
+  if (state === 'empty') {
+    document.getElementById('teams').hidden = true
+    document.getElementById('none').hidden = false
+    teams.length = 0
+  }
+  if (state === 'started') document.getElementById('started').hidden = false
+  render()
+</script>
+</body>
+</html>

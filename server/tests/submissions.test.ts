@@ -240,4 +240,18 @@ describe('broadcasts', () => {
     expect(toB.some((m) => m.type === 'team_submission')).toBe(false)
     expect(hosts.at(-1)).toEqual({ type: 'host_stats', connected_teams: 2, answered_teams: 1 })
   })
+
+  it('counts only sent answers as answered, never drafts', () => {
+    const a = teamWithPlayer(ctx, eventId, 'Team A')
+    const b = teamWithPlayer(ctx, eventId, 'Team B')
+    const hosts = listen(ctx, { eventId, isHost: true })
+    next(ctx, eventId)
+
+    submit(a.playerId, { option: 1 }, true)
+    expect(hosts.at(-1)).toMatchObject({ type: 'host_stats', answered_teams: 0 })
+    submit(b.playerId, { option: 2 })
+    expect(hosts.at(-1)).toMatchObject({ type: 'host_stats', answered_teams: 1 })
+    submit(a.playerId, { option: 1 })
+    expect(hosts.at(-1)).toMatchObject({ type: 'host_stats', answered_teams: 2 })
+  })
 })

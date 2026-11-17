@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question: captain answers</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+</head>
+<body>
+
+<main class="screen">
+  <div class="screen__top">
+    <div role="status" aria-live="polite" id="phase">
+      <span class="pill pill--live"><span class="pill__dot" aria-hidden="true"></span>Question live</span>
+    </div>
+    <p class="hand hand--sm">Round 2 of 4</p>
+  </div>
+  <section class="stage" aria-label="Your host">
+    <span class="char char--96" role="img" aria-label="Pebble the penguin, asking" data-character="hosts/pebble/asking"></span>
+    <p class="bubble" id="speech">Cheer your captain on!</p>
+  </section>
+
+  <article class="paper" aria-labelledby="prompt">
+    <header class="paper__head">
+      <div class="paper__meta">
+        <p class="hand">Question 9 of 9</p>
+        <p class="small">Who Lives Down There? · 10&nbsp;points</p>
+      </div>
+      <div class="countdown" role="timer" aria-label="Seconds left" id="timer" data-total="20" data-start="9" style="--left: 0.45">
+        <svg class="countdown__ring" viewBox="0 0 54 54" aria-hidden="true">
+          <circle class="countdown__track" cx="27" cy="27" r="23"/>
+          <circle class="countdown__fill" cx="27" cy="27" r="23" pathLength="100"/>
+        </svg>
+        <span class="countdown__num" id="seconds">9</span>
+      </div>
+    </header>
+    <div class="paper__body">
+      <h1 class="question" id="prompt" data-role="question">This crab lives on hydrothermal vents and has hairy arms. What is its nickname?</h1>
+      <figure class="media">
+        <span class="media__frame">
+          <svg viewBox="0 0 320 160" role="img" aria-label="Picture for this question">
+            <circle cx="262" cy="40" r="5" fill="var(--color-info-soft)" fill-opacity="0.35"/>
+            <circle cx="276" cy="64" r="3" fill="var(--color-info-soft)" fill-opacity="0.3"/>
+            <circle cx="52" cy="40" r="4" fill="var(--color-info-soft)" fill-opacity="0.3"/>
+            <path d="M0 180V156q60-14 120-6t200 2v28z" fill="var(--color-depth)"/>
+            <path d="M276 180l8-70q10-9 20 0l8 70z" fill="var(--color-border)"/>
+            <path d="M288 104q6-26 2-50M298 104q8-22 12-44" fill="none" stroke="var(--color-info-soft)" stroke-opacity="0.3" stroke-width="8" stroke-linecap="round"/>
+            <g transform="translate(0 -8)">
+            <path d="M118 128l-30 22M122 136l-26 30M200 128l30 22M196 136l26 30" stroke="var(--color-line)" stroke-width="7" stroke-linecap="round"/>
+            <path d="M128 106q-34-10-54-48M190 106q34-10 54-48" fill="none" stroke="var(--color-paper)" stroke-width="16" stroke-linecap="round"/>
+            <path d="M128 106q-34-10-54-48M190 106q34-10 54-48" fill="none" stroke="var(--color-line)" stroke-width="20" stroke-linecap="round" stroke-dasharray="2 7"/>
+            <ellipse cx="68" cy="50" rx="16" ry="12" fill="var(--color-paper)"/>
+            <ellipse cx="250" cy="50" rx="16" ry="12" fill="var(--color-paper)"/>
+            <ellipse cx="159" cy="122" rx="52" ry="34" fill="var(--color-paper)"/>
+            <ellipse cx="159" cy="132" rx="38" ry="16" fill="var(--color-paper-edge)"/>
+            <path d="M146 92v-12M172 92v-12" stroke="var(--color-paper)" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="146" cy="78" r="5" fill="var(--color-depth)"/>
+            <circle cx="172" cy="78" r="5" fill="var(--color-depth)"/>
+            </g>
+          </svg>
+        </span>
+      </figure>
+      <ul class="options" aria-label="Your team's answer">
+        <li><button type="button" class="option" aria-pressed="true" disabled><span class="option__letter" aria-hidden="true">A</span><span class="option__label">Yeti crab</span><span class="option__note">sent!</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false" disabled><span class="option__letter" aria-hidden="true">B</span><span class="option__label">Bigfoot crab</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false" disabled><span class="option__letter" aria-hidden="true">C</span><span class="option__label">Snow crab</span></button></li>
+        <li><button type="button" class="option" aria-pressed="false" disabled><span class="option__letter" aria-hidden="true">D</span><span class="option__label">Spider crab</span></button></li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="screen__actions">
+    <p class="note">
+      <svg class="note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/><path d="M8.5 3.5 12 2l3.5 1.5"/></svg>
+      <span>Only your captain can answer. <strong>Bartholomew the Barnacle</strong> sent <strong>Yeti crab</strong> for the team.</span>
+    </p>
+  </div>
+</main>
+
+<nav class="mock-controls" aria-label="Mockup states">
+  <span>Mockup state:</span>
+  <a href="question-image.html">Back: Picture</a>
+  <a href="reveal-incorrect.html">Next: Reveal: not quite</a>
+</nav>
+
+<script>
+  // Mockup countdown. The number always ticks; the ring only glides when motion is allowed.
+  const timer = document.getElementById('timer')
+  const seconds = document.getElementById('seconds')
+  const total = Number(timer.dataset.total)
+  let left = Number(timer.dataset.start)
+  const tick = setInterval(() => {
+    left = Math.max(0, left - 1)
+    seconds.textContent = left
+    timer.style.setProperty('--left', left / total)
+    timer.classList.toggle('is-urgent', left <= 5)
+    if (left === 0) {
+      clearInterval(tick)
+      document.getElementById('phase').innerHTML =
+        '<span class="pill pill--locked"><svg class="pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Answers locked</span>'
+    }
+  }, 1000)
+</script>
+</body>
+</html>

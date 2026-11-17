@@ -7,9 +7,11 @@ import type { PublicGameState } from '../../shared/game'
 import type { GamePhase } from '../../shared/enums'
 import { eventQuestions, events, gameState, players, teamMembers } from '../db/schema'
 import { broadcastState, fail, ok, type GameContext, type GameResult } from './context'
+import { ensureIncomingHost, ensureRoundHost, roundOfQuestion } from './hosts'
 import { buildLivePayload, buildWagerPayload } from './live-payload'
 import { loadEventPlan, nextStep } from './plan'
 import { buildRevealPayload, skippedRevealPayload } from './reveal'
+import { awardNamingRights } from './animals'
 import { awardPrizes } from './rewards'
 import { gradeQuestion, pushReviewQueue, scoreQuestion } from './scoring'
 import { publicGameState } from './state'
@@ -52,8 +54,14 @@ function armAutoLock(ctx: GameContext, eventId: string) {
 }
 
 function open(ctx: GameContext, eventId: string, eventQuestionId: string, final: boolean): GameResult<PublicGameState> {
-  const question = ctx.db.select({ durationS: eventQuestions.durationS }).from(eventQuestions).where(eq(eventQuestions.id, eventQuestionId)).get()
+  const question = ctx.db
+    .select({ durationS: eventQuestions.durationS, roundId: eventQuestions.roundId })
+    .from(eventQuestions)
+    .where(eq(eventQuestions.id, eventQuestionId))
+    .get()
   if (!question) return fail('not_found')
+  // From here on the round has started: its host is fixed (picked now if no break picked it).
+  ensureRoundHost(ctx.db, question.roundId)
   const now = Date.now()
   ctx.db.update(events).set({ status: 'live' }).where(eq(events.id, eventId)).run()
   const result = write(ctx, eventId, {
@@ -90,8 +98,12 @@ export function next(ctx: GameContext, eventId: string): GameResult<PublicGameSt
       return open(ctx, eventId, step.eventQuestionId, row.state.phase === 'final_wager')
     case 'round_break':
       // current_event_question_id stays on the round's last question so the next round is known.
+      // The break introduces the incoming host, so pick them now, before clients refetch.
+      ensureIncomingHost(ctx.db, eventId, row.state.currentEventQuestionId)
       return write(ctx, eventId, { phase: 'round_break', livePayload: null, revealPayload: null })
     case 'final_wager':
+      // Normally picked at the break already; this covers a game whose first round is the wager.
+      ensureRoundHost(ctx.db, roundOfQuestion(ctx.db, step.eventQuestionId)!)
       return write(ctx, eventId, {
         phase: 'final_wager',
         currentEventQuestionId: step.eventQuestionId,
@@ -104,6 +116,7 @@ export function next(ctx: GameContext, eventId: string): GameResult<PublicGameSt
       ctx.timers.disarm(eventId)
       ctx.db.update(events).set({ status: 'ended' }).where(eq(events.id, eventId)).run()
       awardPrizes(ctx.db, eventId)
+      awardNamingRights(ctx.db, eventId)
       return write(ctx, eventId, { phase: 'ended', livePayload: null, revealPayload: null, opensAt: null, closesAt: null })
   }
 }

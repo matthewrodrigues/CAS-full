@@ -2,6 +2,13 @@ import { Hono, type Context } from 'hono'
 import { deleteCookie } from 'hono/cookie'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import {
+  AnimalIdInput,
+  FollowAnimalInput,
+  ProposeAnimalNameInput,
+  StaffCreateAnimalInput,
+  StaffPostAnimalUpdateInput,
+  StaffReviewAnimalNameInput,
+  StaffSetNamingPrizeInput,
   CreateTeamInput,
   EmptyInput,
   EventIdInput,
@@ -11,6 +18,7 @@ import {
   JoinEventInput,
   JoinTeamInput,
   RedeemCodeInput,
+  SetRoundHostInput,
   NewsletterOptinInput,
   StaffUpdateSettingsInput,
   SubmitAnswerInput,
@@ -25,6 +33,20 @@ import { ensureGuestSession, linkSessionPlayer, SESSION_COOKIE } from '../auth/s
 import type { AppDeps, AppEnv } from '../context'
 import type { GameResult } from '../game/context'
 import { deleteAccount, eventSettings, newsletterCsv, optInToNewsletter, submitFeedback, updateSettings } from '../game/account'
+import {
+  animalDetail,
+  createAnimal,
+  eventPrizes,
+  followAnimal,
+  listAnimals,
+  myNamingRights,
+  postAnimalUpdate,
+  proposeAnimalName,
+  reviewAnimalName,
+  setNamingPrize,
+  staffAnimals,
+  staffNamingRights,
+} from '../game/animals'
 import { joinEvent } from '../game/join'
 import { myRewards, redeemCode, staffAwards } from '../game/rewards'
 import { validate } from './validate'
@@ -40,6 +62,7 @@ const STATUS: Partial<Record<GameErrorCode, ContentfulStatusCode>> = {
   nickname_not_allowed: 400,
   rate_limited: 429,
 }
+// already_named, animal_taken and not_pending are state conflicts: 409 by default.
 
 function respond<T>(c: Context<AppEnv>, result: GameResult<T>) {
   return result.ok ? c.json(result.value as object) : c.json({ error: result.error }, STATUS[result.error] ?? 409)
@@ -82,6 +105,11 @@ export function createGameRoutes(deps: AppDeps) {
         const board = game.leaderboard({ eventId: c.req.valid('query').event_id, playerId: session.playerId, isHost: session.role !== 'player' })
         return board ? c.json(board) : c.json({ error: 'not_found' }, 404)
       })
+      .get('/api/season_leaderboard', player, validate('query', EventIdInput), (c) => {
+        const session = c.get('session')!
+        const board = game.seasonLeaderboard({ eventId: c.req.valid('query').event_id, playerId: session.playerId })
+        return board ? c.json(board) : c.json({ error: 'not_found' }, 404)
+      })
 
       .post('/api/create_team', player, validate('json', CreateTeamInput), (c) => {
         const { event_id, name } = c.req.valid('json')
@@ -99,6 +127,22 @@ export function createGameRoutes(deps: AppDeps) {
         return respond(c, game.submitWager({ eventQuestionId: event_question_id, playerId: playerId(c), amount }))
       })
       .get('/api/my_rewards', player, (c) => c.json({ rewards: playerId(c) ? myRewards(db, playerId(c)!) : [] }))
+      .get('/api/event_prizes', player, validate('query', EventIdInput), (c) => c.json({ prizes: eventPrizes(db, c.req.valid('query').event_id) }))
+      .get('/api/my_naming_rights', player, (c) => c.json({ rights: playerId(c) ? myNamingRights(db, playerId(c)!) : [] }))
+      .post('/api/propose_animal_name', player, validate('json', ProposeAnimalNameInput), (c) => {
+        const id = playerId(c)
+        if (!id) return c.json({ error: 'join_first' }, 409)
+        const { right_id, name } = c.req.valid('json')
+        return respond(c, proposeAnimalName(db, { playerId: id, rightId: right_id, name }))
+      })
+      .get('/api/animals', player, (c) => c.json({ animals: listAnimals(db, playerId(c)) }))
+      .get('/api/animal', player, validate('query', AnimalIdInput), (c) => respond(c, animalDetail(db, playerId(c), c.req.valid('query').animal_id)))
+      .post('/api/follow_animal', player, validate('json', FollowAnimalInput), (c) => {
+        const id = playerId(c)
+        if (!id) return c.json({ error: 'join_first' }, 409)
+        const { animal_id, follow } = c.req.valid('json')
+        return respond(c, followAnimal(db, { playerId: id, animalId: animal_id, follow }))
+      })
       .post('/api/submit_feedback', player, validate('json', SubmitFeedbackInput), (c) => {
         const id = playerId(c)
         if (!id) return c.json({ error: 'join_first' }, 409)
@@ -134,6 +178,12 @@ export function createGameRoutes(deps: AppDeps) {
         const { team_id, points, note } = c.req.valid('json')
         return respond(c, game.adjustScore({ teamId: team_id, points, note }))
       })
+      // Round hosts: staff set them in event settings, the host can too (host also admits staff).
+      .get('/api/round_hosts', host, validate('query', EventIdInput), (c) => c.json({ rounds: game.roundHosts(c.req.valid('query').event_id) }))
+      .post('/api/set_round_host', host, validate('json', SetRoundHostInput), (c) => {
+        const { event_id, round_id, host_choice } = c.req.valid('json')
+        return respond(c, game.setRoundHost({ eventId: event_id, roundId: round_id, hostChoice: host_choice }))
+      })
       .post('/api/host_review_team_name', host, validate('json', HostReviewTeamNameInput), (c) => {
         const { team_id, name_status } = c.req.valid('json')
         return respond(c, game.reviewTeamName({ teamId: team_id, nameStatus: name_status }))
@@ -141,6 +191,20 @@ export function createGameRoutes(deps: AppDeps) {
 
       .post('/api/redeem_code', staff, validate('json', RedeemCodeInput), (c) => respond(c, redeemCode(db, c.req.valid('json').code)))
       .get('/api/staff_awards', staff, (c) => c.json({ awards: staffAwards(db) }))
+      .get('/api/staff_animals', staff, (c) => c.json({ animals: staffAnimals(db), rights: staffNamingRights(db) }))
+      .post('/api/staff_create_animal', staff, validate('json', StaffCreateAnimalInput), (c) => respond(c, createAnimal(db, c.req.valid('json'))))
+      .post('/api/staff_set_naming_prize', staff, validate('json', StaffSetNamingPrizeInput), (c) => {
+        const { event_id, place, animal_id } = c.req.valid('json')
+        return respond(c, setNamingPrize(db, { eventId: event_id, place, animalId: animal_id }))
+      })
+      .post('/api/staff_review_animal_name', staff, validate('json', StaffReviewAnimalNameInput), (c) => {
+        const { right_id, status } = c.req.valid('json')
+        return respond(c, reviewAnimalName(db, { rightId: right_id, status }))
+      })
+      .post('/api/staff_post_animal_update', staff, validate('json', StaffPostAnimalUpdateInput), (c) => {
+        const { animal_id, body } = c.req.valid('json')
+        return respond(c, postAnimalUpdate(db, { animalId: animal_id, body }))
+      })
       .get('/api/staff_newsletter_csv', staff, (c) => {
         c.header('content-disposition', 'attachment; filename="newsletter-optins.csv"')
         return c.body(newsletterCsv(db), 200, { 'content-type': 'text/csv; charset=utf-8' })

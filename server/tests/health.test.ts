@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { openDb } from '../db/client'
+import { EnvSchema } from '../env'
 import { call, makeTestApp } from './helpers'
 
 describe('server foundation', () => {
@@ -11,6 +12,18 @@ describe('server foundation', () => {
     const res = await call(app, 'GET', '/api/health')
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
+  })
+
+  it('GET /api/app_config gives the public join address, or null to use the page origin', async () => {
+    expect(await (await call(makeTestApp().app, 'GET', '/api/app_config')).json()).toEqual({ public_url: null })
+    const { app } = makeTestApp({ publicUrl: 'https://trivia.example.org' })
+    expect(await (await call(app, 'GET', '/api/app_config')).json()).toEqual({ public_url: 'https://trivia.example.org' })
+  })
+
+  it('PUBLIC_URL must be an http(s) URL and loses a trailing slash', () => {
+    expect(EnvSchema.parse({ PUBLIC_URL: 'https://trivia.example.org/' }).PUBLIC_URL).toBe('https://trivia.example.org')
+    expect(EnvSchema.parse({ PUBLIC_URL: '' }).PUBLIC_URL).toBeUndefined()
+    expect(() => EnvSchema.parse({ PUBLIC_URL: 'javascript:alert(1)' })).toThrow()
   })
 
   it('opens SQLite with foreign keys on and WAL mode for files', () => {

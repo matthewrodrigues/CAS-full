@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character sheet</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<script src="../system/include.js"></script>
+<style>
+  /* Sheet layout only. The characters themselves are the SVG files, inlined by include.js. */
+  .sheet { max-width: 1340px; margin: 0 auto; padding: var(--space-6) var(--space-4) var(--space-10); display: flex; flex-direction: column; gap: var(--space-10); }
+  .sheet__intro { max-width: 64ch; display: flex; flex-direction: column; gap: var(--space-3); }
+  .sheet__group { display: flex; flex-direction: column; gap: var(--space-4); }
+  .sheet__group > header { display: flex; flex-direction: column; gap: var(--space-2); max-width: 70ch; }
+  .sheet__board { border-radius: var(--radius-card); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+  .sheet__board--paper { background: var(--color-paper); box-shadow: var(--shadow-card); }
+  .sheet__board--night { background: var(--color-brand-deep); color: var(--color-paper); }
+  .sheet__label { font-size: var(--text-sm); font-weight: 700; }
+  .sheet__big-row { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+  .sheet__small-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: flex-start; }
+  .sheet__fig { margin: 0; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); text-align: center; max-width: 100%; }
+  .sheet__fig--small { width: 96px; }
+  .sheet__big { max-width: 100%; height: auto; aspect-ratio: 1; }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header class="sheet__intro">
+    <p class="hand">Design kit · characters</p>
+    <h1 class="h1">Who’s who tonight</h1>
+    <p>Every host expression and every prize animal, at 400px and at 48px, on the paper card and on Midnight, the darkest surface. Each one is the shipped SVG file, placed with <code>data-character</code>, so this sheet also proves <code>include.js</code> loads them. A host’s body never changes between expressions; only the eyes, mouth, brows, arms and one small prop do.</p>
+  </header>
+
+  <section class="sheet__group" aria-labelledby="g-rocco">
+    <header>
+      <h2 class="h2" id="g-rocco">Rocco, the raccoon</h2>
+      <p>The night’s main host. He greets the lobby and runs the final results and prizes. Mask, round ears and a ringed tail.</p>
+    </header>
+    <div class="sheet__board sheet__board--paper">
+      <p class="sheet__label">On paper</p>
+      <div class="sheet__big-row">
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/greeting"></span><figcaption><strong>greeting</strong><br><span class="small">lobby and welcome</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/asking"></span><figcaption><strong>asking</strong><br><span class="small">a question is live</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/waiting"></span><figcaption><strong>waiting</strong><br><span class="small">answer sent, waiting for the lock</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/cheering"></span><figcaption><strong>cheering</strong><br><span class="small">correct, win, prizes</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/consoling"></span><figcaption><strong>consoling</strong><br><span class="small">not quite, warmly</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/relaxing"></span><figcaption><strong>relaxing</strong><br><span class="small">round break or paused</span></figcaption></figure>
+      </div>
+      <p class="sheet__label">At 48px</p>
+      <div class="sheet__small-row">
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/greeting"></span><figcaption class="small">greeting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/asking"></span><figcaption class="small">asking</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/waiting"></span><figcaption class="small">waiting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/cheering"></span><figcaption class="small">cheering</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/consoling"></span><figcaption class="small">consoling</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/relaxing"></span><figcaption class="small">relaxing</figcaption></figure>
+      </div>
+    </div>
+    <div class="sheet__board sheet__board--night">
+      <p class="sheet__label">On Midnight</p>
+      <div class="sheet__big-row">
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/greeting"></span><figcaption><strong>greeting</strong><br><span class="small">lobby and welcome</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/asking"></span><figcaption><strong>asking</strong><br><span class="small">a question is live</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/waiting"></span><figcaption><strong>waiting</strong><br><span class="small">answer sent, waiting for the lock</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/cheering"></span><figcaption><strong>cheering</strong><br><span class="small">correct, win, prizes</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/consoling"></span><figcaption><strong>consoling</strong><br><span class="small">not quite, warmly</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/rocco/relaxing"></span><figcaption><strong>relaxing</strong><br><span class="small">round break or paused</span></figcaption></figure>
+      </div>
+      <p class="sheet__label">At 48px</p>
+      <div class="sheet__small-row">
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/greeting"></span><figcaption class="small">greeting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/asking"></span><figcaption class="small">asking</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/waiting"></span><figcaption class="small">waiting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/cheering"></span><figcaption class="small">cheering</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/consoling"></span><figcaption class="small">consoling</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/rocco/relaxing"></span><figcaption class="small">relaxing</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet__group" aria-labelledby="g-pebble">
+    <header>
+      <h2 class="h2" id="g-pebble">Pebble, the penguin</h2>
+      <p>An adult African penguin in a sky-blue bow tie, with pink brows and a spotted chest.</p>
+    </header>
+    <div class="sheet__board sheet__board--paper">
+      <p class="sheet__label">On paper</p>
+      <div class="sheet__big-row">
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/greeting"></span><figcaption><strong>greeting</strong><br><span class="small">lobby and welcome</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/asking"></span><figcaption><strong>asking</strong><br><span class="small">a question is live</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/waiting"></span><figcaption><strong>waiting</strong><br><span class="small">answer sent, waiting for the lock</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/cheering"></span><figcaption><strong>cheering</strong><br><span class="small">correct, win, prizes</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/consoling"></span><figcaption><strong>consoling</strong><br><span class="small">not quite, warmly</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/relaxing"></span><figcaption><strong>relaxing</strong><br><span class="small">round break or paused</span></figcaption></figure>
+      </div>
+      <p class="sheet__label">At 48px</p>
+      <div class="sheet__small-row">
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/greeting"></span><figcaption class="small">greeting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/asking"></span><figcaption class="small">asking</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/waiting"></span><figcaption class="small">waiting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/cheering"></span><figcaption class="small">cheering</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/consoling"></span><figcaption class="small">consoling</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/relaxing"></span><figcaption class="small">relaxing</figcaption></figure>
+      </div>
+    </div>
+    <div class="sheet__board sheet__board--night">
+      <p class="sheet__label">On Midnight</p>
+      <div class="sheet__big-row">
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/greeting"></span><figcaption><strong>greeting</strong><br><span class="small">lobby and welcome</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/asking"></span><figcaption><strong>asking</strong><br><span class="small">a question is live</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/waiting"></span><figcaption><strong>waiting</strong><br><span class="small">answer sent, waiting for the lock</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/cheering"></span><figcaption><strong>cheering</strong><br><span class="small">correct, win, prizes</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/consoling"></span><figcaption><strong>consoling</strong><br><span class="small">not quite, warmly</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/pebble/relaxing"></span><figcaption><strong>relaxing</strong><br><span class="small">round break or paused</span></figcaption></figure>
+      </div>
+      <p class="sheet__label">At 48px</p>
+      <div class="sheet__small-row">
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/greeting"></span><figcaption class="small">greeting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/asking"></span><figcaption class="small">asking</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/waiting"></span><figcaption class="small">waiting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/cheering"></span><figcaption class="small">cheering</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/consoling"></span><figcaption class="small">consoling</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/pebble/relaxing"></span><figcaption class="small">relaxing</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet__group" aria-labelledby="g-june">
+    <header>
+      <h2 class="h2" id="g-june">Dr. June, the scientist</h2>
+      <p>Redrawn: a curly bun with a pencil through it, curls framing her face, round honey glasses and a lab coat with the sleeves rolled up.</p>
+    </header>
+    <div class="sheet__board sheet__board--paper">
+      <p class="sheet__label">On paper</p>
+      <div class="sheet__big-row">
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/greeting"></span><figcaption><strong>greeting</strong><br><span class="small">lobby and welcome</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/asking"></span><figcaption><strong>asking</strong><br><span class="small">a question is live</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/waiting"></span><figcaption><strong>waiting</strong><br><span class="small">answer sent, waiting for the lock</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/cheering"></span><figcaption><strong>cheering</strong><br><span class="small">correct, win, prizes</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/consoling"></span><figcaption><strong>consoling</strong><br><span class="small">not quite, warmly</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/relaxing"></span><figcaption><strong>relaxing</strong><br><span class="small">round break or paused</span></figcaption></figure>
+      </div>
+      <p class="sheet__label">At 48px</p>
+      <div class="sheet__small-row">
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/greeting"></span><figcaption class="small">greeting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/asking"></span><figcaption class="small">asking</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/waiting"></span><figcaption class="small">waiting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/cheering"></span><figcaption class="small">cheering</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/consoling"></span><figcaption class="small">consoling</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/relaxing"></span><figcaption class="small">relaxing</figcaption></figure>
+      </div>
+    </div>
+    <div class="sheet__board sheet__board--night">
+      <p class="sheet__label">On Midnight</p>
+      <div class="sheet__big-row">
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/greeting"></span><figcaption><strong>greeting</strong><br><span class="small">lobby and welcome</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/asking"></span><figcaption><strong>asking</strong><br><span class="small">a question is live</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/waiting"></span><figcaption><strong>waiting</strong><br><span class="small">answer sent, waiting for the lock</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/cheering"></span><figcaption><strong>cheering</strong><br><span class="small">correct, win, prizes</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/consoling"></span><figcaption><strong>consoling</strong><br><span class="small">not quite, warmly</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="hosts/june/relaxing"></span><figcaption><strong>relaxing</strong><br><span class="small">round break or paused</span></figcaption></figure>
+      </div>
+      <p class="sheet__label">At 48px</p>
+      <div class="sheet__small-row">
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/greeting"></span><figcaption class="small">greeting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/asking"></span><figcaption class="small">asking</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/waiting"></span><figcaption class="small">waiting</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/cheering"></span><figcaption class="small">cheering</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/consoling"></span><figcaption class="small">consoling</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="hosts/june/relaxing"></span><figcaption class="small">relaxing</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet__group" aria-labelledby="g-animals">
+    <header>
+      <h2 class="h2" id="g-animals">Prize animals</h2>
+      <p>Each animal has a neutral file and a happy file. The mystery animal stands in before a team’s animal is revealed.</p>
+    </header>
+    <div class="sheet__board sheet__board--paper">
+      <p class="sheet__label">On paper</p>
+      <div class="sheet__big-row">
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/penguin-chick"></span><figcaption><strong>Penguin chick</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/penguin-chick-happy"></span><figcaption><strong>Penguin chick</strong><br><span class="small">happy</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/giant-pacific-octopus"></span><figcaption><strong>Giant Pacific octopus</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/giant-pacific-octopus-happy"></span><figcaption><strong>Giant Pacific octopus</strong><br><span class="small">happy</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/pacific-seahorse"></span><figcaption><strong>Pacific seahorse</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/pacific-seahorse-happy"></span><figcaption><strong>Pacific seahorse</strong><br><span class="small">happy</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/moray-eel"></span><figcaption><strong>Moray eel</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/moray-eel-happy"></span><figcaption><strong>Moray eel</strong><br><span class="small">happy</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/mystery"></span><figcaption><strong>Mystery animal</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/mystery-happy"></span><figcaption><strong>Mystery animal</strong><br><span class="small">happy</span></figcaption></figure>
+      </div>
+      <p class="sheet__label">At 48px</p>
+      <div class="sheet__small-row">
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/penguin-chick"></span><figcaption class="small">Penguin chick</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/penguin-chick-happy"></span><figcaption class="small">Penguin chick, happy</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/giant-pacific-octopus"></span><figcaption class="small">Giant Pacific octopus</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/giant-pacific-octopus-happy"></span><figcaption class="small">Giant Pacific octopus, happy</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/pacific-seahorse"></span><figcaption class="small">Pacific seahorse</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/pacific-seahorse-happy"></span><figcaption class="small">Pacific seahorse, happy</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/moray-eel"></span><figcaption class="small">Moray eel</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/moray-eel-happy"></span><figcaption class="small">Moray eel, happy</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/mystery"></span><figcaption class="small">Mystery animal</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/mystery-happy"></span><figcaption class="small">Mystery animal, happy</figcaption></figure>
+      </div>
+    </div>
+    <div class="sheet__board sheet__board--night">
+      <p class="sheet__label">On Midnight</p>
+      <div class="sheet__big-row">
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/penguin-chick"></span><figcaption><strong>Penguin chick</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/penguin-chick-happy"></span><figcaption><strong>Penguin chick</strong><br><span class="small">happy</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/giant-pacific-octopus"></span><figcaption><strong>Giant Pacific octopus</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/giant-pacific-octopus-happy"></span><figcaption><strong>Giant Pacific octopus</strong><br><span class="small">happy</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/pacific-seahorse"></span><figcaption><strong>Pacific seahorse</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/pacific-seahorse-happy"></span><figcaption><strong>Pacific seahorse</strong><br><span class="small">happy</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/moray-eel"></span><figcaption><strong>Moray eel</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/moray-eel-happy"></span><figcaption><strong>Moray eel</strong><br><span class="small">happy</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/mystery"></span><figcaption><strong>Mystery animal</strong><br><span class="small">neutral</span></figcaption></figure>
+        <figure class="sheet__fig"><span class="char char--400 sheet__big" data-character="animals/mystery-happy"></span><figcaption><strong>Mystery animal</strong><br><span class="small">happy</span></figcaption></figure>
+      </div>
+      <p class="sheet__label">At 48px</p>
+      <div class="sheet__small-row">
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/penguin-chick"></span><figcaption class="small">Penguin chick</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/penguin-chick-happy"></span><figcaption class="small">Penguin chick, happy</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/giant-pacific-octopus"></span><figcaption class="small">Giant Pacific octopus</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/giant-pacific-octopus-happy"></span><figcaption class="small">Giant Pacific octopus, happy</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/pacific-seahorse"></span><figcaption class="small">Pacific seahorse</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/pacific-seahorse-happy"></span><figcaption class="small">Pacific seahorse, happy</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/moray-eel"></span><figcaption class="small">Moray eel</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/moray-eel-happy"></span><figcaption class="small">Moray eel, happy</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/mystery"></span><figcaption class="small">Mystery animal</figcaption></figure>
+        <figure class="sheet__fig sheet__fig--small"><span class="char char--48" data-character="animals/mystery-happy"></span><figcaption class="small">Mystery animal, happy</figcaption></figure>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

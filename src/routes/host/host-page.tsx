@@ -1,13 +1,13 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useId, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
+import { HOST_CHOICES_SHOWN, type HostChoice } from '../../../shared/characters'
 import type { HostTeam, ReviewItem } from '../../../shared/game'
 import { Countdown } from '@/components/countdown'
 import { LiveRegion } from '@/components/live-region'
 import { RoleGate } from '@/components/role-gate'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { nextRoundToHost } from '@/game/round-hosts'
 import { useLiveGame } from '@/game/use-live-game'
 import { api, type HostOperation } from '@/lib/api'
 import { errorCode, errorMessage } from '../play/errors'
@@ -60,8 +60,8 @@ function Console() {
       </header>
       <LiveRegion state={view.state} />
       <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-6">
-        <section className="flex flex-col gap-4 rounded-xl bg-surface p-4" aria-label={t('host.title')}>
-          <p className="text-base text-ink-muted">{t('host.phase', { phase })}</p>
+        <section className="card" aria-label={t('host.title')}>
+          <p className="muted">{t('host.phase', { phase })}</p>
           {question ? <h2 className="font-heading text-2xl font-semibold text-ink">{question.prompt}</h2> : null}
           {question ? <Countdown state={view.state} offset={live.offset} /> : null}
           <p className="text-lg text-ink" role="status">
@@ -72,23 +72,24 @@ function Console() {
           {phase === 'ended' ? <p className="text-lg font-semibold text-ink">{t('host.ended')}</p> : null}
           <div className="flex flex-wrap gap-3">
             {primary ? (
-              <Button size="lg" disabled={act.isPending} onClick={() => act.mutate(primary)}>
+              <button type="button" className="btn btn--primary" disabled={act.isPending} onClick={() => act.mutate(primary)}>
                 {t(`host.primary.${phase as 'lobby'}`)}
-              </Button>
+              </button>
             ) : null}
             {phase !== 'paused' && phase !== 'ended' ? (
-              <Button size="lg" variant="outline" disabled={act.isPending} onClick={() => act.mutate('host_pause')}>
+              <button type="button" className="btn btn--secondary" disabled={act.isPending} onClick={() => act.mutate('host_pause')}>
                 {t('host.pause')}
-              </Button>
+              </button>
             ) : null}
             {canSkip ? (
-              <Button size="lg" variant="outline" disabled={act.isPending} onClick={() => act.mutate('host_skip')}>
+              <button type="button" className="btn btn--secondary" disabled={act.isPending} onClick={() => act.mutate('host_skip')}>
                 {t('host.skip')}
-              </Button>
+              </button>
             ) : null}
           </div>
+          {phase === 'lobby' || phase === 'round_break' ? <NextHost eventId={eventId} phase={phase} refresh={live.refresh} /> : null}
           {act.error ? (
-            <p role="alert" className="text-base font-medium text-incorrect">
+            <p role="alert" className="field__error">
               {errorMessage(errorCode(act.error), t)}
             </p>
           ) : null}
@@ -112,15 +113,15 @@ function ReviewQueue({ items, refresh }: { items: ReviewItem[]; refresh(): void 
       {items.length === 0 ? <p className="text-base text-ink-muted">{t('host.reviewEmpty')}</p> : null}
       <ul className="flex flex-col gap-2">
         {items.map((item) => (
-          <li key={item.submission_id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-surface p-3">
+          <li key={item.submission_id} className="card flex-row flex-wrap items-center justify-between">
             <span className="text-lg text-ink">{t('host.reviewItem', { team: item.team_name, answer: item.answer, percent: Math.round(item.similarity * 100) })}</span>
             <span className="flex gap-2">
-              <Button variant="outline" aria-label={t('host.acceptLabel', { team: item.team_name })} disabled={decide.isPending} onClick={() => decide.mutate({ id: item.submission_id, result: 'correct' })}>
+              <button type="button" className="btn btn--secondary" aria-label={t('host.acceptLabel', { team: item.team_name })} disabled={decide.isPending} onClick={() => decide.mutate({ id: item.submission_id, result: 'correct' })}>
                 {t('host.accept')}
-              </Button>
-              <Button variant="outline" aria-label={t('host.rejectLabel', { team: item.team_name })} disabled={decide.isPending} onClick={() => decide.mutate({ id: item.submission_id, result: 'incorrect' })}>
+              </button>
+              <button type="button" className="btn btn--secondary" aria-label={t('host.rejectLabel', { team: item.team_name })} disabled={decide.isPending} onClick={() => decide.mutate({ id: item.submission_id, result: 'incorrect' })}>
                 {t('host.reject')}
-              </Button>
+              </button>
             </span>
           </li>
         ))}
@@ -141,7 +142,7 @@ function Teams({ teams, refresh }: { teams: HostTeam[]; refresh(): void }) {
       {teams.length === 0 ? <p className="text-base text-ink-muted">{t('host.teamsEmpty')}</p> : null}
       <ul className="flex flex-col gap-2">
         {teams.map((team) => (
-          <li key={team.id} className="flex flex-col gap-3 rounded-lg bg-surface p-3">
+          <li key={team.id} className="card">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-lg font-medium text-ink">{team.name}</span>
               <span className="text-base text-ink-muted">
@@ -150,14 +151,14 @@ function Teams({ teams, refresh }: { teams: HostTeam[]; refresh(): void }) {
             </div>
             <div className="flex flex-wrap gap-2">
               {team.name_status !== 'approved' ? (
-                <Button variant="outline" aria-label={t('host.approveLabel', { team: team.name })} onClick={() => review.mutate({ id: team.id, status: 'approved' })}>
+                <button type="button" className="btn btn--secondary" aria-label={t('host.approveLabel', { team: team.name })} onClick={() => review.mutate({ id: team.id, status: 'approved' })}>
                   {t('host.approve')}
-                </Button>
+                </button>
               ) : null}
               {team.name_status !== 'rejected' ? (
-                <Button variant="outline" aria-label={t('host.rejectNameLabel', { team: team.name })} onClick={() => review.mutate({ id: team.id, status: 'rejected' })}>
+                <button type="button" className="btn btn--secondary" aria-label={t('host.rejectNameLabel', { team: team.name })} onClick={() => review.mutate({ id: team.id, status: 'rejected' })}>
                   {t('host.rejectName')}
-                </Button>
+                </button>
               ) : null}
             </div>
             <AdjustScore team={team} refresh={refresh} />
@@ -191,21 +192,61 @@ function AdjustScore({ team, refresh }: { team: HostTeam; refresh(): void }) {
       <summary className="cursor-pointer py-2 text-base font-medium text-ink">{t('host.adjustLabel', { team: team.name })}</summary>
       <form onSubmit={submit} className="flex flex-wrap items-end gap-3 pt-2" noValidate>
         <div className="flex w-28 flex-col gap-1">
-          <label htmlFor={`${id}-points`} className="text-sm font-medium text-ink">
+          <label htmlFor={`${id}-points`} className="field__label">
             {t('host.adjustPoints')}
           </label>
-          <Input id={`${id}-points`} value={points} onChange={(e) => setPoints(e.target.value)} inputMode="numeric" />
+          <input className="field__input" id={`${id}-points`} value={points} onChange={(e) => setPoints(e.target.value)} inputMode="numeric" />
         </div>
         <div className="flex min-w-40 flex-1 flex-col gap-1">
-          <label htmlFor={`${id}-note`} className="text-sm font-medium text-ink">
+          <label htmlFor={`${id}-note`} className="field__label">
             {t('host.adjustNote')}
           </label>
-          <Input id={`${id}-note`} value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} />
+          <input className="field__input" id={`${id}-note`} value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} />
         </div>
-        <Button type="submit" variant="outline" disabled={!valid || adjust.isPending}>
+        <button type="submit" className="btn btn--secondary" disabled={!valid || adjust.isPending}>
           {t('host.adjustApply')}
-        </Button>
+        </button>
       </form>
     </details>
+  )
+}
+
+/** A compact "Next round's host" select for the lobby and every round break: the same endpoint as staff's Round hosts. */
+function NextHost({ eventId, phase, refresh }: { eventId: string; phase: string; refresh(): void }) {
+  const { t } = useTranslation()
+  const id = useId()
+  const queryClient = useQueryClient()
+  const key = ['round-hosts', eventId, phase]
+  const rounds = useQuery({ queryKey: key, queryFn: () => api.roundHosts(eventId) })
+  const next = nextRoundToHost(rounds.data?.rounds ?? [])
+  const change = useMutation({
+    mutationFn: (host_choice: HostChoice) => api.setRoundHost({ event_id: eventId, round_id: next!.round_id, host_choice }),
+    // A 409 means another session started the round: reload to see the truth.
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: ['round-hosts', eventId] })
+      refresh()
+    },
+  })
+  if (!next) return null
+  return (
+    <div className="field">
+      <label htmlFor={id} className="field__label">
+        {t('host.nextHost')}
+      </label>
+      <span className="select">
+        <select id={id} className="field__select" value={change.variables ?? next.host_choice} disabled={change.isPending} onChange={(e) => change.mutate(e.target.value as HostChoice)}>
+          {HOST_CHOICES_SHOWN.map((choice) => (
+            <option key={choice} value={choice}>
+              {t(`staff.hostChoices.${choice}`)}
+            </option>
+          ))}
+        </select>
+      </span>
+      {change.error ? (
+        <p role="alert" className="field__error">
+          {errorMessage(errorCode(change.error), t)}
+        </p>
+      ) : null}
+    </div>
   )
 }
