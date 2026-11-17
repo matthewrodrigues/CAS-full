@@ -84,6 +84,8 @@ export type MyTeam = {
 export type HostTeam = { id: string; name: string; name_status: NameStatus; member_count: number; score: number }
 
 export type HostView = {
+  /** The demo autopilot is running this event (DEMO1 only). */
+  autopilot: boolean
   connected_teams: number
   answered_teams: number
   review_queue: ReviewItem[]

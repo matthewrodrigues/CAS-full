@@ -31,7 +31,9 @@ function load(ctx: GameContext, eventId: string) {
 function write(ctx: GameContext, eventId: string, patch: StatePatch): GameResult<PublicGameState> {
   ctx.db.update(gameState).set(patch).where(eq(gameState.eventId, eventId)).run()
   broadcastState(ctx, eventId)
-  return ok(publicGameState(ctx.db, eventId)!)
+  const state = publicGameState(ctx.db, eventId)!
+  ctx.autopilot.onPhase(eventId, state.phase)
+  return ok(state)
 }
 
 /** Auto-lock waits for the grace window plus the most extra time any player in the event has. */

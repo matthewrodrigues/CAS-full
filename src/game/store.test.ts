@@ -79,7 +79,7 @@ describe('applyMessage', () => {
   })
 
   it('patches the host view with counts and the review queue', () => {
-    const hostView = { ...view, host: { connected_teams: 0, answered_teams: 0, review_queue: [], teams: [] } }
+    const hostView = { ...view, host: { autopilot: false, connected_teams: 0, answered_teams: 0, review_queue: [], teams: [] } }
     const counted = applyMessage(hostView, { type: 'host_stats', connected_teams: 4, answered_teams: 2 })
     expect(counted).toEqual({ view: { ...hostView, host: { ...hostView.host, connected_teams: 4, answered_teams: 2 } }, refetch: false })
     const item = { submission_id: 's', team_id: 't', team_name: 'T', event_question_id: 'q1', answer: 'octopuss', similarity: 0.7 }
