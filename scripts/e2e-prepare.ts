@@ -43,6 +43,8 @@ const EVENTS = [
   { joinCode: 'E11A1' },
   { joinCode: 'E11B1' },
   { joinCode: 'E11C1' },
+  // Task 9: a full night with 20 teams and a tie for third (results.spec.ts).
+  { joinCode: 'E2E9A' },
 ]
 
 const db = openDb(DB_FILE)

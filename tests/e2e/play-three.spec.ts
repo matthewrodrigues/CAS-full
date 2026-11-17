@@ -47,7 +47,7 @@ test('a host over the API and a player in the browser play three questions', asy
   // The tab bar is hidden on a reveal (it's an in-flow sheet), so open the tab by its address.
   await page.goto(`/play/${JOIN_CODES.playThree}/leaderboard`)
   await expect(page.locator('li[aria-current="true"]')).toContainText('E2E Divers')
-  await expect(page.locator('li[aria-current="true"]')).toContainText('30 pts')
+  await expect(page.locator('li[aria-current="true"]')).toContainText('30 points')
   await host.dispose()
   await context.close()
 })

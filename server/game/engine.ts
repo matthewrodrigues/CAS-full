@@ -7,6 +7,7 @@ import { pushHostStats, type GameContext } from './context'
 import * as flow from './flow'
 import * as hosts from './hosts'
 import * as scoring from './scoring'
+import * as season from './season'
 import * as state from './state'
 import * as submissions from './submissions'
 import * as teams from './teams'
@@ -38,6 +39,7 @@ export function createGame({ db, realtime }: { db: Db; realtime: Realtime }) {
     roundHosts: (eventId: string) => hosts.roundHosts(db, eventId),
     setRoundHost: (input: Parameters<typeof hosts.setRoundHost>[1]) => hosts.setRoundHost(ctx, input),
     leaderboard: (input: Parameters<typeof state.leaderboard>[1]) => state.leaderboard(db, input),
+    seasonLeaderboard: (input: Parameters<typeof season.seasonBoard>[1]) => season.seasonBoard(db, input),
     /** On startup: re-arm open questions' auto-lock, or lock those whose deadline passed. */
     resumeTimers: () => flow.resumeTimers(ctx),
     /** On shutdown (and after each test): cancel every pending auto-lock. */

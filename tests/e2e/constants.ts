@@ -23,4 +23,5 @@ export const JOIN_CODES = {
   roundHostsStaff: 'E11A1',
   roundHostsConsole: 'E11B1',
   roundHostsStarted: 'E11C1',
+  afterGame: 'E2E9A',
 } as const

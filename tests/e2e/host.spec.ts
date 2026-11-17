@@ -96,7 +96,7 @@ test('a full night hosted from the console while the big screen follows', async 
   await expect(console_.getByText('The game is over.')).toBeVisible()
   await expect(display.getByRole('heading', { name: 'Final scores' })).toBeVisible()
   await expect(display.getByText('Console Crew')).toBeVisible()
-  await expect(phone.getByRole('heading', { name: 'Thanks for playing!' })).toBeVisible()
+  await expect(phone.getByText(/^Thanks for playing! Your team finished/)).toBeVisible()
 })
 
 // The room display at 1920x1080 (design/screens/big-*.html). The project default is a phone, so
