@@ -52,6 +52,16 @@ export function RewardsPage() {
         <Character name={hostCharacter('rocco', 'cheering')} size={64} label={hostLabel(t, 'rocco', 'cheering')} />
         <h1 className="h1">{t('rewards.title')}</h1>
       </div>
+      {rights.isPending ? (
+        <p role="status" className="muted center">
+          {t('rewards.loading')}
+        </p>
+      ) : null}
+      {rights.isError ? (
+        <div role="alert">
+          <FieldError>{t('rewards.error')}</FieldError>
+        </div>
+      ) : null}
       {namings.length === 0 && rights.isSuccess ? (
         <>
           <p className="note">{t('rewards.empty')}</p>

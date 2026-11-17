@@ -141,6 +141,7 @@ describe('data a player can read', () => {
     const query: Record<string, string> = {
       '/api/get_state': `?event_id=${f.eventId}`,
       '/api/get_leaderboard': `?event_id=${f.eventId}`,
+      '/api/season_leaderboard': `?event_id=${f.eventId}`,
       '/api/event_prizes': `?event_id=${f.eventId}`,
       '/api/animal': `?animal_id=${animalId}`,
     }

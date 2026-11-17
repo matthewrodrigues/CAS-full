@@ -180,6 +180,10 @@ export type StaffNamingRight = {
 export type LeaderboardRow ={ team_id: string; name: string | null; points: number; rank: number }
 export type Leaderboard = { teams: LeaderboardRow[] }
 
+/** One player on the season board. `is_you` marks the viewer; no ids are sent. `name` follows the player's display mode. */
+export type SeasonRow = { rank: number; name: string; points: number; nights: number; is_you: boolean }
+export type SeasonLeaderboard = { season: { name: string; starts_on: string; ends_on: string }; players: SeasonRow[] }
+
 export type JoinResult = {
   event: {
     id: string

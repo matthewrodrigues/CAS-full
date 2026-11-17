@@ -192,6 +192,20 @@ test.describe('a full night: 20 teams and a tie for third', () => {
     await expect(own).toContainText('Pacific seahorse')
   })
 
+  test("a long board adds a jump row, and a big crowd gets Rocco's remark", async () => {
+    // Drop our team to 11th of 20 (108 points), so it is past the first screenful.
+    const team = (await host.state(nightId)).host.teams.find((t: { name: string }) => t.name === OWN)
+    await host.post('/api/host_adjust_score', { team_id: team.id, points: 108 - team.score, note: 'E2E setup' })
+    await phone.getByRole('link', { name: 'Leaderboard', exact: true }).click()
+    await expect(phone.getByText('20 teams! What a crowd!')).toBeVisible()
+    await expect(phone.getByText('Final scores for 20 teams.')).toBeVisible()
+    const jump = phone.getByRole('link', { name: /You're 11th of 20/ })
+    await expect(jump).toContainText(`${OWN} · 108 points`)
+    await jump.click()
+    await expect(phone.locator('#you-row')).toContainText(OWN)
+    await expect(phone.locator('#you-row')).toHaveAttribute('aria-current', 'true')
+  })
+
   test('only the top 3 leaderboard rows show an animal', async () => {
     await phone.getByRole('link', { name: 'Leaderboard', exact: true }).click()
     const rows = phone.getByRole('list', { name: "Tonight's leaderboard" }).getByRole('listitem')
@@ -201,7 +215,20 @@ test.describe('a full night: 20 teams and a tie for third', () => {
     )
     expect(shown.filter((r) => r.rank <= 3).every((r) => r.animal === 1)).toBe(true)
     expect(shown.filter((r) => r.rank > 3).every((r) => r.animal === 0)).toBe(true)
-    expect(shown.filter((r) => r.rank <= 3)).toHaveLength(4)
+    expect(shown.filter((r) => r.rank <= 3)).toHaveLength(3)
     await captureScreen(phone, 'leaderboard-stress')
+  })
+
+  test('the season board lists players without animals, marks you, and has a Tonight / Season switch', async () => {
+    await phone.getByRole('link', { name: 'Leaderboard', exact: true }).click()
+    await phone.getByRole('link', { name: 'Fall 2026 season' }).click()
+    await expect(phone.getByRole('heading', { name: 'Fall 2026 season' })).toBeVisible()
+    const rows = phone.getByRole('list', { name: 'Fall 2026 season' }).getByRole('listitem')
+    await expect(rows.first()).toContainText('1 night')
+    await expect(phone.locator('[aria-current="true"]').filter({ hasText: 'Stress Tester' })).toContainText('You')
+    expect(await phone.locator('ol.list .char').count()).toBe(0)
+    await captureScreen(phone, 'leaderboard-season')
+    await phone.getByRole('link', { name: 'Tonight', exact: true }).click()
+    await expect(phone.getByRole('heading', { name: "Tonight's leaderboard" })).toBeVisible()
   })
 })

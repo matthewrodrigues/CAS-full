@@ -51,3 +51,17 @@ export function pillForPhase(phase: Phase): PillStatus {
       return 'results'
   }
 }
+
+/** Past this rank your row is below the first screenful of a long board, so the leaderboard adds a "jump to your team" row. */
+export const JUMP_AFTER_RANK = 8
+
+export function showJumpRow(rank: number | null | undefined): boolean {
+  return rank != null && rank > JUMP_AFTER_RANK
+}
+
+/** From this many teams Rocco remarks on the crowd and the subtitle gives the count. */
+export const BIG_BOARD_TEAMS = 12
+
+export function isBigBoard(teamCount: number): boolean {
+  return teamCount >= BIG_BOARD_TEAMS
+}

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { PHASES } from '../../shared/enums'
 import type { AnimalInfo, LeaderboardRow, NamingPrize } from '../../shared/game'
-import { finishOf, pillForPhase, prizeAnimal, prizeRows } from './after-game'
+import { isBigBoard, finishOf, pillForPhase, prizeAnimal, prizeRows, showJumpRow } from './after-game'
 
 const row = (team_id: string, rank: number, points: number, name: string | null = team_id): LeaderboardRow => ({ team_id, name, points, rank })
 const animal = (species: string): AnimalInfo => ({
@@ -80,5 +80,25 @@ describe('pillForPhase', () => {
     expect(pillForPhase('round_break')).toBe('results')
     expect(pillForPhase('lobby')).toBe('waiting')
     expect(pillForPhase('final_wager')).toBe('wager')
+  })
+})
+
+describe('showJumpRow', () => {
+  it('shows only when your rank is past the first screenful (rank 9 and below)', () => {
+    expect(showJumpRow(8)).toBe(false)
+    expect(showJumpRow(9)).toBe(true)
+    expect(showJumpRow(11)).toBe(true)
+  })
+  it('is off without a rank', () => {
+    expect(showJumpRow(null)).toBe(false)
+    expect(showJumpRow(undefined)).toBe(false)
+  })
+})
+
+describe('isBigBoard', () => {
+  it('starts at 12 teams', () => {
+    expect(isBigBoard(11)).toBe(false)
+    expect(isBigBoard(12)).toBe(true)
+    expect(isBigBoard(20)).toBe(true)
   })
 })
