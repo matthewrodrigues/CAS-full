@@ -4,7 +4,7 @@ import { HostStage } from '@/components/host-stage'
 import { bigExpression } from '@/game/big-screen'
 import { useMsLeft } from '@/game/use-ms-left'
 import { choiceOptions, liveQuestion } from '../../play/question'
-import { BigCountdown } from './countdown'
+import { CountdownRing } from '@/components/countdown'
 import { roundLabel, useRounds } from './data'
 import { BigFrame } from './frame'
 import { BigMedia } from './media'
@@ -43,7 +43,7 @@ export function QuestionView({ view, paused, offset, locked }: PhaseProps & { of
               <p className="hand">{t('question.of', { number: question.number, of: question.of })}</p>
               <p className="small">{t('display.roundPoints', { round: question.round.title, points: t('question.points', { count: question.points }) })}</p>
             </div>
-            {locked ? <p className="hand">{t('display.timesUp')}</p> : <BigCountdown state={view.state} msLeft={msLeft} />}
+            {locked ? <p className="hand">{t('display.timesUp')}</p> : <CountdownRing xl state={view.state} msLeft={msLeft} />}
           </header>
           <div className="paper__body">
             <h1 className="question" id="prompt" data-role="question">

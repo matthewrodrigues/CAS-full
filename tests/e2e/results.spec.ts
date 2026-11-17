@@ -38,18 +38,18 @@ const lockAndReveal = async () => {
 test('a reveal shows the answer, the result in words, the points and the fun fact', async () => {
   await host.act('host_next', eventId) // question 1, mc
   await tapAndSend(page, 'Challenger Deep')
-  await expect(page.getByText('Your answer: Challenger Deep')).toBeVisible()
+  await expect(page.getByRole('button', { name: /Challenger Deep.*sent!/ })).toBeVisible()
   await lockAndReveal()
   await expect(page.getByRole('heading', { name: 'Correct' })).toBeVisible()
   await expect(page.getByText('+10 points')).toBeVisible()
-  await expect(page.getByText('Answer: Challenger Deep')).toBeVisible()
+  await expect(page.locator('.is-correct')).toContainText('Challenger Deep')
   await expect(page.getByText('Fun fact')).toBeVisible()
   await expectNoAxeViolations(page)
 
   await host.act('host_next', eventId) // question 2, typed
-  await page.getByLabel('Your answer').fill('octopuss')
+  await page.getByLabel('Our answer').fill('octopuss')
   await page.getByRole('button', { name: "That's our answer!" }).click()
-  await expect(page.getByText('Submitted', { exact: true })).toBeVisible()
+  await expect(page.getByText(/^Sent! Edit it/)).toBeVisible()
   await lockAndReveal()
   await expect(page.getByRole('heading', { name: 'Being checked by the host' })).toBeVisible()
 
@@ -63,16 +63,17 @@ test('a reveal shows the answer, the result in words, the points and the fun fac
 
   await host.act('host_next', eventId) // question 5, mc
   await tapAndSend(page, 'Incandescence')
-  await expect(page.getByText('Your answer: Incandescence')).toBeVisible()
+  await expect(page.getByRole('button', { name: /Incandescence.*sent!/ })).toBeVisible()
   await lockAndReveal()
-  await expect(page.getByRole('heading', { name: 'Not this time' })).toBeVisible()
-  await expect(page.getByText('Answer: Bioluminescence')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Not quite' })).toBeVisible()
+  await expect(page.locator('.is-correct')).toContainText('Bioluminescence')
 })
 
 test('the round break shows the team rank and the top teams', async () => {
   await skipTo('round_break')
   await expect(page.getByRole('heading', { name: 'Round complete' })).toBeVisible()
-  await expect(page.getByText('Your team is #1 with 10 points')).toBeVisible()
+  await expect(page.getByText('#1')).toBeVisible()
+  await expect(page.getByText('with 10 points')).toBeVisible()
   await expect(page.getByText('Results Rookies')).toBeVisible()
   await expectNoAxeViolations(page)
 })
@@ -82,21 +83,21 @@ test('the final wager takes a bet up to the score and shows it during the final 
   const view = await host.state(eventId)
   const team = view.host.teams.find((t: { name: string }) => t.name === 'Results Rookies')
   await host.post('/api/host_adjust_score', { team_id: team.id, points: 30 - team.score, note: 'E2E setup' })
-  await expect(page.getByText('Your team has 30 points.')).toBeVisible()
+  await expect(page.locator('.tally__num')).toHaveText('30')
   await expectNoAxeViolations(page)
 
-  await page.getByLabel('Your wager').fill('40')
-  await page.getByRole('button', { name: 'Lock in wager' }).click()
-  await expect(page.getByRole('alert')).toHaveText("You can't bet more points than your team has.")
-  await page.getByLabel('Your wager').fill('20')
-  await page.getByRole('button', { name: 'Lock in wager' }).click()
-  await expect(page.getByText('Your wager: 20')).toBeVisible()
+  await page.getByLabel('Our wager').fill('40')
+  await page.getByRole('button', { name: 'Lock in our wager' }).click()
+  await expect(page.getByRole('alert')).toHaveText('Pick a whole number from 0 to 30.')
+  await page.getByLabel('Our wager').fill('20')
+  await page.getByRole('button', { name: 'Lock in our wager' }).click()
+  await expect(page.getByText(/^Wager locked in!/)).toBeVisible()
 
   await host.act('host_next', eventId) // final_live
   await expect(page.getByText('Your wager: 20')).toBeVisible()
-  await page.getByLabel('Your answer').fill('bathypelagic')
+  await page.getByLabel('Our answer').fill('bathypelagic')
   await page.getByRole('button', { name: "That's our answer!" }).click()
-  await expect(page.getByText('Submitted', { exact: true })).toBeVisible()
+  await expect(page.getByText(/^Sent! Edit it/)).toBeVisible()
   await lockAndReveal()
   await expect(page.getByRole('heading', { name: 'Correct' })).toBeVisible()
   await expect(page.getByText('+20 points')).toBeVisible()
