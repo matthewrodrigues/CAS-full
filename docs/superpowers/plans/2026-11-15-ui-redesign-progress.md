@@ -69,3 +69,4 @@ Background agents die with the session. Rebuild from what's on disk:
 - 2026-11-17 (evening): the usage limit interrupted the T8 and T9 fix rounds; both resumed from their on-disk work. Next: re-reviews, merges, T12, final review.
 - 2026-11-17: T8 (837c87a) and T9 (36fbc8b) fix rounds done; scoped re-reviews running for both. Then merge both, full test run, T12, final review.
 - 2026-11-17: T8 re-review clean; merged (daf5667). 10 of 12 build tasks in. T9 re-review still running.
+- 2026-11-17: T9 re-review clean; merged (68b1985) plus integration fix 409f159. **11 of 12 build tasks in.** Merged branch: unit 572/572, e2e 46/46, typecheck clean. Next: T12 whole-app verification, then the final review.
